@@ -1,0 +1,55 @@
+/* Quill Editor Professional Styles */
+.ql-toolbar.ql-snow {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px 12px 0 0 !important;
+  background: #f8fafc !important;
+  padding: 12px !important;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #e2e8f0 !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  min-height: 400px;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 16px !important;
+}
+
+.ql-editor {
+  min-height: 400px;
+  padding: 24px !important;
+  line-height: 1.6 !important;
+}
+
+.ql-editor::before {
+  color: #94a3b8 !important;
+  font-style: normal !important;
+}
+
+.ql-snow .ql-stroke {
+  stroke: #475569 !important;
+}
+
+.ql-snow .ql-fill {
+  fill: #475569 !important;
+}
+
+.ql-snow .ql-picker {
+  color: #475569 !important;
+}
+
+.admin-editor-container {
+  margin-bottom: 2rem;
+}
+
+.admin-editor-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1e293b;
+}
+
+/* Fix for Element Plus Form overlap */
+.el-form-item__content {
+  line-height: normal !important;
+}
