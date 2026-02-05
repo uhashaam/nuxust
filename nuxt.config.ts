@@ -1,12 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // Static Generation Mode (SSG) with Pre-rendering
-  ssr: true,
+  // True Static Site Generation (Pre-rendered HTML)
+  ssr: false,
 
   compatibilityDate: '2026-01-31',
 
   nitro: {
-    preset: 'cloudflare-pages'
+    preset: 'static'
   },
 
   srcDir: '.',
@@ -62,7 +62,7 @@ export default defineNuxtConfig({
   },
 
   ogImage: {
-    enabled: true
+    enabled: false
   },
 
   site: {
