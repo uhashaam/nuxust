@@ -10,9 +10,9 @@ export const useAuth = () => {
     // Reactive state for the app
     const isLoggedIn = useState('is-logged-in', () => !!authCookie.value)
 
-    const login = (password: string) => {
-        // Simple hardcoded password for the demo
-        if (password === 'admin123') {
+    const login = (username: string, password: string) => {
+        // Secure credentials
+        if (username === 'Kengnu' && password === 'B2B_Admin_2026$Secure!') {
             authCookie.value = 'true'
             isLoggedIn.value = true
             return true

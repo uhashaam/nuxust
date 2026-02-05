@@ -17,6 +17,15 @@
       </template>
       
       <el-form :model="form" @submit.prevent="handleLogin" label-position="top">
+        <el-form-item label="Admin Username">
+          <el-input
+            v-model="form.username"
+            placeholder="Enter username"
+            size="large"
+            :prefix-icon="User"
+          />
+        </el-form-item>
+
         <el-form-item label="Admin Password">
           <el-input
             v-model="form.password"
@@ -61,7 +70,7 @@
 import { ref, reactive } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { navigateTo } from 'nuxt/app'
-import { Lock } from '@element-plus/icons-vue'
+import { User, Lock } from '@element-plus/icons-vue'
 
 definePageMeta({
   layout: false
@@ -72,12 +81,13 @@ const loading = ref(false)
 const error = ref('')
 
 const form = reactive({
+  username: '',
   password: ''
 })
 
 const handleLogin = async () => {
-  if (!form.password) {
-    error.value = 'Password is required'
+  if (!form.username || !form.password) {
+    error.value = 'Username and password are required'
     return
   }
   
@@ -87,12 +97,12 @@ const handleLogin = async () => {
   // Artificial delay for professional feel
   await new Promise(resolve => setTimeout(resolve, 800))
   
-  const success = login(form.password)
+  const success = login(form.username, form.password)
   
   if (success) {
     navigateTo('/admin')
   } else {
-    error.value = 'Invalid administrative password'
+    error.value = 'Invalid username or password'
     loading.value = false
   }
 }

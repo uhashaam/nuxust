@@ -19,15 +19,15 @@ export interface CompanyConfig {
 }
 
 const defaultConfig: CompanyConfig = {
-    companyFullName: 'B2B News Station',
+    companyFullName: 'B2B New Station',
     companyAbbreviation: 'B2B',
-    brandName: 'B2B News Station',
+    brandName: 'B2B New Station',
     contactNumber: '+86-18930311251',
     faxNumber: '400-8765-098',
     phoneNumber: '+86-18930311251',
     email: 'info@aaseo.com',
     watermarkText: 'B2B NEWS',
-    copyrightText: '© 2024 B2B News Station. All rights reserved.',
+    copyrightText: '© 2026 B2B New Station. All rights reserved.',
     contactAddress: 'Building 2, No. 525 Xizang North Road, Jing\'an District, Shanghai',
     qrCodeImage: '/images/qrcode.png',
     postalCode: '200070',

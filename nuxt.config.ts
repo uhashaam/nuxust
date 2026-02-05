@@ -70,7 +70,7 @@ export default defineNuxtConfig({
 
   site: {
     url: 'https://b-2b.com',
-    name: 'XX Industry News Station',
+    name: 'B2B New Station',
     description: 'Focus on news coverage of the XX industry, providing the latest industry trends, policy interpretations, and market analysis',
     defaultLocale: 'en'
   },

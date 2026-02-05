@@ -53,7 +53,7 @@
               <div class="icon">📍</div>
               <div class="details">
                 <h3>Our Office</h3>
-                <p>123 Innovation Drive, Tech City, TC 10101</p>
+                <p>{{ config.contactAddress }}</p>
               </div>
             </div>
             <div class="info-item">
@@ -74,11 +74,18 @@
 
           <div class="contact-card map-card">
             <!-- Professional Map Placeholder -->
-            <div class="map-placeholder">
-              <div class="map-overlay">
-                <span class="map-icon">🗺️</span>
-                <p>Interactive Map Loading...</p>
-              </div>
+            <!-- Professional Map Embed -->
+            <div class="map-container">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                scrolling="no" 
+                marginheight="0" 
+                marginwidth="0" 
+                src="https://maps.google.com/maps?q=Building+2,+No.+525+Xizang+North+Road,+Jing'an+District,+Shanghai&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                title="Office Location"
+              ></iframe>
             </div>
           </div>
         </div>
@@ -275,15 +282,11 @@ useHead({
   height: 300px;
 }
 
-.map-placeholder {
+.map-container {
   width: 100%;
   height: 100%;
-  background: #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
 }
+
 
 .map-overlay {
   text-align: center;
