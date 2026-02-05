@@ -66,7 +66,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: 'https://tech.b-2b.com',
+    url: 'https://b-2b.com',
     name: 'XX Industry News Station',
     description: 'Focus on news coverage of the XX industry, providing the latest industry trends, policy interpretations, and market analysis',
     defaultLocale: 'en'
