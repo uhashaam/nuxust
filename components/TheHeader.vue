@@ -56,6 +56,17 @@
           <NuxtLink to="/products" class="mobile-nav-item" @click="isMobileMenuOpen = false">Technologies</NuxtLink>
           <NuxtLink to="/about" class="mobile-nav-item" @click="isMobileMenuOpen = false">About</NuxtLink>
           <NuxtLink to="/contact" class="mobile-nav-item" @click="isMobileMenuOpen = false">Contact</NuxtLink>
+          
+          <div class="mobile-search">
+            <el-input
+              v-model="searchQuery"
+              placeholder="Search news..."
+              :prefix-icon="Search"
+              clearable
+              @keyup.enter="handleSearchWithClose"
+            />
+          </div>
+
           <div class="mobile-actions">
             <el-button type="primary" class="admin-btn" @click="handleAdminClick">
               Admin Panel
@@ -92,6 +103,11 @@ const handleSearch = () => {
   if (searchQuery.value.trim()) {
     navigateTo(`/news?q=${encodeURIComponent(searchQuery.value.trim())}`)
   }
+}
+
+const handleSearchWithClose = () => {
+  handleSearch()
+  isMobileMenuOpen.value = false
 }
 
 onMounted(() => {
@@ -289,17 +305,39 @@ onUnmounted(() => {
     padding: 0 1.5rem;
   }
   
-  .nav-links {
+  .nav-links,
+  .search-box {
     display: none;
   }
+  
   .mobile-menu-btn {
     display: block;
   }
+  
   .admin-btn {
     display: none;
   }
+  
   .mobile-actions .admin-btn {
     display: inline-block;
+  }
+  
+  .mobile-search {
+    margin: 1rem 0;
+    width: 100%;
+    padding: 0 1.5rem;
+  }
+  
+  /* Ensure input text is visible in mobile menu */
+  .mobile-search :deep(.el-input__inner) {
+    color: white !important;
+    text-align: center;
+  }
+  
+  .mobile-search :deep(.el-input__wrapper) {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 99px;
   }
 }
 </style>

@@ -302,7 +302,24 @@ useHead({
   .mission-section, .values-section, .filing-section { padding: 4rem 0; }
   
   .content-grid { gap: 3rem; }
-  .text-content h2 { font-size: 2rem; }
+  
+  .text-content h2 { 
+    font-size: 2rem;
+    text-align: center;
+  }
+  
+  .text-content p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .stats-row {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
   
   .filing-box { padding: 2rem; }
   .filing-details { gap: 1.5rem; }
