@@ -143,10 +143,21 @@ const { config } = useCompanyConfig()
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
+  .main-footer {
+    padding: 3rem 0;
+  }
+  
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-grid {
+    gap: 2rem;
   }
 }
 </style>

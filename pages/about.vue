@@ -292,4 +292,19 @@ useHead({
   .content-grid { grid-template-columns: 1fr; }
   .values-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .page-hero { padding: 4rem 0; }
+  .page-hero h1 { font-size: 2.5rem; }
+  .subtitle { font-size: 1.125rem; }
+  
+  .container { padding: 0 1.5rem; }
+  .mission-section, .values-section, .filing-section { padding: 4rem 0; }
+  
+  .content-grid { gap: 3rem; }
+  .text-content h2 { font-size: 2rem; }
+  
+  .filing-box { padding: 2rem; }
+  .filing-details { gap: 1.5rem; }
+}
 </style>

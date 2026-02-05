@@ -285,6 +285,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .header-container {
+    padding: 0 1.5rem;
+  }
+  
   .nav-links {
     display: none;
   }
