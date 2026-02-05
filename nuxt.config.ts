@@ -1,12 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // True Static Site Generation (Pre-rendered HTML)
-  ssr: false,
+  ssr: true,
 
   compatibilityDate: '2026-01-31',
 
   nitro: {
-    preset: 'static',
+    preset: 'cloudflare-pages',
     output: {
       publicDir: 'dist'
     }
