@@ -9,7 +9,8 @@ export default defineNuxtConfig({
     preset: 'cloudflare-pages',
     output: {
       publicDir: 'dist'
-    }
+    },
+    compressPublicAssets: true
   },
 
   srcDir: '.',

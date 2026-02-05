@@ -1,6 +1,16 @@
 <template>
   <div class="homepage">
     <header class="news-hero">
+      <div class="hero-bg-container">
+        <NuxtImg 
+          src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80" 
+          alt="Global Industry Intelligence"
+          class="hero-bg-img"
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
       <div class="hero-overlay"></div>
       <div class="container hero-content-wrapper">
         <h1 class="hero-main-title">Intelligence & Strategic Insights for Global Industry</h1>
@@ -196,12 +206,27 @@ useHead({
 .news-hero {
   position: relative;
   height: 600px;
-  background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80') center/cover no-repeat;
+  /* Background handled by NuxtImg now */
   display: flex;
   align-items: center;
   color: white;
   overflow: hidden;
   padding-top: 80px; /* Adjust for fixed header */
+}
+
+.hero-bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero-overlay {
@@ -703,9 +728,15 @@ useHead({
 
 @media (max-width: 768px) {
   .feed-item { grid-template-columns: 1fr; }
-  .news-hero { height: auto; padding: 10rem 0 5rem; }
+  .news-hero { height: auto; min-height: 500px; padding: 10rem 0 5rem; }
   .newsletter-box { padding: 3rem 1.5rem; }
   .form-row { flex-direction: column; }
+  
+  /* Mobile padding adjustments */
+  .spotlight-content { padding: 2.5rem; }
+  .hero-main-title { font-size: 2.5rem !important; }
+  .section-title h2 { font-size: 1.5rem; }
+  .newsletter-box h2 { font-size: 1.75rem; }
 }
 
 </style>

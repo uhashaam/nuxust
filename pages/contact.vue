@@ -307,4 +307,20 @@ useHead({
     margin-top: -2rem;
   }
 }
+
+@media (max-width: 768px) {
+  .contact-card {
+    padding: 1.5rem;
+  }
+  
+  .page-hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .info-item .icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+}
 </style>
