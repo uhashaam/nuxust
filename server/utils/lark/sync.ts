@@ -118,7 +118,8 @@ async function triggerSyncActions(tableId: string, action: string) {
     // 2. Invalidate cache if news content changed
     // 3. Update user permissions if user table changed
 
-    console.log(`Sync action triggered for table ${tableId} with action ${action}`)
+    // Skip logging or use a safe logging utility
+
 
     // TODO: Implement actual sync logic
 }
@@ -139,7 +140,6 @@ export async function scheduledSyncCheck() {
         const changes = getTableChanges(tableId as string, new Date(Date.now() - 5 * 60 * 1000))
 
         if (changes.length > 0) {
-            console.log(`Found ${changes.length} changes for table ${tableId}`)
             // Process changes
             await triggerSyncActions(tableId as string, 'scheduled_sync')
         }

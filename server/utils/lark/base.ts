@@ -44,7 +44,6 @@ export async function fetchRecords(
             pageToken: response.data?.page_token,
         }
     } catch (error) {
-        console.error('Error fetching Lark Base records:', error)
         throw new Error(`Failed to fetch records from table ${tableId}`)
     }
 }
@@ -96,7 +95,6 @@ export async function getRecord(
 
         return response.data?.record || null
     } catch (error) {
-        console.error('Error fetching Lark Base record:', error)
         return null
     }
 }
@@ -121,13 +119,6 @@ export async function createRecord(
 
         if (response.code !== 0 || !response.data?.record) {
             const errorMsg = `Lark Error (${response.code}): ${response.msg || 'Failed to create record'}`
-            console.error('[Lark Error] Create failed:', JSON.stringify(response, null, 2))
-
-            // Log to disk for better visibility
-            try {
-                const fs = await import('fs')
-                fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] LARK CREATE ERROR: ${errorMsg}\nResponse: ${JSON.stringify(response, null, 2)}\nFields attempted: ${JSON.stringify(fields, null, 2)}\n`)
-            } catch (e) { }
 
             throw new Error(errorMsg)
         }
@@ -164,13 +155,6 @@ export async function updateRecord(
 
         if (response.code !== 0 || !response.data?.record) {
             const errorMsg = `Lark Error (${response.code}): ${response.msg || 'Failed to update record'}`
-            console.error('[Lark Error] Update failed:', JSON.stringify(response, null, 2))
-
-            // Log to disk for better visibility
-            try {
-                const fs = await import('fs')
-                fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] LARK UPDATE ERROR: ${errorMsg}\nResponse: ${JSON.stringify(response, null, 2)}\nUpdates attempted: ${JSON.stringify(fields, null, 2)}\n`)
-            } catch (e) { }
 
             throw new Error(errorMsg)
         }
@@ -203,7 +187,6 @@ export async function deleteRecord(
 
         return true
     } catch (error) {
-        console.error('Error deleting Lark Base record:', error)
         return false
     }
 }
@@ -244,10 +227,6 @@ export async function batchCreateRecords(
                 allCreatedRecords.push(...response.data.records)
             }
         } catch (error: any) {
-            console.error(`Error batch creating records (batch ${i / BATCH_SIZE + 1}):`, error.message || error)
-            if (error.response) {
-                console.error('Lark SDK response error:', JSON.stringify(error.response, null, 2))
-            }
             throw new Error(`Failed to batch create records at batch ${i / BATCH_SIZE + 1}: ${error.message || 'Unknown error'}`)
         }
     }
@@ -318,7 +297,6 @@ export async function batchDeleteRecords(
                 },
             })
         } catch (error) {
-            console.error(`Error batch deleting records (batch ${i / BATCH_SIZE + 1}):`, error)
             return false
         }
     }
@@ -354,27 +332,11 @@ export async function uploadAttachment(
         })
 
         if (!response || !response.file_token) {
-            const errorMsg = `Upload failed: ${JSON.stringify(response)}`
-            console.error('[Lark Error] Media upload failed:', JSON.stringify(response, null, 2))
-
-            // Log to disk for better visibility
-            try {
-                const fs = await import('fs')
-                fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] LARK MEDIA UPLOAD ERROR: ${errorMsg}\nResponse: ${JSON.stringify(response, null, 2)}\nFile info: ${file.fileName} (${file.contentType}, ${file.buffer.length} bytes)\n`)
-            } catch (e) { }
-
-            throw new Error(errorMsg)
+            throw new Error(`Upload failed: ${JSON.stringify(response)}`)
         }
 
-        console.log(`[Lark Media] Successfully uploaded ${file.fileName}, token: ${response.file_token}`)
         return response.file_token
     } catch (error: any) {
-        console.error('[Lark Exception] Media upload failed:', error)
-        // Log to disk for better visibility
-        try {
-            const fs = await import('fs')
-            fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] LARK MEDIA UPLOAD EXCEPTION: ${error.message}\nStack: ${error.stack}\nFile info: ${file.fileName} (${file.contentType}, ${file.buffer.length} bytes)\n`)
-        } catch (e) { }
         throw error
     }
 }

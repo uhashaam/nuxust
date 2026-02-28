@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   // True Static Site Generation (Pre-rendered HTML)
   ssr: true,
 
-  compatibilityDate: '2026-01-31',
+  compatibilityDate: '2024-11-01',
 
   nitro: {
     preset: 'cloudflare-pages',

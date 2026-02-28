@@ -8,10 +8,8 @@ export async function generateIndustryNews(industryName: string) {
     const provider = (config.volcAccessKey && config.volcEndpointId) ? 'doubao' : 'deepseek';
 
     if (provider === 'doubao') {
-        console.log(`Using Doubao for ${industryName}`);
         return await doubaoContent(industryName);
     } else {
-        console.log(`Using DeepSeek for ${industryName}`);
         return await deepseekContent(industryName);
     }
 }

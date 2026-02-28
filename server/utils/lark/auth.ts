@@ -33,7 +33,7 @@ export function getLarkClient(): lark.Client {
  */
 export async function getTenantAccessToken(): Promise<string> {
   const client = getLarkClient()
-  
+
   try {
     const response = await client.auth.tenantAccessToken.internal({
       data: {
@@ -48,7 +48,6 @@ export async function getTenantAccessToken(): Promise<string> {
 
     return response.tenant_access_token
   } catch (error) {
-    console.error('Lark authentication error:', error)
     throw new Error('Lark authentication failed')
   }
 }

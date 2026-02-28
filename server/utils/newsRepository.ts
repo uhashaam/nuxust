@@ -51,12 +51,6 @@ export const newsRepository = {
 
         const news = await fetchAllRecords(appToken, tableId);
 
-        if (news.length > 0) {
-            console.log(`[News Debug] Found ${news.length} total news records.`);
-            console.log(`[News Debug] Actual Field Names in Lark:`, Object.keys(news[0].fields));
-            console.log(`[News Debug] First Record Sample:`, JSON.stringify(news[0].fields, null, 2));
-        }
-
         return news.filter(n => n.fields.author_email === email) as News[];
     },
 
@@ -106,7 +100,7 @@ export const newsRepository = {
             const img = newsData.featured_image;
             // If it's a base64 string, IGNORE it for now as Lark doesn't support it directly as attachment
             if (typeof img === 'string' && img.startsWith('data:image')) {
-                console.warn('[News Repository] Base64 image detected - skipping Lark attachment upload');
+                // Base64 image detected - skipping Lark attachment upload
             } else if (typeof img === 'string' && !img.startsWith('http')) {
                 // If it's a token (doesn't start with http), treat as attachment
                 fields.featured_image = [{ file_token: img }]
