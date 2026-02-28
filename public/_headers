@@ -1,0 +1,9 @@
+/*
+  https://b-2b.com/*
+  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff
+
+  https://*.b-2b.com/*
+  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff
+*/
