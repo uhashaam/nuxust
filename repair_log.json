@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "message": "Created fields: author_email, featured_image",
+  "created": [
+    "author_email",
+    "featured_image"
+  ],
+  "errors": [],
+  "currentFields": [
+    "news_id",
+    "site_id",
+    "news_title",
+    "news_content",
+    "generation_method",
+    "release_time",
+    "release_status"
+  ]
+}
