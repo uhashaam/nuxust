@@ -32,7 +32,6 @@ export const useCloudflare = () => {
                 name: record.name,
             };
         } catch (error: any) {
-            console.error('Cloudflare DNS creation failed:', error);
             return {
                 success: false,
                 error: error.message,
@@ -47,7 +46,6 @@ export const useCloudflare = () => {
     const triggerRedeployment = async () => {
         try {
             if (!accountId || !config.cloudflareApiToken) {
-                console.warn('Deployment skipped: Cloudflare credentials missing for deployment trigger.');
                 return { success: false, error: 'Credentials missing' };
             }
 
@@ -73,7 +71,6 @@ export const useCloudflare = () => {
                 url: data.result.url
             };
         } catch (error: any) {
-            console.error('Cloudflare Redeployment trigger failed:', error);
             return {
                 success: false,
                 error: error.message,
@@ -106,7 +103,6 @@ export const useCloudflare = () => {
             };
 
         } catch (error: any) {
-            console.error('Cloudflare SSL check failed:', error);
             return {
                 success: false,
                 error: error.message,
