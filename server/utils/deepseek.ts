@@ -52,7 +52,6 @@ export async function generateIndustryNews(industryName: string): Promise<{ titl
         };
 
     } catch (error: any) {
-        console.error('AI Generation Error:', error?.data || error.message);
         throw new Error('Failed to generate AI news: ' + (error?.data?.error?.message || error.message));
     }
 }

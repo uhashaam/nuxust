@@ -43,7 +43,6 @@ export const userRepository = {
             }
             return null;
         } catch (error) {
-            console.error('Error finding user by identifier:', error);
             return null;
         }
     },
@@ -81,7 +80,6 @@ export const userRepository = {
             const record = await createRecord(appToken, tableId, newUserFields);
             return record as User;
         } catch (error) {
-            console.error('Error creating user:', error);
             throw createError({ statusCode: 500, statusMessage: 'Failed to create user record' });
         }
     },
@@ -102,7 +100,6 @@ export const userRepository = {
             const record = await updateRecord(appToken, tableId, recordId, updates);
             return record as User;
         } catch (error) {
-            console.error('Error updating user:', error);
             throw createError({ statusCode: 500, statusMessage: 'Failed to update user record' });
         }
     }

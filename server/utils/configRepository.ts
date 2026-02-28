@@ -79,7 +79,7 @@ export const configRepository = {
             const { triggerRedeployment } = await import('./cloudflare');
             await triggerRedeployment();
         } catch (e) {
-            console.error('Failed to trigger redeploy after config update:', e);
+            // failed to trigger
         }
 
         return true;

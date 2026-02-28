@@ -32,7 +32,6 @@ export const planRepository = {
             const records = await fetchAllRecords(appToken, tableId);
             return records as Plan[];
         } catch (error) {
-            console.error('Error fetching plans:', error);
             return [];
         }
     },

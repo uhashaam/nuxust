@@ -125,7 +125,6 @@ export async function createRecord(
 
         return response.data.record
     } catch (error: any) {
-        console.error('[Lark Exception] Create failed:', error)
         throw error
     }
 }
@@ -161,7 +160,6 @@ export async function updateRecord(
 
         return response.data.record
     } catch (error: any) {
-        console.error('[Lark Exception] Update failed:', error)
         throw error
     }
 }
@@ -219,7 +217,6 @@ export async function batchCreateRecords(
             })
 
             if (response.code !== 0) {
-                console.error(`Lark API error (code ${response.code}):`, response.msg)
                 throw new Error(`Lark API error: ${response.msg}`)
             }
 
@@ -264,7 +261,6 @@ export async function batchUpdateRecords(
                 allUpdatedRecords.push(...response.data.records)
             }
         } catch (error) {
-            console.error(`Error batch updating records (batch ${i / BATCH_SIZE + 1}):`, error)
             throw new Error(`Failed to batch update records at batch ${i / BATCH_SIZE + 1}`)
         }
     }

@@ -40,8 +40,6 @@ export const sendEmail = async (options: EmailOptions) => {
         const fromName = getSetting('smtp_from_name') || 'B2B Subdomain Platform';
 
         if (!host || !user || !pass) {
-            console.warn('[EMAIL] SMTP Configuration is missing in the Lark Admin Settings table. Falling back to mock console log.');
-            console.log(`[MOCK EMAIL TO ${options.to}] Subject: ${options.subject}`);
             return { success: false, mock: true, message: 'SMTP credentials missing from Lark' };
         }
 
@@ -65,11 +63,9 @@ export const sendEmail = async (options: EmailOptions) => {
             html: options.html,
         });
 
-        console.log(`[EMAIL] Message sent successfully to ${options.to}: ${info.messageId}`);
         return { success: true, messageId: info.messageId };
 
     } catch (error: any) {
-        console.error('[EMAIL] Failed to send email:', error);
         throw new Error(error.message || 'Error occurred while sending email');
     }
 };
