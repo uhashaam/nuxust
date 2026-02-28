@@ -69,6 +69,7 @@ const { config } = useCompanyConfig()
 
 .page-content {
   flex: 1;
+  padding-top: 80px; /* Account for fixed header height */
 }
 
 .main-footer {

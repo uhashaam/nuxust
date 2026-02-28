@@ -10,18 +10,27 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@larksuiteoapi/node-sdk": "^1.59.0",
     "@nuxt/image": "^2.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.13.4",
+    "bcryptjs": "^3.0.3",
+    "cloudflare": "^5.2.0",
+    "jsonwebtoken": "^9.0.3",
     "marked": "^17.0.1",
+    "nodemailer": "^8.0.1",
     "nuxt": "^4.3.0",
     "quill": "^2.0.3",
+    "stripe": "^20.3.1",
     "vue": "^3.5.27",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.1.4",
     "@nuxtjs/seo": "^3.4.0",
-    "@nuxtjs/sitemap": "^7.6.0"
+    "@nuxtjs/sitemap": "^7.6.0",
+    "@types/nodemailer": "^7.0.11"
   }
 }

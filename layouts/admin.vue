@@ -24,6 +24,12 @@
         <el-menu-item index="/admin/config/basic">
           <span>⚙️ Settings</span>
         </el-menu-item>
+        <el-menu-item index="/admin/config/smtp">
+          <span>📧 SMTP Settings</span>
+        </el-menu-item>
+        <el-menu-item index="/admin/config/stripe">
+          <span>💳 Stripe Settings</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     
