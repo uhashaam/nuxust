@@ -7,9 +7,6 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare-pages',
-    output: {
-      publicDir: 'dist'
-    },
     compressPublicAssets: true
   },
 
