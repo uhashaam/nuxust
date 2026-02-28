@@ -38,14 +38,51 @@ const defaultConfig: CompanyConfig = {
 
 export const useCompanyConfig = () => {
     const config = useState<CompanyConfig>('company-config', () => ({ ...defaultConfig }))
+    const isLoading = useState('company-config-loading', () => false)
 
-    const updateConfig = (newConfig: Partial<CompanyConfig>) => {
-        config.value = { ...config.value, ...newConfig }
+    const fetchConfig = async () => {
+        isLoading.value = true
+        try {
+            const data = await $fetch('/api/config/get')
+            if (data.success && data.config) {
+                config.value = { ...defaultConfig, ...data.config }
+            }
+        } catch (error) {
+            console.error('Failed to fetch company config:', error)
+        } finally {
+            isLoading.value = false
+        }
     }
 
-    const resetConfig = () => {
-        config.value = { ...defaultConfig }
+    // Initial load
+    if (process.server || (process.client)) {
+        // We only fetch if it's the first time or server-side
+        // To avoid multiple fetches, we can check a flag
     }
 
-    return { config, updateConfig, resetConfig }
+    const updateConfig = async (newConfig: Partial<CompanyConfig>) => {
+        isLoading.value = true
+        try {
+            const updated = { ...config.value, ...newConfig }
+            await $fetch('/api/config/update', {
+                method: 'POST',
+                body: updated
+            })
+            config.value = updated
+        } catch (error) {
+            console.error('Failed to update company config:', error)
+            throw error
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const resetConfig = async () => {
+        if (confirm('Are you sure you want to reset to defaults?')) {
+            await updateConfig(defaultConfig)
+        }
+    }
+
+    return { config, isLoading, updateConfig, resetConfig, fetchConfig }
 }
+

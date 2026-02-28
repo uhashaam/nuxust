@@ -17,7 +17,7 @@
           @click="navigateTo(`/news/${article.slug}`)"
         >
           <div class="card-img">
-            <NuxtImg :src="article.image" :alt="article.title" width="400" height="250" />
+            <img :src="article.image || '/images/news-placeholder.jpg'" :alt="article.title" width="400" height="250" />
             <span class="cat-badge">{{ article.category }}</span>
           </div>
           <div class="card-body">

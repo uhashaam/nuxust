@@ -8,47 +8,26 @@ export interface MediaItem {
     type: string
     size: number
     updatedAt: string
+    token?: string // Lark file token for attachments
 }
 
 export const useMedia = () => {
     const mediaList = useState<MediaItem[]>('media_library', () => [])
 
-    // Load initial data
-    if (process.client) {
-        const stored = localStorage.getItem('nuxt_media_data')
-        if (stored) {
-            mediaList.value = JSON.parse(stored)
-        } else {
-            // Default initial data if nothing in storage
-            mediaList.value = [
-                {
-                    id: '1',
-                    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80',
-                    name: 'Tech Summit.jpg',
-                    alt: 'Global Tech Summit 2024 hall with AI displays',
-                    type: 'image/jpeg',
-                    size: 102400,
-                    updatedAt: new Date().toISOString()
-                },
-                {
-                    id: '2',
-                    url: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80',
-                    name: 'Solar Panels.jpg',
-                    alt: 'Modern solar panel array under clear blue sky',
-                    type: 'image/jpeg',
-                    size: 204800,
-                    updatedAt: new Date().toISOString()
-                }
-            ]
-            localStorage.setItem('nuxt_media_data', JSON.stringify(mediaList.value))
+    const fetchMedia = async () => {
+        try {
+            const data = await $fetch<{ success: boolean; media: MediaItem[] }>('/api/media/all')
+            if (data.success) {
+                mediaList.value = data.media
+            }
+        } catch (error) {
+            console.error('Failed to fetch media:', error)
         }
     }
 
-    // Persist changes
-    if (process.client) {
-        watch(mediaList, (newVal) => {
-            localStorage.setItem('nuxt_media_data', JSON.stringify(newVal))
-        }, { deep: true })
+    // Load initial data
+    if (process.client && mediaList.value.length === 0) {
+        fetchMedia()
     }
 
     const addMedia = (item: Omit<MediaItem, 'id' | 'updatedAt'>) => {

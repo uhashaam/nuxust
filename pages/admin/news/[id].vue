@@ -142,7 +142,7 @@ if (process.client) {
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'auth'
+  middleware: 'admin-auth'
 })
 
 
@@ -243,9 +243,13 @@ onMounted(async () => {
   }
 })
 
-const handleMediaSelect = (asset: { url: string; alt: string }) => {
+const handleMediaSelect = (asset: { url: string; alt: string; token?: string }) => {
   form.value.image = asset.url
   form.value.imageAlt = asset.alt
+  // If there's a token, we should ideally store it to send to Lark
+  if (asset.token) {
+    (form.value as any).imageToken = asset.token
+  }
 }
 
 const handleBack = () => {
@@ -260,14 +264,39 @@ const handleSave = async () => {
       saving.value = true
       try {
         if (isNew) {
-          addNews(form.value)
+          await $fetch('/api/news/create', {
+            method: 'POST',
+            body: {
+              title: form.value.title,
+              content: form.value.content,
+              slug: form.value.slug,
+              category: form.value.category,
+              image_url: (form.value as any).imageToken || form.value.image,
+              featured: form.value.featured,
+              trending: form.value.trending,
+              author: form.value.author,
+              publishedAt: form.value.publishedAt
+            }
+          })
         } else {
-          updateNews(route.params.id as string, form.value)
+          await $fetch('/api/news/update', {
+            method: 'POST',
+            body: {
+              id: route.params.id,
+              title: form.value.title,
+              content: form.value.content,
+              slug: form.value.slug,
+              release_status: (form.value as any).featured ? 'Trending' : 'Published',
+              featured_image: (form.value as any).imageToken || form.value.image,
+              author: form.value.author,
+              publishedAt: form.value.publishedAt
+            }
+          })
         }
         ElMessage.success('Saved successfully')
         navigateTo('/admin/news')
-      } catch (err) {
-        ElMessage.error('Failed to save')
+      } catch (err: any) {
+        ElMessage.error(err.message || 'Failed to save')
       } finally {
         saving.value = false
       }

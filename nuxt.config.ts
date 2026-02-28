@@ -13,6 +13,17 @@ export default defineNuxtConfig({
     compressPublicAssets: true
   },
 
+  // Module 2: Site Stability Assurance (Cloudflare CDN Caching Rules)
+  routeRules: {
+    // Cache standard pages and API responses on the edge for 1 hour, stale-while-revalidate for 12 hours
+    '/': { swr: 3600 },
+    '/i/**': { swr: 3600 },
+    '/products/**': { swr: 3600 },
+    '/news/**': { swr: 3600 },
+    // Cache static assets aggressively
+    '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
+  },
+
   srcDir: '.',
 
   css: [
@@ -38,12 +49,20 @@ export default defineNuxtConfig({
     }
   },
 
-  // SEO plugin configuration (core, SEO optimization)
   modules: [
     '@nuxtjs/seo',
     '@element-plus/nuxt',
     '@nuxt/image',
     '@nuxtjs/google-fonts'
+  ],
+
+  components: [
+    { path: '~/components/templates/headers', pathPrefix: false, global: true },
+    { path: '~/components/templates/footers', pathPrefix: false, global: true },
+    { path: '~/components/templates/banners', pathPrefix: false, global: true },
+    { path: '~/components/templates/news-list', pathPrefix: false, global: true },
+    { path: '~/components/templates/news-detail', pathPrefix: false, global: true },
+    '~/components'
   ],
 
   googleFonts: {
@@ -83,12 +102,34 @@ export default defineNuxtConfig({
 
   // Environment variables (distinguish different sub-sites, dynamically injected during batch deployment)
   runtimeConfig: {
+    // Server-only secrets (never exposed to client)
+    larkAppId: process.env.NUXT_PUBLIC_FEISHU_APP_ID,
+    larkAppSecret: process.env.NUXT_PUBLIC_FEISHU_APP_SECRET,
+    larkBaseAppToken: process.env.LARK_BASE_APP_TOKEN,
+    jwtSecret: process.env.JWT_SECRET,
+    cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
+    cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+    cloudflareZoneId: process.env.CLOUDFLARE_ZONE_ID,
+    deepseekApiKey: process.env.DEEPSEEK_API_KEY,
+    volcAccessKey: process.env.VOLC_ACCESS_KEY,
+    volcSecretKey: process.env.VOLC_SECRET_KEY,
+    arkApiKey: process.env.ARK_API_KEY,
+    volcEndpointId: process.env.VOLC_ENDPOINT_ID, // Adding placeholder for endpoint ID
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    cloudflareProjectName: process.env.CLOUDFLARE_PROJECT_NAME || 'b-2b',
+
     public: {
       stationCode: 'tech', // Subsite identifier (e.g., tech, finance)
-      feishuTableId: 'tblXXXXXXXXXXXXXX', // Feishu multi-dimensional table ID
-      feishuAppId: '', // Overridden by NUXT_PUBLIC_FEISHU_APP_ID
-      feishuAppSecret: '' // Overridden by NUXT_PUBLIC_FEISHU_APP_SECRET
+      feishuAppId: process.env.NUXT_PUBLIC_FEISHU_APP_ID,
+      larkTableIds: {
+        industrySites: process.env.LARK_TABLE_INDUSTRY_SITES,
+        users: process.env.LARK_TABLE_USERS,
+        plansCoupons: process.env.LARK_TABLE_PLANS_COUPONS,
+        newsContent: process.env.LARK_TABLE_NEWS_CONTENT,
+        adminSettings: process.env.LARK_TABLE_ADMIN_SETTINGS,
+      }
     }
   }
 })
-// Routing structure updated - forcing rebuild
+// Routing structure updated - forcing rebuild - trigger reload

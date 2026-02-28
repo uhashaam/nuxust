@@ -140,7 +140,7 @@ definePageMeta({
 })
 
 const route = useRoute()
-const { getProductById, addProduct, updateProduct } = useProducts()
+const { getProductById, addProduct, updateProduct, fetchProducts, productList } = useProducts()
 
 const isNew = route.params.id === 'new'
 const saving = ref(false)
@@ -199,10 +199,13 @@ onMounted(async () => {
 
       // Set initial content if editing
       if (!isNew) {
+        if (productList.value.length === 0) {
+            await fetchProducts()
+        }
         const existing = getProductById(route.params.id as string)
         if (existing) {
           // Exclude 'id' to match Omit<Product, 'id'>
-          const { id, ...data } = existing
+          const { id, ...data } = existing as any
           form.value = {
             ...data,
             description: data.description || '',
@@ -255,14 +258,14 @@ const handleSave = async () => {
       saving.value = true
       try {
         if (isNew) {
-          addProduct(form.value)
+          await addProduct(form.value)
         } else {
-          updateProduct(route.params.id as string, form.value)
+          await updateProduct(route.params.id as string, form.value)
         }
         ElMessage.success('Product saved successfully')
         navigateTo('/admin/products')
-      } catch (err) {
-        ElMessage.error('Failed to save')
+      } catch (err: any) {
+        ElMessage.error(err.message || 'Failed to save')
       } finally {
         saving.value = false
       }

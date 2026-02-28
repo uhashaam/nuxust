@@ -66,8 +66,16 @@
 import { ref, computed } from 'vue'
 import { useHead, useRoute, navigateTo } from 'nuxt/app'
 
+// Fetch and await news on the server so page never renders empty
+const { data: newsData } = await useAsyncData('news-all', () => $fetch('/api/news/all'))
+const allNews = computed(() => (newsData.value as any)?.news ?? [])
+const categories = computed(() => [...new Set(allNews.value.map((n: any) => n.category))])
 
-const { newsList, categories } = useNews()
+const { newsList } = useNews()
+// Hydrate the shared state so other composable users also get the data
+if (newsData.value?.success) {
+  newsList.value = (newsData.value as any).news
+}
 
 const selectedCategory = ref<string | null>(null)
 const route = useRoute()
@@ -76,19 +84,19 @@ const searchQuery = computed(() => route.query.q as string || '')
 const searchActive = computed(() => !!searchQuery.value)
 
 const filteredNews = computed(() => {
-  let list = newsList.value
+  let list = allNews.value
   
   if (selectedCategory.value) {
-    list = list.filter(item => item.category === selectedCategory.value)
+    list = list.filter((item: any) => item.category === selectedCategory.value)
   }
   
   if (searchActive.value) {
     const q = searchQuery.value.toLowerCase()
-    list = list.filter(item => 
+    list = list.filter((item: any) => 
       item.title.toLowerCase().includes(q) || 
-      item.excerpt.toLowerCase().includes(q) ||
+      item.excerpt?.toLowerCase().includes(q) ||
       item.content?.toLowerCase().includes(q) ||
-      item.tags?.some(t => t.toLowerCase().includes(q))
+      item.tags?.some((t: string) => t.toLowerCase().includes(q))
     )
   }
   

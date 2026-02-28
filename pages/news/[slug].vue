@@ -1,81 +1,15 @@
 <template>
-  <div class="news-detail">
-    <div v-if="article" class="article-wrapper">
-      <header class="detail-hero">
-        <div class="container">
-          <div class="breadcrumb">
-            <NuxtLink to="/">Home</NuxtLink>
-            <el-icon><ArrowRight /></el-icon>
-            <NuxtLink to="/news">News</NuxtLink>
-            <el-icon><ArrowRight /></el-icon>
-            <span>{{ article.title }}</span>
-          </div>
-          
-          <span class="cat-pill">{{ article.category }}</span>
-          <h1>{{ article.title }}</h1>
-          
-          <div class="article-meta">
-            <div class="meta-item">
-              <span class="label">Published</span>
-              <span class="value">{{ article.publishedAt }}</span>
-            </div>
-            <div class="meta-item">
-              <span class="label">Author</span>
-              <span class="value">{{ article.author }}</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div class="container main-grid">
-        <article class="primary-content">
-          <div class="featured-image">
-            <NuxtImg 
-              :src="article.image" 
-              :alt="article.imageAlt || article.title"
-              width="900"
-              height="500"
-              class="rounded-img"
-            />
-          </div>
-
-          <div class="markdown-body" v-html="parsedContent"></div>
-
-          <div class="article-tags">
-            <h3>Tags</h3>
-            <div class="tags-list">
-              <span 
-                v-for="tag in article.tags" 
-                :key="tag" 
-                class="tag-item"
-                @click="navigateTo(`/news/tag/${tag}`)"
-              >
-                #{{ tag }}
-              </span>
-            </div>
-          </div>
-        </article>
-
-        <aside class="side-recommendations">
-          <div class="sticky-side">
-            <h3>Related Insights</h3>
-            <div class="recommendations-list">
-              <div 
-                v-for="item in relatedArticles" 
-                :key="item.id" 
-                class="rec-card"
-                @click="navigateTo(`/news/${item.slug}`)"
-              >
-                <NuxtImg :src="item.image" :alt="item.title" width="100" height="70" />
-                <div class="rec-info">
-                  <h4>{{ item.title }}</h4>
-                  <span class="date">{{ item.publishedAt }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-      </div>
+  <div class="news-detail-wrapper">
+    <div v-if="article">
+      <component 
+        :is="detailComponent"
+        :title="article.title"
+        :published-at="article.publishedAt"
+        :author="article.author"
+        :content="parsedContent"
+        :related-news="relatedArticles"
+        :image="article.image"
+      />
     </div>
 
     <div v-else class="not-found container">
@@ -88,15 +22,38 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { marked } from 'marked'
-import { ArrowRight } from '@element-plus/icons-vue'
+
+// Import Detail Styles
+import NewsDetail01 from '~/components/templates/news-detail/NewsDetail01.vue'
 
 const route = useRoute()
 const { getNewsBySlug, getNewsById, newsList } = useNews()
 const { config } = useCompanyConfig()
 
-const article = computed(() => {
-  const s = route.params.slug as string
-  return getNewsBySlug(s) || getNewsById(s)
+// In a real scenario, we would get the style ID from site data if within industry context.
+// For now, we'll try to find industry context or default to Style 1.
+// If there's an industrySiteData provided (from layout), use its style.
+const industrySiteData = inject<any>('industrySiteData', null)
+
+const identifier = route.params.slug as string
+const { data: articleData, pending } = await useAsyncData(`article-${identifier}`, () => 
+  $fetch(`/api/news/item/${identifier}`)
+)
+
+const article = computed(() => articleData.value?.article)
+
+// Redirect to subdomain if article belongs to a site
+watch(article, (newArticle) => {
+  if (newArticle?.subdomain) {
+    navigateTo(`/i/${newArticle.subdomain}/news/${newArticle.slug}`)
+  }
+}, { immediate: true })
+
+const detailComponent = computed(() => {
+  // Use Style 1 for default, in a real industry-branded site, 
+  // we would get this from industrySiteData
+  const styleId = industrySiteData?.value?.newsDetailStyleId || 1
+  return resolveComponent(`NewsDetail${String(styleId).padStart(2, '0')}`)
 })
 
 const parsedContent = computed(() => {
@@ -117,6 +74,18 @@ useSeoMeta({
   keywords: () => (article.value?.metaKeywords || article.value?.tags?.join(', '))
 })
 </script>
+
+<style scoped>
+.news-detail-wrapper {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.not-found {
+  padding: 100px 20px;
+  text-align: center;
+}
+</style>
 
 <style scoped>
 .news-detail {

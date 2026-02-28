@@ -68,10 +68,10 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'auth'
+  middleware: 'admin-auth'
 })
 
-const { newsList, deleteNews } = useNews()
+const { newsList, fetchNews } = useNews()
 const loading = ref(false)
 
 const handleCreate = () => {
@@ -93,10 +93,21 @@ const handleDelete = async (id: string) => {
         type: 'warning',
       }
     )
-    deleteNews(id)
+    
+    loading.value = true
+    await $fetch('/api/news/delete', {
+      method: 'POST',
+      body: { id }
+    })
+    
+    await fetchNews() // Refresh from Lark
     ElMessage.success('Deleted successfully')
-  } catch {
-    // Cancelled
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      ElMessage.error(error.message || 'Failed to delete')
+    }
+  } finally {
+    loading.value = false
   }
 }
 </script>

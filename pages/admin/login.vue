@@ -97,9 +97,9 @@ const handleLogin = async () => {
   // Artificial delay for professional feel
   await new Promise(resolve => setTimeout(resolve, 800))
   
-  const success = login(form.username, form.password)
+  const loginResult = await login({ identifier: form.username, password: form.password })
   
-  if (success) {
+  if (loginResult) {
     navigateTo('/admin')
   } else {
     error.value = 'Invalid username or password'

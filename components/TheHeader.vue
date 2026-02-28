@@ -1,31 +1,31 @@
 <template>
   <header :class="['main-header', { 'is-scrolled': isScrolled }]">
     <div class="container header-container">
-      <NuxtLink to="/" class="logo">
+      <NuxtLink :to="subdomain ? `/i/${subdomain}` : '/'" class="logo">
         <span class="logo-icon">🚀</span>
         <span class="logo-text">{{ config.companyAbbreviation }}</span>
       </NuxtLink>
 
       <nav class="nav-links">
-        <NuxtLink to="/" class="nav-item" active-class="active">Home</NuxtLink>
+        <NuxtLink :to="subdomain ? `/i/${subdomain}` : '/'" class="nav-item" active-class="active">Home</NuxtLink>
         
         <el-dropdown trigger="hover" class="nav-dropdown">
-          <span class="nav-item" :class="{ active: route.path.startsWith('/news') }">
+          <span class="nav-item" :class="{ active: route.path.includes('/news') }">
             News <el-icon class="el-icon--right"><arrow-down /></el-icon>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item v-for="cat in categories" :key="cat" @click="navigateTo(`/news/category/${cat}`)">
+              <el-dropdown-item v-for="cat in categories" :key="cat" @click="navigateTo(subdomain ? `/i/${subdomain}/news?category=${cat}` : `/news/category/${cat}`)">
                 {{ cat }}
               </el-dropdown-item>
-              <el-dropdown-item divided @click="navigateTo('/news')">All News</el-dropdown-item>
+              <el-dropdown-item divided @click="navigateTo(subdomain ? `/i/${subdomain}/news` : '/news')">All News</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-
-        <NuxtLink to="/products" class="nav-item" active-class="active">Technologies</NuxtLink>
-        <NuxtLink to="/about" class="nav-item" active-class="active">About</NuxtLink>
-        <NuxtLink to="/contact" class="nav-item" active-class="active">Contact</NuxtLink>
+        
+        <NuxtLink v-if="!subdomain" to="/products" class="nav-item" active-class="active">Technologies</NuxtLink>
+        <NuxtLink :to="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item" active-class="active">About</NuxtLink>
+        <NuxtLink :to="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item" active-class="active">Contact</NuxtLink>
       </nav>
 
       <div class="search-box">
@@ -39,9 +39,19 @@
       </div>
 
       <div class="header-actions">
-        <el-button type="primary" class="admin-btn" @click="navigateTo('/admin')">
-          Admin Panel
-        </el-button>
+        <template v-if="user">
+          <el-button type="primary" class="admin-btn" @click="navigateTo('/dashboard')">
+            Dashboard
+          </el-button>
+          <el-button @click="logout">Logout</el-button>
+        </template>
+        <template v-else>
+          <NuxtLink to="/login" class="nav-item portal-link">Login</NuxtLink>
+          <el-button type="primary" class="admin-btn" @click="navigateTo('/register')">
+            Join Now
+          </el-button>
+        </template>
+        
         <button class="mobile-menu-btn" @click="isMobileMenuOpen = !isMobileMenuOpen">
           <el-icon><Menu v-if="!isMobileMenuOpen" /><Close v-else /></el-icon>
         </button>
@@ -52,10 +62,10 @@
     <transition name="fade">
       <div v-if="isMobileMenuOpen" class="mobile-menu-overlay" @click="isMobileMenuOpen = false">
         <nav class="mobile-nav" @click.stop>
-          <NuxtLink to="/" class="mobile-nav-item" @click="isMobileMenuOpen = false">Home</NuxtLink>
-          <NuxtLink to="/products" class="mobile-nav-item" @click="isMobileMenuOpen = false">Technologies</NuxtLink>
-          <NuxtLink to="/about" class="mobile-nav-item" @click="isMobileMenuOpen = false">About</NuxtLink>
-          <NuxtLink to="/contact" class="mobile-nav-item" @click="isMobileMenuOpen = false">Contact</NuxtLink>
+          <NuxtLink :to="subdomain ? `/i/${subdomain}` : '/'" class="mobile-nav-item" @click="isMobileMenuOpen = false">Home</NuxtLink>
+          <NuxtLink v-if="!subdomain" to="/products" class="mobile-nav-item" @click="isMobileMenuOpen = false">Technologies</NuxtLink>
+          <NuxtLink :to="subdomain ? `/i/${subdomain}/about` : '/about'" class="mobile-nav-item" @click="isMobileMenuOpen = false">About</NuxtLink>
+          <NuxtLink :to="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="mobile-nav-item" @click="isMobileMenuOpen = false">Contact</NuxtLink>
           
           <div class="mobile-search">
             <el-input
@@ -68,9 +78,14 @@
           </div>
 
           <div class="mobile-actions">
-            <el-button type="primary" class="admin-btn" @click="handleAdminClick">
-              Admin Panel
-            </el-button>
+            <template v-if="user">
+              <el-button type="primary" class="admin-btn" @click="navigateTo('/dashboard')">Dashboard</el-button>
+              <el-button @click="logout">Logout</el-button>
+            </template>
+            <template v-else>
+              <el-button type="primary" class="admin-btn" @click="navigateTo('/login')">Login</el-button>
+              <el-button @click="navigateTo('/register')">Register</el-button>
+            </template>
           </div>
         </nav>
       </div>
@@ -82,9 +97,15 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Search, ArrowDown, Menu, Close } from '@element-plus/icons-vue'
 import { navigateTo, useRoute } from 'nuxt/app'
+import { useAuth } from '~/composables/useAuth'
+
+const props = defineProps<{
+  subdomain?: string
+}>()
 
 const { config } = useCompanyConfig()
 const { categories } = useNews()
+const { user, logout } = useAuth()
 const route = useRoute()
 const searchQuery = ref('')
 const isScrolled = ref(false)
@@ -101,7 +122,10 @@ const handleAdminClick = () => {
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
-    navigateTo(`/news?q=${encodeURIComponent(searchQuery.value.trim())}`)
+    const url = props.subdomain 
+      ? `/i/${props.subdomain}/news?q=${encodeURIComponent(searchQuery.value.trim())}`
+      : `/news?q=${encodeURIComponent(searchQuery.value.trim())}`
+    navigateTo(url)
   }
 }
 
@@ -210,28 +234,75 @@ onUnmounted(() => {
   border-radius: 2px;
 }
 
+.portal-link {
+  margin-right: -0.5rem;
+}
+
 .search-box {
   width: 250px;
 }
 
 :deep(.el-input__wrapper) {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   box-shadow: none !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
   border-radius: 99px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+:deep(.el-input__wrapper):hover {
+  border-color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12) !important;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  border-color: #a5b4fc !important;
+  box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.3) !important;
 }
 
 .is-scrolled :deep(.el-input__wrapper) {
   background: #f1f5f9;
-  border-color: #e2e8f0;
+  border-color: #94a3b8 !important;
+}
+
+.is-scrolled :deep(.el-input__wrapper):hover {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
 }
 
 :deep(.el-input__inner) {
   color: white !important;
 }
 
+:deep(.el-input__inner::placeholder) {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
 .is-scrolled :deep(.el-input__inner) {
   color: #0f172a !important;
+}
+
+.is-scrolled :deep(.el-input__inner::placeholder) {
+  color: #94a3b8 !important;
+}
+
+/* Search icon — white on dark, dark on scrolled */
+:deep(.el-input__prefix-inner .el-icon) {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 16px;
+}
+
+.is-scrolled :deep(.el-input__prefix-inner .el-icon) {
+  color: #64748b !important;
+}
+
+/* Clear button */
+:deep(.el-input__suffix-inner .el-icon) {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.is-scrolled :deep(.el-input__suffix-inner .el-icon) {
+  color: #64748b !important;
 }
 
 .header-actions {

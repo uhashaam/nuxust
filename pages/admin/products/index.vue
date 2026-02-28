@@ -74,8 +74,11 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { productList, deleteProduct } = useProducts()
-const loading = ref(false)
+const { productList, deleteProduct, isLoading: loading, fetchProducts } = useProducts()
+
+onMounted(() => {
+    fetchProducts()
+})
 
 const handleCreate = () => {
   navigateTo('/admin/products/new')
@@ -96,10 +99,15 @@ const handleDelete = async (id: string) => {
         type: 'warning',
       }
     )
-    deleteProduct(id)
+    loading.value = true
+    await deleteProduct(id)
     ElMessage.success('Deleted successfully')
-  } catch {
-    // Cancelled
+  } catch (error: any) {
+    if (error !== 'cancel') {
+        ElMessage.error(error.message || 'Delete failed')
+    }
+  } finally {
+    loading.value = false
   }
 }
 </script>

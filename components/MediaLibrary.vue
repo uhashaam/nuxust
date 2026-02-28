@@ -95,19 +95,36 @@ watch(visible, (val) => {
   emit('update:modelValue', val)
 })
 
-const handleUpload = (file: any) => {
-  const reader = new FileReader()
-  reader.readAsDataURL(file.raw)
-  reader.onload = () => {
-    const newItem = addMedia({
-      url: reader.result as string,
-      name: file.name,
-      alt: '',
-      type: file.raw.type,
-      size: file.raw.size
+const handleUpload = async (file: any) => {
+  const formData = new FormData()
+  formData.append('file', file.raw)
+
+  try {
+    const response = await $fetch<{ success: boolean; fileToken: string }>('/api/media/upload', {
+      method: 'POST',
+      body: formData
     })
-    selectedItem.value = newItem
-    ElMessage.success('Image uploaded to library')
+
+    if (response.success) {
+      // Create local preview
+      const reader = new FileReader()
+      reader.readAsDataURL(file.raw)
+      reader.onload = () => {
+        const newItem = addMedia({
+          url: reader.result as string, // This is just for local preview in the UI
+          name: file.name,
+          alt: '',
+          type: file.raw.type,
+          size: file.raw.size,
+          token: response.fileToken // Now persisted in the media state
+        })
+        
+        selectedItem.value = newItem
+        ElMessage.success('Image uploaded and stored in cloud')
+      }
+    }
+  } catch (error: any) {
+    ElMessage.error(error.message || 'Failed to upload to server')
   }
 }
 
@@ -134,7 +151,8 @@ const handleConfirm = () => {
   if (selectedItem.value) {
     emit('select', { 
       url: selectedItem.value.url, 
-      alt: selectedItem.value.alt 
+      alt: selectedItem.value.alt,
+      token: selectedItem.value.token // Pass the persisted token
     })
     visible.value = false
   }

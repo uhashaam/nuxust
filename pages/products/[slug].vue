@@ -26,8 +26,8 @@
       <div class="container main-grid">
         <div class="primary-content">
           <div class="main-image">
-            <NuxtImg 
-              :src="product.image" 
+            <img 
+              :src="product.image || '/images/news-placeholder.jpg'" 
               :alt="product.imageAlt || product.name"
               width="900"
               height="500"

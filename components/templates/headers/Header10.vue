@@ -1,0 +1,202 @@
+<template>
+  <header class="header-10">
+    <div class="header-container">
+      <div class="branding">
+        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="domain-logo">b-2b.com</a>
+        <span class="industry-label">{{ industryName }}</span>
+      </div>
+      
+      <nav class="retro-nav">
+        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
+        <NuxtLink to="/pricing" class="nav-item">Packages</NuxtLink>
+        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News</a>
+        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About</a>
+        <NuxtLink v-if="!user" to="/login" class="nav-item">Login</NuxtLink>
+        <div class="user-retro" v-else>
+          <NuxtLink to="/dashboard" class="nav-item">Dashboard</NuxtLink>
+          <button class="retro-logout" @click="logout">EXIT</button>
+        </div>
+      </nav>
+
+      <button class="menu-btn" @click="isOpen = !isOpen">
+        <span class="btn-text">{{ isOpen ? 'CLOSE' : 'MENU' }}</span>
+      </button>
+
+      <div class="mobile-overlay" :class="{ 'visible': isOpen }">
+        <nav class="mobile-links">
+          <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isOpen = false">HOME</a>
+          <NuxtLink to="/pricing" @click="isOpen = false">PACKAGES</NuxtLink>
+          <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isOpen = false">NEWS CENTER</a>
+          <template v-if="!user">
+            <NuxtLink to="/login" @click="isOpen = false">LOGIN</NuxtLink>
+            <NuxtLink to="/register" @click="isOpen = false">REGISTER</NuxtLink>
+          </template>
+          <template v-else>
+            <NuxtLink to="/dashboard" @click="isOpen = false">DASHBOARD</NuxtLink>
+            <a href="#" @click.prevent="logout(); isOpen = false">LOGOUT</a>
+          </template>
+        </nav>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useAuth } from '~/composables/useAuth'
+
+const { user, logout } = useAuth()
+
+defineProps<{
+  industryName: string
+  subdomain?: string
+}>()
+
+const isOpen = ref(false)
+</script>
+
+<style scoped>
+.header-10 {
+  background: #ffffff;
+  color: #000000;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #000000;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.branding {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+}
+
+.domain-logo {
+  font-family: serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #000000;
+  text-decoration: none;
+}
+
+.industry-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.retro-nav {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #000000;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0;
+  position: relative;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #000000;
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+.user-retro {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.retro-logout {
+  background: none;
+  border: 1px solid #000;
+  font-size: 0.625rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+}
+
+.menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid #000000;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.btn-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .retro-nav {
+    display: none;
+  }
+  
+  .menu-btn {
+    display: block;
+    z-index: 1001;
+  }
+
+  .mobile-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 1000;
+    padding: 6rem 2rem;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .mobile-overlay.visible {
+    transform: translateY(0);
+  }
+
+  .mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .mobile-links a {
+    font-size: 1.5rem;
+    color: black;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+}
+</style>

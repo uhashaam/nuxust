@@ -55,14 +55,14 @@
             <div class="news-feed">
               <article v-for="article in popularNews.slice(0, 5)" :key="article.id" class="feed-item" @click="navigateTo(`/news/${article.slug}`)">
                 <div class="feed-img">
-                  <NuxtImg :src="article.image" :alt="article.title" width="280" height="180" />
+                  <img :src="article.image || '/images/news-placeholder.jpg'" :alt="article.title" width="280" height="180" />
                 </div>
                 <div class="feed-content">
                   <span class="cat">{{ article.category }}</span>
                   <h3>{{ article.title }}</h3>
                   <p>{{ article.excerpt }}</p>
                   <div class="feed-footer">
-                    <span>{{ article.publishedAt }}</span>
+                    <span>{{ formatDate(article.publishedAt) }}</span>
                     <el-icon><Right /></el-icon>
                   </div>
                 </div>
@@ -114,23 +114,33 @@
       </div>
     </section>
 
-    <section class="categorized-listings">
+    <section class="subdomain-platforms">
       <div class="container">
-        <div v-for="cat in categories.slice(0, 3)" :key="cat" class="category-block">
-          <div class="block-header">
-            <h2>{{ cat }}</h2>
-            <el-button link @click="navigateTo(`/news/category/${cat}`)">View All {{ cat }} News →</el-button>
+        <div class="section-header">
+          <div>
+            <h2>Our Industry Platforms</h2>
+            <p class="section-sub">Specialized intelligence hubs for each sector</p>
           </div>
-          <div class="category-grid">
-            <article v-for="article in newsByCat(cat).slice(0, 4)" :key="article.id" class="mini-article" @click="navigateTo(`/news/${article.slug}`)">
-              <div class="mini-img">
-                <NuxtImg :src="article.image" :alt="article.title" width="120" height="80" />
-              </div>
-              <div class="mini-content">
-                <h4>{{ article.title }}</h4>
-                <span>{{ article.publishedAt }}</span>
-              </div>
-            </article>
+          <el-button link class="view-all-link" @click="navigateTo('/news')">View All News →</el-button>
+        </div>
+        
+        <div class="platforms-grid">
+          <div 
+            v-for="site in larkSites" 
+            :key="site.id" 
+            class="platform-card"
+            @click="navigateTo(`/i/${site.subdomain}`)"
+          >
+            <div class="platform-icon">🏭</div>
+            <div class="platform-info">
+              <h3>{{ site.subdomain }}</h3>
+              <p>{{ site.name }}</p>
+              <span class="visit-link">Visit Platform →</span>
+            </div>
+          </div>
+
+          <div v-if="!larkSites.length" class="platform-loading">
+            <el-skeleton :rows="2" animated />
           </div>
         </div>
       </div>
@@ -162,9 +172,9 @@ const { config } = useCompanyConfig()
 const { productList } = useProducts()
 const { newsList, popularNews, categories } = useNews()
 
-const newsByCat = (cat: string) => {
-  return newsList.value.filter(n => n.category === cat)
-}
+// Fetch real subdomain sites from Lark
+const { data: sitesData } = await useAsyncData('home-sites', () => $fetch('/api/sites/all'))
+const larkSites = computed(() => (sitesData.value as any)?.sites || [])
 
 const featuredArticle = computed(() => 
   newsList.value.find(n => n.featured) || newsList.value[0]
@@ -181,6 +191,15 @@ const latestNews = computed(() =>
 const featuredProducts = computed(() =>
   productList.value.slice(0, 3)
 )
+
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return 'Recent'
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
 
 useHead({
   title: config.value.brandName,
@@ -289,45 +308,42 @@ useHead({
   max-width: 650px;
 }
 
-.hero-btn-outline {
-  height: 56px;
-  padding: 0 2.5rem !important;
-  font-size: 1.125rem !important;
-  font-weight: 800 !important;
-  border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  transition: all 0.3s !important;
-}
-
-.hero-btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-}
-
-.hero-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-weight: 600;
-  color: #94a3b8;
-  margin-bottom: 3rem;
-}
-
-.dot {
-  width: 4px;
-  height: 4px;
-  background: #475569;
-  border-radius: 50%;
-}
-
 .hero-btn {
   height: 56px;
   padding: 0 2.5rem !important;
   font-size: 1.125rem !important;
   font-weight: 800 !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.6);
+  filter: brightness(1.1);
+}
+
+.hero-btn-outline {
+  height: 56px;
+  padding: 0 2.5rem !important;
+  font-size: 1.125rem !important;
+  font-weight: 800 !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.hero-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px);
 }
 
 /* Trending Ticker */
@@ -737,6 +753,98 @@ useHead({
   .hero-main-title { font-size: 2.5rem !important; }
   .section-title h2 { font-size: 1.5rem; }
   .newsletter-box h2 { font-size: 1.75rem; }
+  .platforms-grid { grid-template-columns: 1fr; }
 }
 
+
+/* Subdomain Platforms Section */
+.subdomain-platforms {
+  padding: 5rem 0;
+  background: #f8fafc;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.section-sub {
+  color: #64748b;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.view-all-link {
+  font-weight: 800 !important;
+  color: #6366f1 !important;
+  white-space: nowrap;
+}
+
+.platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.platform-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 1.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.platform-card:hover {
+  transform: translateY(-6px);
+  border-color: #6366f1;
+  box-shadow: 0 12px 30px -5px rgba(99, 102, 241, 0.18);
+}
+
+.platform-icon {
+  font-size: 1.75rem;
+  background: #eef2ff;
+  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.platform-info h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: lowercase;
+}
+
+.platform-info p {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.visit-link {
+  color: #6366f1;
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.platform-loading {
+  padding: 2rem;
+  grid-column: 1 / -1;
+}
 </style>

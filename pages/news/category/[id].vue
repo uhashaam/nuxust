@@ -31,7 +31,7 @@
           @click="navigateTo(`/news/${article.slug}`)"
         >
           <div class="item-img">
-            <NuxtImg :src="article.image" :alt="article.title" width="300" height="200" />
+            <img :src="article.image || '/images/news-placeholder.jpg'" :alt="article.title" width="300" height="200" />
           </div>
           <div class="item-info">
             <div class="item-meta">
