@@ -1,5 +1,4 @@
-import * as lark from '@larksuiteoapi/node-sdk'
-import { getLarkClient } from './auth'
+import { getTenantAccessToken } from './auth'
 
 export interface LarkBaseRecord {
     record_id?: string
@@ -14,6 +13,19 @@ export interface LarkBaseListOptions {
     sort?: Array<{ field_name: string; desc?: boolean }>
 }
 
+async function larkFetch(url: string, options: any = {}) {
+    const token = await getTenantAccessToken()
+
+    return $fetch<any>(url, {
+        ...options,
+        headers: {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 /**
  * Fetch records from a Lark Base table
  */
@@ -22,29 +34,30 @@ export async function fetchRecords(
     tableId: string,
     options: LarkBaseListOptions = {}
 ): Promise<{ records: LarkBaseRecord[]; hasMore: boolean; pageToken?: string }> {
-    const client = getLarkClient()
-
     try {
-        const response = await client.bitable.appTableRecord.list({
-            path: {
-                app_token: appToken,
-                table_id: tableId,
-            },
-            params: {
-                page_size: options.page_size || 100,
-                page_token: options.page_token,
-                filter: options.filter,
-                sort: options.sort ? JSON.stringify(options.sort) : undefined,
-            },
+        const query: any = {
+            page_size: options.page_size || 100
+        }
+        if (options.page_token) query.page_token = options.page_token
+        if (options.filter) query.filter = options.filter
+        if (options.sort) query.sort = JSON.stringify(options.sort)
+
+        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records`, {
+            method: 'GET',
+            query
         })
+
+        if (response.code !== 0) {
+            throw new Error(`Lark API error: ${response.msg}`)
+        }
 
         return {
             records: response.data?.items || [],
             hasMore: response.data?.has_more || false,
             pageToken: response.data?.page_token,
         }
-    } catch (error) {
-        throw new Error(`Failed to fetch records from table ${tableId}`)
+    } catch (error: any) {
+        throw new Error(`Failed to fetch records from table ${tableId}: ${error.message}`)
     }
 }
 
@@ -82,16 +95,14 @@ export async function getRecord(
     tableId: string,
     recordId: string
 ): Promise<LarkBaseRecord | null> {
-    const client = getLarkClient()
-
     try {
-        const response = await client.bitable.appTableRecord.get({
-            path: {
-                app_token: appToken,
-                table_id: tableId,
-                record_id: recordId,
-            },
+        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
+            method: 'GET'
         })
+
+        if (response.code !== 0) {
+            return null
+        }
 
         return response.data?.record || null
     } catch (error) {
@@ -104,23 +115,16 @@ export async function createRecord(
     tableId: string,
     fields: Record<string, any>
 ): Promise<LarkBaseRecord> {
-    const client = getLarkClient()
-
     try {
-        const response = await client.bitable.appTableRecord.create({
-            path: {
-                app_token: appToken,
-                table_id: tableId,
-            },
-            data: {
+        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records`, {
+            method: 'POST',
+            body: {
                 fields,
-            },
+            }
         })
 
         if (response.code !== 0 || !response.data?.record) {
-            const errorMsg = `Lark Error (${response.code}): ${response.msg || 'Failed to create record'}`
-
-            throw new Error(errorMsg)
+            throw new Error(`Lark Error (${response.code}): ${response.msg || 'Failed to create record'}`)
         }
 
         return response.data.record
@@ -138,24 +142,16 @@ export async function updateRecord(
     recordId: string,
     fields: Record<string, any>
 ): Promise<LarkBaseRecord> {
-    const client = getLarkClient()
-
     try {
-        const response = await client.bitable.appTableRecord.update({
-            path: {
-                app_token: appToken,
-                table_id: tableId,
-                record_id: recordId,
-            },
-            data: {
+        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
+            method: 'PUT',
+            body: {
                 fields,
-            },
+            }
         })
 
         if (response.code !== 0 || !response.data?.record) {
-            const errorMsg = `Lark Error (${response.code}): ${response.msg || 'Failed to update record'}`
-
-            throw new Error(errorMsg)
+            throw new Error(`Lark Error (${response.code}): ${response.msg || 'Failed to update record'}`)
         }
 
         return response.data.record
@@ -172,18 +168,12 @@ export async function deleteRecord(
     tableId: string,
     recordId: string
 ): Promise<boolean> {
-    const client = getLarkClient()
-
     try {
-        await client.bitable.appTableRecord.delete({
-            path: {
-                app_token: appToken,
-                table_id: tableId,
-                record_id: recordId,
-            },
+        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
+            method: 'DELETE'
         })
 
-        return true
+        return response.code === 0
     } catch (error) {
         return false
     }
@@ -197,23 +187,18 @@ export async function batchCreateRecords(
     tableId: string,
     records: Array<{ fields: Record<string, any> }>
 ): Promise<LarkBaseRecord[]> {
-    const client = getLarkClient()
     const BATCH_SIZE = 500
     const allCreatedRecords: LarkBaseRecord[] = []
 
-    // Split into batches of 500
     for (let i = 0; i < records.length; i += BATCH_SIZE) {
         const batch = records.slice(i, i + BATCH_SIZE)
 
         try {
-            const response = await client.bitable.appTableRecord.batchCreate({
-                path: {
-                    app_token: appToken,
-                    table_id: tableId,
-                },
-                data: {
+            const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_create`, {
+                method: 'POST',
+                body: {
                     records: batch,
-                },
+                }
             })
 
             if (response.code !== 0) {
@@ -239,7 +224,6 @@ export async function batchUpdateRecords(
     tableId: string,
     records: Array<{ record_id: string; fields: Record<string, any> }>
 ): Promise<LarkBaseRecord[]> {
-    const client = getLarkClient()
     const BATCH_SIZE = 500
     const allUpdatedRecords: LarkBaseRecord[] = []
 
@@ -247,20 +231,17 @@ export async function batchUpdateRecords(
         const batch = records.slice(i, i + BATCH_SIZE)
 
         try {
-            const response = await client.bitable.appTableRecord.batchUpdate({
-                path: {
-                    app_token: appToken,
-                    table_id: tableId,
-                },
-                data: {
+            const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_update`, {
+                method: 'POST',
+                body: {
                     records: batch,
-                },
+                }
             })
 
             if (response.data?.records) {
                 allUpdatedRecords.push(...response.data.records)
             }
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(`Failed to batch update records at batch ${i / BATCH_SIZE + 1}`)
         }
     }
@@ -276,21 +257,17 @@ export async function batchDeleteRecords(
     tableId: string,
     recordIds: string[]
 ): Promise<boolean> {
-    const client = getLarkClient()
     const BATCH_SIZE = 500
 
     for (let i = 0; i < recordIds.length; i += BATCH_SIZE) {
         const batch = recordIds.slice(i, i + BATCH_SIZE)
 
         try {
-            await client.bitable.appTableRecord.batchDelete({
-                path: {
-                    app_token: appToken,
-                    table_id: tableId,
-                },
-                data: {
+            await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_delete`, {
+                method: 'POST',
+                body: {
                     records: batch,
-                },
+                }
             })
         } catch (error) {
             return false
@@ -309,29 +286,36 @@ export async function uploadAttachment(
     file: {
         fileName: string;
         contentType: string;
-        buffer: Buffer | Uint8Array;
+        buffer: any;
     }
 ): Promise<string> {
-    const client = getLarkClient()
-
     try {
-        // Use client.drive.media.uploadAll instead of bitable.appMedia.upload
-        // The latter is undefined in some SDK versions
-        const response: any = await client.drive.media.uploadAll({
-            data: {
-                file_name: file.fileName,
-                parent_type: 'bitable_image',
-                parent_node: appToken,
-                size: file.buffer.length,
-                file: file.buffer,
+        const token = await getTenantAccessToken()
+
+        // Note: For multipart/form-data, $fetch and Cloudflare Workers handle FormData automatically
+        const formData = new FormData()
+        formData.append('file_name', file.fileName)
+        formData.append('parent_type', 'bitable_image')
+        formData.append('parent_node', appToken)
+        formData.append('size', String(file.buffer.length))
+
+        // Create a Blob from the buffer if it's not already one
+        const blob = file.buffer instanceof Blob ? file.buffer : new Blob([file.buffer], { type: file.contentType })
+        formData.append('file', blob, file.fileName)
+
+        const response = await $fetch<any>('https://open.feishu.cn/open-apis/drive/v1/medias/upload_all', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
             },
+            body: formData
         })
 
-        if (!response || !response.file_token) {
+        if (!response || !response.data?.file_token) {
             throw new Error(`Upload failed: ${JSON.stringify(response)}`)
         }
 
-        return response.file_token
+        return response.data.file_token
     } catch (error: any) {
         throw error
     }
