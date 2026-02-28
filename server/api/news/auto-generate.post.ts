@@ -39,7 +39,6 @@ export default defineEventHandler(async (event) => {
                 if (!industryName) continue;
 
                 try {
-                    console.log(`Generating AI News for: ${industryName}`);
                     // 2. Generate News via Unified AI Utility
                     const aiResult = await generateIndustryNews(industryName);
 
@@ -65,7 +64,6 @@ export default defineEventHandler(async (event) => {
                     results.push({ site: industryName, status: releaseStatus, title: aiResult.title });
 
                 } catch (err: any) {
-                    console.error(`Failed to generate news for ${industryName}:`, err.message);
                     failCount++;
                     results.push({ site: industryName, status: 'Failed', error: err.message });
                 }
@@ -84,7 +82,6 @@ export default defineEventHandler(async (event) => {
         };
 
     } catch (error: any) {
-        console.error('Auto-generation failed:', error);
         throw createError({
             statusCode: 500,
             message: 'Failed to process AI auto-generation'

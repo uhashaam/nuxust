@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
         `
     });
 
-    console.log(`[AUTH] Dispatched Verification email to ${email}`);
 
     return {
         success: true,

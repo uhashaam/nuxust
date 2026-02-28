@@ -20,7 +20,6 @@ export default defineEventHandler(async (event) => {
         const newsTableId = config.public.larkTableIds.newsContent;
         const plansTableId = config.public.larkTableIds.plansCoupons;
 
-        console.log('Received Lark Base Record Change:', JSON.stringify(eventData, null, 2));
 
         if (!appToken) return { success: false, error: 'Missing app token' };
 
@@ -36,32 +35,28 @@ export default defineEventHandler(async (event) => {
                         const subdomain = record.fields['Subdomain'] || record.fields['subdomain'];
 
                         if (subdomain) {
-                            console.log(`Processing Cloudflare automation for subdomain: ${subdomain}`);
-
                             // Provision DNS
                             const { createSubdomain } = useCloudflare();
                             const result = await createSubdomain(subdomain);
 
                             if (result.success) {
-                                console.log(`Successfully provisioned ${subdomain}.b-2b.com`);
-                            } else {
-                                console.error(`Failed to provision ${subdomain}: ${result.error}`);
+                                // Failed to provision
                             }
                         }
                     }
                 } catch (error) {
-                    console.error('Error processing industry site change:', error);
+                    // Error processing change
                 }
             }
         } else if (eventData.table_id === newsTableId || eventData.table_id === plansTableId) {
-            console.log(`Content table updated (${eventData.table_id === newsTableId ? 'News' : 'Plans'}). Triggering site redeployment...`);
+            // Content table updated
             const { triggerRedeployment } = useCloudflare();
             const result = await triggerRedeployment();
 
             if (result.success) {
-                console.log(`Successfully triggered redeployment. ID: ${result.deploymentId}`);
+                // Successfully triggered
             } else {
-                console.error(`Failed to trigger redeployment: ${result.error}`);
+                // Failed to trigger
             }
         }
 
