@@ -22,6 +22,4 @@ export default defineNitroPlugin((nitroApp) => {
     if (process.env.LARK_TABLE_PLANS_COUPONS) config.public.larkTableIds.plansCoupons = process.env.LARK_TABLE_PLANS_COUPONS
     if (process.env.LARK_TABLE_NEWS_CONTENT) config.public.larkTableIds.newsContent = process.env.LARK_TABLE_NEWS_CONTENT
     if (process.env.LARK_TABLE_ADMIN_SETTINGS) config.public.larkTableIds.adminSettings = process.env.LARK_TABLE_ADMIN_SETTINGS
-
-    console.log('[Nitro Plugin] Environment variables mapped from Cloudflare bindings.')
 })
