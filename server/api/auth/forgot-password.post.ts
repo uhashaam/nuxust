@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
         code_expires_at: expiresAt
     });
 
-    console.log(`[AUTH] Password reset code for ${email}: ${code}`);
+    // console.log(`[AUTH] Password reset code for ${email}: ${code}`);
 
     return {
         success: true,

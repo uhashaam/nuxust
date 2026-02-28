@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
             message: 'SMTP Configuration saved successfully'
         };
     } catch (error: any) {
-        console.error('Failed to save SMTP config:', error);
+        // console.error('Failed to save SMTP config:', error);
         throw createError({ statusCode: 500, message: 'Failed to save SMTP Configuration' });
     }
 });

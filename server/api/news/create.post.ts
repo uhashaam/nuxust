@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
             const fs = await import('fs')
             fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] News Create Error: ${error.message}\nStack: ${error.stack}\nDetail: ${JSON.stringify(error, null, 2)}\n`)
         } catch (e) {
-            console.error('Failed to write error to disk:', e)
+            // console.error('Failed to write error to disk:', e)
         }
 
         throw createError({

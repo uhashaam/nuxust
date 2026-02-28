@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
             config: stripeConfig
         };
     } catch (error: any) {
-        console.error('Failed to fetch Stripe config:', error);
+        // console.error('Failed to fetch Stripe config:', error);
         throw createError({ statusCode: 500, message: 'Failed to fetch Stripe Configuration' });
     }
 });

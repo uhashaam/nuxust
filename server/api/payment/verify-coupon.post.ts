@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
         };
 
     } catch (error: any) {
-        console.error('Coupon verification failed:', error);
+        // console.error('Coupon verification failed:', error);
         throw createError({
             statusCode: 500,
             message: 'Failed to verify coupon'

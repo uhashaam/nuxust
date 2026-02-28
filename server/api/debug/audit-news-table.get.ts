@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const appToken = config.larkBaseAppToken;
     const tableId = config.public.larkTableIds.newsContent;
 
-    console.log(`[Audit Debug] Starting news table audit. AppToken: ${appToken?.slice(0, 10)}..., TableId: ${tableId}`);
+    // console.log(`[Audit Debug] Starting news table audit. AppToken: ${appToken?.slice(0, 10)}..., TableId: ${tableId}`);
 
     if (!appToken || !tableId) {
         return { success: false, message: 'Lark config missing', appToken: !!appToken, tableId: !!tableId }
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
             }
         })
 
-        console.log(`[Audit Debug] Received response from Lark. Code: ${response.code}`);
+        // console.log(`[Audit Debug] Received response from Lark. Code: ${response.code}`);
 
         if (response.code !== 0) {
             return { success: false, code: response.code, msg: response.msg }
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
             fields
         }
     } catch (error: any) {
-        console.error('[Audit Exception] Failed to list fields:', error);
+        // console.error('[Audit Exception] Failed to list fields:', error);
         return {
             success: false,
             error: error.message,

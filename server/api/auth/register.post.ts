@@ -113,7 +113,7 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
         if (error.statusCode) throw error; // Re-throw known errors
 
-        console.error('Registration error:', error);
+        // console.error('Registration error:', error);
         throw createError({
             statusCode: 500,
             statusMessage: 'Internal server error during registration'

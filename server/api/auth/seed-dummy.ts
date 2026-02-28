@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         try {
             // Check if user exists by username (primary for now)
             const existing = await userRepository.findByUsernameOrEmail(u.username).catch(e => {
-                console.error('Check user error:', e);
+                // console.error('Check user error:', e);
                 return null;
             });
             if (existing) {
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
             });
             results.push({ username: u.username, status: 'created', id: newUser.record_id });
         } catch (error: any) {
-            console.error(`Error creating user ${u.username}:`, error);
+            // console.error(`Error creating user ${u.username}:`, error);
             results.push({
                 username: u.username,
                 status: 'error',
@@ -92,7 +92,7 @@ export default defineEventHandler(async (event) => {
                 });
                 newsResults.push({ title: n.title, status: 'created', id: record.record_id });
             } catch (error: any) {
-                console.error(`Error creating news ${n.title}:`, error);
+                // console.error(`Error creating news ${n.title}:`, error);
                 newsResults.push({
                     title: n.title,
                     status: 'error',

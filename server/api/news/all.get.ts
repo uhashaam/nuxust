@@ -62,19 +62,19 @@ export default defineEventHandler(async (event) => {
 
         const siteMap = new Map(sites.map(s => [s.record_id, { name: s.fields.industry_name, subdomain: s.fields.subdomain }]))
 
-        console.log(`[News Fetch] Total records from Lark: ${news.length}`)
+        // console.log(`[News Fetch] Total records from Lark: ${news.length}`)
         const filtered = news.filter(n => {
             const hasTitle = !!n.fields.news_title
             const hasContent = !!n.fields.news_content
             const isPublished = n.fields.release_status === 'Published' || n.fields.release_status === 'Trending'
 
             if (!isPublished) {
-                console.log(`[News Filter] Record ${n.record_id} skipped: status is ${n.fields.release_status}`)
+                // console.log(`[News Filter] Record ${n.record_id} skipped: status is ${n.fields.release_status}`)
             }
 
             return hasTitle && hasContent && isPublished
         })
-        console.log(`[News Fetch] Records after status filter: ${filtered.length}`)
+        // console.log(`[News Fetch] Records after status filter: ${filtered.length}`)
 
         return {
             success: true,

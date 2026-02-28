@@ -1,4 +1,21 @@
 export default defineNitroPlugin((nitroApp) => {
+    // Shim process.stdout and process.stderr for Cloudflare Worker environment stability
+    // This prevents "TypeError: Cannot read private member #t" when dependencies access stdout
+    if (typeof process !== 'undefined') {
+        const mockStream = {
+            write: () => true,
+            on: () => { },
+            once: () => { },
+            emit: () => { },
+            end: () => { },
+            isTTY: false,
+            writable: true
+        };
+
+        if (!process.stdout) (process as any).stdout = mockStream;
+        if (!process.stderr) (process as any).stderr = mockStream;
+    }
+
     const config = useRuntimeConfig()
 
     if (process.env.LARK_BASE_APP_TOKEN) {

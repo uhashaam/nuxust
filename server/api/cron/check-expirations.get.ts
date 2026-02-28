@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
                 // If expiration is within 15 days and in the future
                 if (timeToExpire > 0 && timeToExpire <= FIFTEEN_DAYS) {
                     // This is where you would hook into an email provider like Resend or SendGrid
-                    console.log(`[CRON] Sending 15-day expiration warning email to ${email}`);
+                    // console.log(`[CRON] Sending 15-day expiration warning email to ${email}`);
 
                     // Use the dynamic SMTP utility to send the warning email
                     await sendEmail({
@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
         };
 
     } catch (error: any) {
-        console.error('CRON expiration check failed:', error);
+        // console.error('CRON expiration check failed:', error);
         throw createError({
             statusCode: 500,
             message: 'Failed to run expiration checks: ' + error.message

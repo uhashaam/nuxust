@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
             stripeWebhookSecret
         );
     } catch (err: any) {
-        console.error('Webhook signature verification failed.', err.message);
+        // console.error('Webhook signature verification failed.', err.message);
         throw createError({ statusCode: 400, statusMessage: 'Webhook Error: ' + err.message });
     }
 
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
             const planId = session.metadata?.planId;
 
             if (userId && planId) {
-                console.log(`Upgrading user ${userId} to plan ${planId}`);
+                // console.log(`Upgrading user ${userId} to plan ${planId}`);
 
                 // Map the planId to user_type and remaining posts limit
                 // This logic mirrors the UI upgrades or typical tier setups
@@ -88,9 +88,9 @@ export default defineEventHandler(async (event) => {
                         user_type: newUserType,
                         remaining_posts: postsToAdd
                     });
-                    console.log(`User ${userId} successfully upgraded to ${newUserType}`);
+                    // console.log(`User ${userId} successfully upgraded to ${newUserType}`);
                 } catch (updateError) {
-                    console.error(`Failed to update user ${userId} in Lark base:`, updateError);
+                    // console.error(`Failed to update user ${userId} in Lark base:`, updateError);
                 }
             }
             break;
@@ -99,7 +99,7 @@ export default defineEventHandler(async (event) => {
             // Logic for downgrading users when subscription expires or is cancelled
             break;
         default:
-            console.log(`Unhandled event type ${stripeEvent.type}`);
+            // console.log(`Unhandled event type ${stripeEvent.type}`);
     }
 
     return { received: true };
