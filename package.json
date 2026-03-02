@@ -14,7 +14,6 @@
     "@nuxtjs/google-fonts": "^3.2.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/jsonwebtoken": "^9.0.10",
-    "axios": "^1.13.4",
     "bcryptjs": "^3.0.3",
     "jsonwebtoken": "^9.0.3",
     "marked": "^17.0.1",
