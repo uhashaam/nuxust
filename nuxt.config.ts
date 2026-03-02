@@ -7,7 +7,10 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare-pages',
-    compressPublicAssets: true
+    compressPublicAssets: true,
+    experimental: {
+      nodeCompat: true
+    }
   },
 
   // Module 2: Site Stability Assurance (Cloudflare CDN Caching Rules)
