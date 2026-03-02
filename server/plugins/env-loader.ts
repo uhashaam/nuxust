@@ -9,11 +9,20 @@ export default defineNitroPlugin((nitroApp) => {
             emit: () => { },
             end: () => { },
             isTTY: false,
-            writable: true
+            writable: true,
+            columns: 80,
+            rows: 24
         };
 
-        if (!process.stdout) (process as any).stdout = mockStream;
-        if (!process.stderr) (process as any).stderr = mockStream;
+        // Force override even if they exist, to bypass broken proxies
+        try {
+            Object.defineProperty(process, 'stdout', { value: mockStream, writable: true, configurable: true });
+            Object.defineProperty(process, 'stderr', { value: mockStream, writable: true, configurable: true });
+        } catch (e) {
+            // Fallback for environments where Object.defineProperty might fail or be restricted
+            (process as any).stdout = mockStream;
+            (process as any).stderr = mockStream;
+        }
     }
 
     const config = useRuntimeConfig()
