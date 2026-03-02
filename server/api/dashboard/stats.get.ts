@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
         const limits = plan ? {
             daily: Number(plan.fields.daily_publish_limit || 0),
             weekly: Number(plan.fields.weekly_publish_limit || 0)
-        } : (fallbackLimits[tier.toLowerCase()] || fallbackLimits.user);
+        } : (fallbackLimits[tier.toLowerCase()] || fallbackLimits.user) || { daily: 0, weekly: 0 };
 
         const result = {
             success: true,
@@ -85,11 +85,8 @@ export default defineEventHandler(async (event) => {
 
         return result;
     } catch (error: any) {
-        // Log error to disk
-        try {
-            const fs = await import('fs')
-            fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] Stats Error: ${error.message}\nStack: ${error.stack}\nDetail: ${JSON.stringify(error, null, 2)}\n`)
-        } catch (e) { }
+        // error logging removed for cloudflare compatibility
+
 
         throw createError({
             statusCode: error.statusCode || 500,

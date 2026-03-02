@@ -42,11 +42,8 @@ export default defineEventHandler(async (event) => {
             url: '' // Lark doesn't give a direct public URL for attachments easily, but we have the token
         }
     } catch (error: any) {
-        // Log to disk for better visibility
-        try {
-            const fs = await import('fs')
-            fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] MEDIA UPLOAD API ERROR: ${error.message}\nStack: ${error.stack}\n`)
-        } catch (e) { }
+        // error logging removed for cloudflare compatibility
+
 
         throw createError({
             statusCode: error.statusCode || 500,

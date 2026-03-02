@@ -58,11 +58,7 @@ export default defineEventHandler(async (event) => {
             release_time: publishedAt ? new Date(publishedAt).getTime() : Date.now()
         })
 
-        // Log success to disk for debugging
-        try {
-            const fs = await import('fs')
-            fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] News Create SUCCESS: ${news.record_id}\n`)
-        } catch (e) { }
+
 
         // 4. Update user's remaining posts count
         if (larkUser.record_id && larkUser.fields.remaining_posts !== undefined && larkUser.fields.remaining_posts > 0) {
@@ -79,13 +75,8 @@ export default defineEventHandler(async (event) => {
             }
         }
     } catch (error: any) {
-        // Log error to disk for debugging
-        try {
-            const fs = await import('fs')
-            fs.appendFileSync('E:\\nuxt-ssg-project\\error_log.txt', `\n[${new Date().toISOString()}] News Create Error: ${error.message}\nStack: ${error.stack}\nDetail: ${JSON.stringify(error, null, 2)}\n`)
-        } catch (e) {
-            // console.error('Failed to write error to disk:', e)
-        }
+        // error logging removed for cloudflare compatibility
+
 
         throw createError({
             statusCode: error.statusCode || 500,
