@@ -3,7 +3,7 @@
  */
 export async function getTenantAccessToken(): Promise<string> {
   const config = useRuntimeConfig()
-  const appId = config.larkAppId || config.public.feishuAppId
+  const appId = config.larkAppId || config.feishuAppId
   const appSecret = config.larkAppSecret || config.public.feishuAppSecret
 
   if (!appId || !appSecret) {

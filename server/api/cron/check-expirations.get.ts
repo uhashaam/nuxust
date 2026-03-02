@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         // In this architecture, let's fetch users who have an active VIP membership
 
         const appToken = config.larkBaseAppToken;
-        const usersTableId = config.public.larkTableUsers;
+        const usersTableId = config.larkTableUsers;
 
         if (!appToken || !usersTableId) {
             throw new Error('Lark configuration missing for Users table');

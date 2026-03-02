@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     try {
         const config = useRuntimeConfig()
         const appToken = config.larkBaseAppToken
-        const newsTableId = config.public.larkTableNewsContent
+        const newsTableId = config.larkTableNewsContent
 
         if (!appToken || !newsTableId) {
             throw createError({ statusCode: 500, message: 'Lark configuration missing' })
@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
 
         const [news, sites] = await Promise.all([
             fetchAllRecords(appToken, newsTableId),
-            fetchAllRecords(appToken, config.public.larkTableIndustrySites)
+            fetchAllRecords(appToken, config.larkTableIndustrySites)
         ])
 
         const siteMap = new Map(sites.map(s => [s.record_id, { name: s.fields.industry_name, subdomain: s.fields.subdomain }]))

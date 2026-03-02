@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
     const config = useRuntimeConfig()
     const appToken = config.larkBaseAppToken
-    const newsTableId = config.public.larkTableNewsContent
+    const newsTableId = config.larkTableNewsContent
 
     try {
         // Fetch all news records to extract images

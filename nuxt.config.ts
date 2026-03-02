@@ -120,18 +120,18 @@ export default defineNuxtConfig({
     stripeWebhookSecret: '',
     cloudflareProjectName: 'b-2b',
 
+    // Lark/Feishu Config (Server-only)
+    // These auto-map from NUXT_LARK_TABLE_{NAME} and NUXT_FEISHU_APP_ID
+    feishuAppId: '',
+    larkTableIndustrySites: '',
+    larkTableUsers: '',
+    larkTablePlansCoupons: '',
+    larkTableNewsContent: '',
+    larkTableAdminSettings: '',
+
     public: {
-      // Flat properties only — no nested objects.
-      // Nested objects in runtimeConfig.public get frozen by Vue and cannot be
-      // updated at runtime, causing "Cannot assign to read only property" errors.
+      // Station code is used on frontend
       stationCode: 'tech',
-      feishuAppId: '', // Added back to prevent "object is not extensible" error when NUXT_PUBLIC_FEISHU_APP_ID is present
-      // Table IDs (flat) — map from NUXT_PUBLIC_LARK_TABLE_{NAME}
-      larkTableIndustrySites: '',
-      larkTableUsers: '',
-      larkTablePlansCoupons: '',
-      larkTableNewsContent: '',
-      larkTableAdminSettings: '',
     }
   }
 })

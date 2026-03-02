@@ -21,7 +21,7 @@ export const newsRepository = {
     async getNewsBySite(siteRecordId: string): Promise<News[]> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableNewsContent;
+        const tableId = config.larkTableNewsContent;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
@@ -43,7 +43,7 @@ export const newsRepository = {
     async getNewsByAuthor(email: string): Promise<News[]> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableNewsContent;
+        const tableId = config.larkTableNewsContent;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
@@ -60,7 +60,7 @@ export const newsRepository = {
     async getAllNews(): Promise<News[]> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableNewsContent;
+        const tableId = config.larkTableNewsContent;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
@@ -76,7 +76,7 @@ export const newsRepository = {
     async createNews(newsData: any): Promise<News> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableNewsContent;
+        const tableId = config.larkTableNewsContent;
 
         // Strictly pick only fields that exist in Lark to avoid FieldNameNotFound (like 'slug')
         const fields: Record<string, any> = {
@@ -120,7 +120,7 @@ export const newsRepository = {
     async updateNews(recordId: string, updates: Partial<News['fields']>): Promise<News> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableNewsContent;
+        const tableId = config.larkTableNewsContent;
 
         const record = await updateRecord(appToken, tableId, recordId, updates);
         return record as News;
@@ -132,7 +132,7 @@ export const newsRepository = {
     async deleteNews(recordId: string): Promise<boolean> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableNewsContent;
+        const tableId = config.larkTableNewsContent;
 
         return await deleteRecord(appToken, tableId, recordId);
     }

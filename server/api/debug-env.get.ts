@@ -9,15 +9,15 @@ export default defineEventHandler(async (event) => {
         lark: {
             appId: mask(config.larkAppId),
             appSecret: mask(config.larkAppSecret),
-            feishuAppId: mask(config.public.feishuAppId),
+            feishuAppId: mask(config.feishuAppId),
             baseAppToken: mask(config.larkBaseAppToken),
         },
         tables: {
-            industrySites: mask(config.public.larkTableIndustrySites ?? ''),
-            users: mask(config.public.larkTableUsers ?? ''),
-            newsContent: mask(config.public.larkTableNewsContent ?? ''),
-            plansCoupons: mask(config.public.larkTablePlansCoupons ?? ''),
-            adminSettings: mask(config.public.larkTableAdminSettings ?? ''),
+            industrySites: mask(config.larkTableIndustrySites ?? ''),
+            users: mask(config.larkTableUsers ?? ''),
+            newsContent: mask(config.larkTableNewsContent ?? ''),
+            plansCoupons: mask(config.larkTablePlansCoupons ?? ''),
+            adminSettings: mask(config.larkTableAdminSettings ?? ''),
         },
         other: {
             jwtSecret: !!config.jwtSecret,

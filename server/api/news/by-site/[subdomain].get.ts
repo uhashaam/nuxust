@@ -45,8 +45,8 @@ export default defineEventHandler(async (event) => {
 
         const config = useRuntimeConfig()
         const appToken = config.larkBaseAppToken
-        const siteTableId = config.public.larkTableIndustrySites
-        const newsTableId = config.public.larkTableNewsContent
+        const siteTableId = config.larkTableIndustrySites
+        const newsTableId = config.larkTableNewsContent
 
         if (!appToken || !siteTableId || !newsTableId) {
             throw createError({ statusCode: 500, message: 'Lark configuration missing' })

@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     // }
 
     const appToken = config.larkBaseAppToken;
-    const tableId = config.public.larkTableIndustrySites;
+    const tableId = config.larkTableIndustrySites;
 
     if (!appToken || !tableId) {
         throw createError({ statusCode: 500, message: 'Lark Base configuration missing.' });

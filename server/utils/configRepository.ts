@@ -5,7 +5,7 @@ export const configRepository = {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
         // Use adminSettings if available, otherwise fallback to newsContent for generic storage
-        const tableId = config.public.larkTableAdminSettings || config.public.larkTableNewsContent;
+        const tableId = config.larkTableAdminSettings || config.larkTableNewsContent;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
@@ -14,7 +14,7 @@ export const configRepository = {
         const { records } = await fetchRecords(appToken, tableId);
 
         // If using adminSettings (Key/Value structure)
-        if (config.public.larkTableAdminSettings) {
+        if (config.larkTableAdminSettings) {
             const result: Record<string, any> = {};
             records.forEach(r => {
                 const key = r.fields['Key'] || r.fields['Setting Name'];
@@ -43,8 +43,8 @@ export const configRepository = {
     async updateGlobalConfig(configData: any): Promise<boolean> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const adminSettingsId = config.public.larkTableAdminSettings;
-        const newsContentId = config.public.larkTableNewsContent;
+        const adminSettingsId = config.larkTableAdminSettings;
+        const newsContentId = config.larkTableNewsContent;
         const tableId = adminSettingsId || newsContentId;
 
         const configJson = JSON.stringify(configData);

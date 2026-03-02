@@ -22,7 +22,7 @@ export const planRepository = {
     async getAllPlans(): Promise<Plan[]> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTablePlansCoupons;
+        const tableId = config.larkTablePlansCoupons;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing for plans' });
@@ -58,7 +58,7 @@ export const planRepository = {
     async updatePlan(recordId: string, updates: Partial<Plan['fields']>): Promise<Plan> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTablePlansCoupons;
+        const tableId = config.larkTablePlansCoupons;
 
         const { updateRecord } = await import('./lark/base');
         const record = await updateRecord(appToken, tableId, recordId, updates);
@@ -71,7 +71,7 @@ export const planRepository = {
     async deletePlan(recordId: string): Promise<boolean> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTablePlansCoupons;
+        const tableId = config.larkTablePlansCoupons;
 
         const { deleteRecord } = await import('./lark/base');
         return await deleteRecord(appToken, tableId, recordId);
