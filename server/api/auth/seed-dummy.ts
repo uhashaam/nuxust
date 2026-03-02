@@ -10,14 +10,15 @@ export default defineEventHandler(async (event) => {
         { username: 'viewer_h', email: 'user@b-2b.com', user_type: 'user', remaining_posts: 0 },
     ];
 
-    const passwordHash = await userAuth.hashPassword('Password786!');
     const results = [];
+    const password = 'Password786!';
 
     for (const u of usersToCreate) {
         try {
+            const passwordHash = await userAuth.hashPassword(password);
             // Check if user exists by username (primary for now)
             const existing = await userRepository.findByUsernameOrEmail(u.username).catch(e => {
-                
+
                 return null;
             });
             if (existing) {
@@ -42,7 +43,7 @@ export default defineEventHandler(async (event) => {
             });
             results.push({ username: u.username, status: 'created', id: newUser.record_id });
         } catch (error: any) {
-            
+
             results.push({
                 username: u.username,
                 status: 'error',
@@ -92,7 +93,7 @@ export default defineEventHandler(async (event) => {
                 });
                 newsResults.push({ title: n.title, status: 'created', id: record.record_id });
             } catch (error: any) {
-                
+
                 newsResults.push({
                     title: n.title,
                     status: 'error',

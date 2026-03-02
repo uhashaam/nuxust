@@ -6,8 +6,8 @@
       <p class="subtitle">Sign in to your account</p>
 
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
-        <el-form-item label="Email Address" prop="email">
-          <el-input v-model="form.email" type="email" placeholder="Enter email" />
+        <el-form-item label="Email or Username" prop="identifier">
+          <el-input v-model="form.identifier" placeholder="Enter email or username" />
         </el-form-item>
 
         <el-form-item label="Password" prop="password">
@@ -41,15 +41,14 @@ const route = useRoute()
 const formRef = ref<FormInstance>()
 
 const form = reactive({
-  email: '',
+  identifier: '',
   password: '',
   remember: false
 })
 
 const rules = reactive<FormRules>({
-  email: [
-    { required: true, message: 'Please enter email', trigger: 'blur' },
-    { type: 'email', message: 'Please enter valid email', trigger: 'blur' }
+  identifier: [
+    { required: true, message: 'Please enter email or username', trigger: 'blur' }
   ],
   password: [
     { required: true, message: 'Please enter password', trigger: 'blur' }
@@ -62,7 +61,7 @@ const handleLogin = async () => {
     if (valid) {
       try {
         await login({
-          email: form.email,
+          identifier: form.identifier,
           password: form.password
         })
         
