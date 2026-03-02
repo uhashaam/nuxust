@@ -5,7 +5,7 @@
 export const sendEmail = async (options: EmailOptions) => {
     const config = useRuntimeConfig();
     const appToken = config.larkBaseAppToken;
-    const adminSettingsTableId = config.public.larkTableIds?.adminSettings;
+    const adminSettingsTableId = config.public.larkTableAdminSettings;
 
     if (!appToken || !adminSettingsTableId) {
         throw new Error('Missing Lark Base configuration for Admin Settings.');

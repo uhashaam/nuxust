@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
     const appToken = config.larkBaseAppToken;
     // Fallback to news table if products table not defined, but ideally should be separate
-    const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableIds.newsContent;
+    const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableNewsContent;
 
     if (!appToken || !tableId) {
         throw createError({

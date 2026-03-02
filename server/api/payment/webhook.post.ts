@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
     // Fetch settings from Lark Base
     const appToken = config.larkBaseAppToken;
-    const adminSettingsTableId = config.public.larkTableIds?.adminSettings;
+    const adminSettingsTableId = config.public.larkTableAdminSettings;
 
     if (!appToken || !adminSettingsTableId) {
         throw createError({ statusCode: 500, message: 'Lark Base configuration missing for Admin Settings' });

@@ -103,7 +103,7 @@ export default defineNuxtConfig({
   // Environment variables (distinguish different sub-sites, dynamically injected during batch deployment)
   runtimeConfig: {
     // Server-only secrets
-    // Nuxt auto-maps these from env vars: NUXT_LARK_APP_ID, NUXT_LARK_APP_SECRET, etc.
+    // These auto-map from NUXT_{KEY_SCREAMING_SNAKE_CASE} env vars
     larkAppId: '',
     larkAppSecret: '',
     larkBaseAppToken: '',
@@ -121,15 +121,16 @@ export default defineNuxtConfig({
     cloudflareProjectName: 'b-2b',
 
     public: {
-      stationCode: 'tech', // Subsite identifier (e.g., tech, finance)
-      feishuAppId: '',
-      larkTableIds: {
-        industrySites: '',
-        users: '',
-        plansCoupons: '',
-        newsContent: '',
-        adminSettings: '',
-      }
+      // Flat properties only — no nested objects.
+      // Nested objects in runtimeConfig.public get frozen by Vue and cannot be
+      // updated at runtime, causing "Cannot assign to read only property" errors.
+      stationCode: 'tech',
+      // Table IDs (flat) — map from NUXT_PUBLIC_LARK_TABLE_{NAME}
+      larkTableIndustrySites: '',
+      larkTableUsers: '',
+      larkTablePlansCoupons: '',
+      larkTableNewsContent: '',
+      larkTableAdminSettings: '',
     }
   }
 })

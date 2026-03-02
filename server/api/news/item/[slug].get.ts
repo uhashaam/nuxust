@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
         const config = useRuntimeConfig()
         const appToken = config.larkBaseAppToken
-        const newsTableId = config.public.larkTableIds.newsContent
+        const newsTableId = config.public.larkTableNewsContent
 
         if (!appToken || !newsTableId) {
             throw createError({ statusCode: 500, message: 'Lark configuration missing' })
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
         const [news, sites] = await Promise.all([
             fetchAllRecords(appToken, newsTableId),
-            fetchAllRecords(appToken, config.public.larkTableIds.industrySites)
+            fetchAllRecords(appToken, config.public.larkTableIndustrySites)
         ])
 
         const record = news.find(n => n.record_id === identifier || n.fields.slug === identifier || `news-${n.record_id}` === identifier)

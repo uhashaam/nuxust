@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
                 status: 'connected',
                 message: 'Lark Base connection successful',
                 appId: config.larkAppId,
-                tables: config.public.larkTableIds || {}
+                tables: config.public /* larkTableIds deprecated */ || {}
             }
         }
 

@@ -23,7 +23,7 @@ export const userRepository = {
     async findByUsernameOrEmail(identifier: string): Promise<User | null> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableIds.users;
+        const tableId = config.public.larkTableUsers;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
@@ -60,7 +60,7 @@ export const userRepository = {
     async createUser(userData: Omit<User['fields'], 'created_at'>): Promise<User> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableIds.users;
+        const tableId = config.public.larkTableUsers;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
@@ -90,7 +90,7 @@ export const userRepository = {
     async updateUser(recordId: string, updates: Partial<User['fields']>): Promise<User> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = config.public.larkTableIds.users;
+        const tableId = config.public.larkTableUsers;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });

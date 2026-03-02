@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
         }
     ];
 
-    const newsTableId = config.public.larkTableIds.newsContent;
+    const newsTableId = config.public.larkTableNewsContent;
     const newsResults = [];
 
     if (newsTableId) {

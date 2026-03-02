@@ -4,7 +4,7 @@ import { batchCreateRecords } from '../../utils/lark/base';
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
     const appToken = config.larkBaseAppToken;
-    const tableId = config.public.larkTableIds.newsContent;
+    const tableId = config.public.larkTableNewsContent;
 
     if (!appToken || !tableId) {
         throw createError({

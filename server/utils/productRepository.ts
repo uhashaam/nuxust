@@ -18,7 +18,7 @@ export const productRepository = {
     async getAllProducts(): Promise<ProductRecord[]> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableIds.newsContent;
+        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableNewsContent;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing for products' });
@@ -32,7 +32,7 @@ export const productRepository = {
     async createProduct(productData: any): Promise<ProductRecord> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableIds.newsContent;
+        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableNewsContent;
 
         const fields: Record<string, any> = {
             news_title: productData.name,
@@ -65,7 +65,7 @@ export const productRepository = {
     async updateProduct(recordId: string, productData: any): Promise<ProductRecord> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableIds.newsContent;
+        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableNewsContent;
 
         const updates: Record<string, any> = {};
         if (productData.name) updates.news_title = productData.name;
@@ -91,7 +91,7 @@ export const productRepository = {
     async deleteProduct(recordId: string): Promise<boolean> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableIds.newsContent;
+        const tableId = process.env.LARK_TABLE_PRODUCTS || config.public.larkTableNewsContent;
 
         return await deleteRecord(appToken, tableId, recordId);
     }

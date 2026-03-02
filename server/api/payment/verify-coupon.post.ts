@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
     const config = useRuntimeConfig();
     const appToken = config.larkBaseAppToken;
-    const tableId = config.public.larkTableIds?.plansCoupons;
+    const tableId = config.public.larkTablePlansCoupons;
 
     if (!appToken || !tableId) {
         throw createError({ statusCode: 500, message: 'Lark Base configuration missing' });

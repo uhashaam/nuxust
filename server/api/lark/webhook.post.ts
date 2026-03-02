@@ -16,9 +16,9 @@ export default defineEventHandler(async (event) => {
     if (body.header && body.header.event_type === 'base.record.changed') {
         const eventData = body.event;
         const appToken = config.larkBaseAppToken;
-        const industryTableId = config.public.larkTableIds.industrySites;
-        const newsTableId = config.public.larkTableIds.newsContent;
-        const plansTableId = config.public.larkTableIds.plansCoupons;
+        const industryTableId = config.public.larkTableIndustrySites;
+        const newsTableId = config.public.larkTableNewsContent;
+        const plansTableId = config.public.larkTablePlansCoupons;
 
 
         if (!appToken) return { success: false, error: 'Missing app token' };

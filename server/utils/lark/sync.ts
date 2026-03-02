@@ -130,10 +130,10 @@ async function triggerSyncActions(tableId: string, action: string) {
 export async function scheduledSyncCheck() {
     const config = useRuntimeConfig()
     const tables = [
-        config.public.larkTableIds?.industrySites,
-        config.public.larkTableIds?.users,
-        config.public.larkTableIds?.plansCoupons,
-        config.public.larkTableIds?.newsContent,
+        config.public.larkTableIndustrySites,
+        config.public.larkTableUsers,
+        config.public.larkTablePlansCoupons,
+        config.public.larkTableNewsContent,
     ].filter(Boolean)
 
     for (const tableId of tables) {

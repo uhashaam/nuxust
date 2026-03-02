@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
     try {
         const config = useRuntimeConfig()
         const appToken = config.larkBaseAppToken
-        const tableId = config.public.larkTableIds?.industrySites
+        const tableId = config.public.larkTableIndustrySites
 
         if (!appToken || !tableId) {
             throw createError({
