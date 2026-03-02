@@ -11,7 +11,7 @@ export async function getTenantAccessToken(): Promise<string> {
   }
 
   try {
-    const response = await $fetch<any>('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
+    const response = await $fetch<any>('https://open.larksuite.com/open-apis/auth/v3/tenant_access_token/internal', {
       method: 'POST',
       body: {
         app_id: appId,

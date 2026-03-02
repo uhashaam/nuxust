@@ -10,28 +10,27 @@ export default defineEventHandler(async (event) => {
         { username: 'viewer_h', email: 'user@b-2b.com', user_type: 'user', remaining_posts: 0 },
     ];
 
+    // --- Clean Existing Users ---
+    const appToken = config.larkBaseAppToken;
+    const userTableId = config.larkTableUsers;
+    if (appToken && userTableId) {
+        try {
+            const { fetchAllRecords, batchDeleteRecords } = await import('../../utils/lark/base');
+            const allUsers = await fetchAllRecords(appToken, userTableId);
+            if (allUsers.length > 0) {
+                await batchDeleteRecords(appToken, userTableId, allUsers.map(u => u.record_id!));
+            }
+        } catch (e) { }
+    }
+
     const results = [];
     const password = 'Password786!';
 
     for (const u of usersToCreate) {
         try {
             const passwordHash = await userAuth.hashPassword(password);
-            // Check if user exists by username (primary for now)
-            const existing = await userRepository.findByUsernameOrEmail(u.username).catch(e => {
-
-                return null;
-            });
-            if (existing) {
-                await userRepository.updateUser(existing.record_id!, {
-                    username: u.username,
-                    email: u.email,
-                    password_hash: passwordHash,
-                    user_type: u.user_type as any,
-                    remaining_posts: u.remaining_posts
-                });
-                results.push({ username: u.username, status: 'updated', id: existing.record_id });
-                continue;
-            }
+            // The existing user check and update logic is removed because we are deleting all users first.
+            // This ensures a clean state and fresh user creation.
 
             const newUser = await userRepository.createUser({
                 username: u.username,

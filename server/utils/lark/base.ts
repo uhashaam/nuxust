@@ -42,7 +42,7 @@ export async function fetchRecords(
         if (options.filter) query.filter = options.filter
         if (options.sort) query.sort = JSON.stringify(options.sort)
 
-        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records`, {
+        const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records`, {
             method: 'GET',
             query
         })
@@ -96,7 +96,7 @@ export async function getRecord(
     recordId: string
 ): Promise<LarkBaseRecord | null> {
     try {
-        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
+        const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
             method: 'GET'
         })
 
@@ -116,7 +116,7 @@ export async function createRecord(
     fields: Record<string, any>
 ): Promise<LarkBaseRecord> {
     try {
-        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records`, {
+        const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records`, {
             method: 'POST',
             body: {
                 fields,
@@ -143,8 +143,8 @@ export async function updateRecord(
     fields: Record<string, any>
 ): Promise<LarkBaseRecord> {
     try {
-        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
-            method: 'PUT',
+        const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
+            method: 'PATCH', // Changed from PUT to PATCH for partial updates
             body: {
                 fields,
             }
@@ -169,7 +169,7 @@ export async function deleteRecord(
     recordId: string
 ): Promise<boolean> {
     try {
-        const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
+        const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
             method: 'DELETE'
         })
 
@@ -194,7 +194,7 @@ export async function batchCreateRecords(
         const batch = records.slice(i, i + BATCH_SIZE)
 
         try {
-            const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_create`, {
+            const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_create`, {
                 method: 'POST',
                 body: {
                     records: batch,
@@ -231,7 +231,7 @@ export async function batchUpdateRecords(
         const batch = records.slice(i, i + BATCH_SIZE)
 
         try {
-            const response = await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_update`, {
+            const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_update`, {
                 method: 'POST',
                 body: {
                     records: batch,
@@ -263,7 +263,7 @@ export async function batchDeleteRecords(
         const batch = recordIds.slice(i, i + BATCH_SIZE)
 
         try {
-            await larkFetch(`https://open.feishu.cn/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_delete`, {
+            await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/batch_delete`, {
                 method: 'POST',
                 body: {
                     records: batch,
@@ -303,7 +303,7 @@ export async function uploadAttachment(
         const blob = file.buffer instanceof Blob ? file.buffer : new Blob([file.buffer], { type: file.contentType })
         formData.append('file', blob, file.fileName)
 
-        const response = await $fetch<any>('https://open.feishu.cn/open-apis/drive/v1/medias/upload_all', {
+        const response = await $fetch<any>('https://open.larksuite.com/open-apis/drive/v1/medias/upload_all', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
