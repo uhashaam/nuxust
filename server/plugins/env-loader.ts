@@ -1,30 +1,4 @@
 export default defineNitroPlugin((nitroApp) => {
-    // Shim ({write:()=>{}}) and ({write:()=>{}}) for Cloudflare Worker environment stability
-    // This prevents "TypeError: Cannot read private member #t" when dependencies access stdout
-    if (typeof process !== 'undefined') {
-        const mockStream = {
-            write: () => true,
-            on: () => { },
-            once: () => { },
-            emit: () => { },
-            end: () => { },
-            isTTY: false,
-            writable: true,
-            columns: 80,
-            rows: 24
-        };
-
-        // Force override even if they exist, to bypass broken proxies
-        try {
-            Object.defineProperty(process, 'stdout', { value: mockStream, writable: true, configurable: true });
-            Object.defineProperty(process, 'stderr', { value: mockStream, writable: true, configurable: true });
-        } catch (e) {
-            // Fallback for environments where Object.defineProperty might fail or be restricted
-            (process as any).stdout = mockStream;
-            (process as any).stderr = mockStream;
-        }
-    }
-
     const config = useRuntimeConfig()
 
     if (process.env.LARK_BASE_APP_TOKEN) {
