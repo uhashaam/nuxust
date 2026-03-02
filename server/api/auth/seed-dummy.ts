@@ -10,102 +10,111 @@ export default defineEventHandler(async (event) => {
         { username: 'viewer_h', email: 'user@b-2b.com', user_type: 'user', remaining_posts: 0 },
     ];
 
-    // --- Clean Existing Users ---
-    const appToken = config.larkBaseAppToken;
-    const userTableId = config.larkTableUsers;
-    if (appToken && userTableId) {
-        try {
-            const { fetchAllRecords, batchDeleteRecords } = await import('../../utils/lark/base');
-            const allUsers = await fetchAllRecords(appToken, userTableId);
-            if (allUsers.length > 0) {
-                await batchDeleteRecords(appToken, userTableId, allUsers.map(u => u.record_id!));
-            }
-        } catch (e) { }
-    }
-
-    const results = [];
-    const password = 'Password786!';
-
-    for (const u of usersToCreate) {
-        try {
-            const passwordHash = await userAuth.hashPassword(password);
-            // The existing user check and update logic is removed because we are deleting all users first.
-            // This ensures a clean state and fresh user creation.
-
-            const newUser = await userRepository.createUser({
-                username: u.username,
-                email: u.email,
-                password_hash: passwordHash,
-                user_type: u.user_type as any,
-                remaining_posts: u.remaining_posts,
-                bound_site_id: []
-            });
-            results.push({ username: u.username, status: 'created', id: newUser.record_id });
-        } catch (error: any) {
-
-            results.push({
-                username: u.username,
-                status: 'error',
-                message: error.message || 'Unknown error',
-                details: error.data || error.response?.data || null
-            });
-        }
-    }
-
-    // --- Seed Dummy News ---
-    const newsToCreate = [
-        {
-            title: 'Solar Energy Revolution: New Efficient Panels Released',
-            category: 'Solar Energy',
-            content: '<h2>Efficiency Breakthrough</h2><p>Researchers have achieved 30% efficiency in commercial silicon solar cells...</p>',
-            publishedAt: new Date().getTime(),
-            slug: 'solar-energy-revolution-2026'
-        },
-        {
-            title: 'Manufacturing Trends: Automation in the Laser Industry',
-            category: 'Manufacturing',
-            content: '<h2>Laser Focus</h2><p>Industrial lasers are seeing record adoption rates in 2026 for precision cutting...</p>',
-            publishedAt: new Date().getTime(),
-            slug: 'manufacturing-trends-laser-2026'
-        },
-        {
-            title: 'Global Trade Policy Update for 2026',
-            category: 'Industry',
-            content: '<h2>New Regulations</h2><p>A summary of the latest international trade agreements affecting electronics...</p>',
-            publishedAt: new Date().getTime(),
-            slug: 'global-trade-policy-2026'
-        }
-    ];
-
-    const newsTableId = config.larkTableNewsContent;
-    const newsResults = [];
-
-    if (newsTableId) {
-        for (const n of newsToCreate) {
+    try {
+        // --- Clean Existing Users ---
+        const appToken = config.larkBaseAppToken;
+        const userTableId = config.larkTableUsers;
+        if (appToken && userTableId) {
             try {
-                const record = await createRecord(config.larkBaseAppToken, newsTableId, {
-                    "news_title": n.title,
-                    "news_content": n.content,
-                    "generation_method": "Manual",
-                    "release_time": n.publishedAt,
-                    "release_status": "Published"
+                const { fetchAllRecords, batchDeleteRecords } = await import('../../utils/lark/base');
+                const allUsers = await fetchAllRecords(appToken, userTableId);
+                if (allUsers.length > 0) {
+                    await batchDeleteRecords(appToken, userTableId, allUsers.map(u => u.record_id!));
+                }
+            } catch (e) { }
+        }
+
+        const results = [];
+        const password = 'Password786!';
+
+        for (const u of usersToCreate) {
+            try {
+                const passwordHash = await userAuth.hashPassword(password);
+                // The existing user check and update logic is removed because we are deleting all users first.
+                // This ensures a clean state and fresh user creation.
+
+                const newUser = await userRepository.createUser({
+                    username: u.username,
+                    email: u.email,
+                    password_hash: passwordHash,
+                    user_type: u.user_type as any,
+                    remaining_posts: u.remaining_posts,
+                    bound_site_id: []
                 });
-                newsResults.push({ title: n.title, status: 'created', id: record.record_id });
+                results.push({ username: u.username, status: 'created', id: newUser.record_id });
             } catch (error: any) {
 
-                newsResults.push({
-                    title: n.title,
+                results.push({
+                    username: u.username,
                     status: 'error',
-                    message: error.message,
+                    message: error.message || 'Unknown error',
                     details: error.data || error.response?.data || null
                 });
             }
         }
-    }
 
-    return {
-        success: true,
-        userSummary: results,
-        newsSummary: newsResults
-    };
+        // --- Seed Dummy News ---
+        const newsToCreate = [
+            {
+                title: 'Solar Energy Revolution: New Efficient Panels Released',
+                category: 'Solar Energy',
+                content: '<h2>Efficiency Breakthrough</h2><p>Researchers have achieved 30% efficiency in commercial silicon solar cells...</p>',
+                publishedAt: new Date().getTime(),
+                slug: 'solar-energy-revolution-2026'
+            },
+            {
+                title: 'Manufacturing Trends: Automation in the Laser Industry',
+                category: 'Manufacturing',
+                content: '<h2>Laser Focus</h2><p>Industrial lasers are seeing record adoption rates in 2026 for precision cutting...</p>',
+                publishedAt: new Date().getTime(),
+                slug: 'manufacturing-trends-laser-2026'
+            },
+            {
+                title: 'Global Trade Policy Update for 2026',
+                category: 'Industry',
+                content: '<h2>New Regulations</h2><p>A summary of the latest international trade agreements affecting electronics...</p>',
+                publishedAt: new Date().getTime(),
+                slug: 'global-trade-policy-2026'
+            }
+        ];
+
+        const newsTableId = config.larkTableNewsContent;
+        const newsResults = [];
+
+        if (newsTableId) {
+            for (const n of newsToCreate) {
+                try {
+                    const record = await createRecord(config.larkBaseAppToken, newsTableId, {
+                        "news_title": n.title,
+                        "news_content": n.content,
+                        "generation_method": "Manual",
+                        "release_time": n.publishedAt,
+                        "release_status": "Published"
+                    });
+                    newsResults.push({ title: n.title, status: 'created', id: record.record_id });
+                } catch (error: any) {
+
+                    newsResults.push({
+                        title: n.title,
+                        status: 'error',
+                        message: error.message,
+                        details: error.data || error.response?.data || null
+                    });
+                }
+            }
+        }
+
+        return {
+            success: true,
+            userSummary: results,
+            newsSummary: newsResults
+        };
+
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error.message,
+            stack: error.stack
+        };
+    }
 });

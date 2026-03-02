@@ -64,10 +64,10 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
         if (error.statusCode) throw error;
 
-
-        throw createError({
+        return createError({
             statusCode: 500,
-            statusMessage: 'Internal server error'
+            statusMessage: `Internal Server Error: ${error.message || 'Unknown'}`,
+            data: { stack: error.stack }
         });
     }
 });
