@@ -16,10 +16,9 @@ export default defineEventHandler(async (event) => {
         const user = await userRepository.findByUsernameOrEmail(identifier);
 
         if (!user) {
-            // Use generic error message for security (prevent enumeration)
             throw createError({
                 statusCode: 401,
-                statusMessage: 'Invalid credentials'
+                statusMessage: `User not found: ${identifier}`
             });
         }
 
@@ -28,7 +27,7 @@ export default defineEventHandler(async (event) => {
         if (!isValid) {
             throw createError({
                 statusCode: 401,
-                statusMessage: 'Invalid credentials'
+                statusMessage: `Password mismatch for ${identifier}`
             });
         }
 
@@ -65,7 +64,7 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
         if (error.statusCode) throw error;
 
-        
+
         throw createError({
             statusCode: 500,
             statusMessage: 'Internal server error'

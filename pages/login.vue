@@ -69,7 +69,8 @@ const handleLogin = async () => {
         const redirect = route.query.redirect as string || '/dashboard'
         navigateTo(redirect)
       } catch (error: any) {
-        ElMessage.error(error.statusMessage || 'Login failed')
+        const msg = error.data?.statusMessage || error.statusMessage || 'Login failed';
+        ElMessage.error(msg);
       }
     }
   })
