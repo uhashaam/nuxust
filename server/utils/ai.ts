@@ -1,5 +1,5 @@
-import { generateIndustryNews as deepseekContent } from './deepseek';
-import { generateIndustryNews as doubaoContent } from './doubao';
+import { generateDeepSeekNews } from './deepseek';
+import { generateDoubaoNews } from './doubao';
 import { useRuntimeConfig } from '#imports';
 
 export async function generateIndustryNews(industryName: string) {
@@ -8,8 +8,8 @@ export async function generateIndustryNews(industryName: string) {
     const provider = (config.volcAccessKey && config.volcEndpointId) ? 'doubao' : 'deepseek';
 
     if (provider === 'doubao') {
-        return await doubaoContent(industryName);
+        return await generateDoubaoNews(industryName);
     } else {
-        return await deepseekContent(industryName);
+        return await generateDeepSeekNews(industryName);
     }
 }

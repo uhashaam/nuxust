@@ -1,6 +1,6 @@
 import { useRuntimeConfig } from '#imports';
 
-export async function generateIndustryNews(industryName: string): Promise<{ title: string; content: string; isSafe: boolean }> {
+export async function generateDoubaoNews(industryName: string): Promise<{ title: string; content: string; isSafe: boolean }> {
     const config = useRuntimeConfig();
     const apiKey = config.arkApiKey;
     const endpointId = config.volcEndpointId;
