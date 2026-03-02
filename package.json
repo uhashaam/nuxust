@@ -27,6 +27,12 @@
     "@element-plus/nuxt": "^1.1.4",
     "@nuxtjs/seo": "^3.4.0",
     "@nuxtjs/sitemap": "^7.6.0",
-    "@types/nodemailer": "^7.0.11"
+    "@types/nodemailer": "^7.0.11",
+    "unenv": "2.0.0-rc.35"
+  },
+  "pnpm": {
+    "overrides": {
+      "unenv": "2.0.0-rc.35"
+    }
   }
 }
