@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
             config: smtpConfig
         };
     } catch (error: any) {
-        // console.error('Failed to fetch SMTP config:', error);
+        
         throw createError({ statusCode: 500, message: 'Failed to fetch SMTP Configuration' });
     }
 });

@@ -82,7 +82,7 @@ export default defineEventHandler(async (event) => {
             message: `Migrated to table ${tableId}`
         };
     } catch (error: any) {
-        // console.error('Migration failed:', error);
+        
         throw createError({
             statusCode: 500,
             statusMessage: `Migration failed: ${error.message}`

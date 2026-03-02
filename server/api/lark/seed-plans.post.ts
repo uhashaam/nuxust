@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
         const results = await batchCreateRecords(appToken, tableId, records);
         return { success: true, count: results.length };
     } catch (error: any) {
-        // console.error('Seed plans error:', error);
+        
         throw createError({ statusCode: 500, statusMessage: error.message });
     }
 });

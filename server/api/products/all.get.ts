@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
                     metadata = JSON.parse(r.fields.author_email)
                 }
             } catch (e) {
-                // console.warn('Failed to parse product metadata for record', r.record_id)
+                
             }
 
             return {

@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
 
         return { success: true, count: results.length, message: "Industries seeded" };
     } catch (error: any) {
-        // console.error('Seed industries error:', error);
+        
         throw createError({ statusCode: 500, statusMessage: error.message });
     }
 });

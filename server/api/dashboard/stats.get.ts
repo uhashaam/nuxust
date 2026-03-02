@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
         const tier = user.fields.user_type || 'user';
         const userEmail = user.fields.email || user.fields.username;
 
-        // console.log(`[Stats Debug] Fetching stats for ${userEmail}, Tier: ${tier}`);
+        
 
         // 2. Fetch user's posts
         const news = await newsRepository.getNewsByAuthor(userEmail);
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
         // 3. Fetch plan details
         const plan = await planRepository.findByTier(tier);
 
-        // console.log(`[Stats Debug] Found plan: ${plan ? plan.fields.plan_tier : 'NOT FOUND IN LARK'}`);
+        
 
         // Fallback limits if plan record is missing in Lark
         const fallbackLimits: Record<string, { daily: number, weekly: number }> = {

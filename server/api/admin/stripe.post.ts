@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
             message: 'Stripe Configuration saved successfully'
         };
     } catch (error: any) {
-        // console.error('Failed to save Stripe config:', error);
+        
         throw createError({ statusCode: 500, message: 'Failed to save Stripe Configuration' });
     }
 });
