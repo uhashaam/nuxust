@@ -125,6 +125,7 @@ export default defineNuxtConfig({
       // Nested objects in runtimeConfig.public get frozen by Vue and cannot be
       // updated at runtime, causing "Cannot assign to read only property" errors.
       stationCode: 'tech',
+      feishuAppId: '', // Added back to prevent "object is not extensible" error when NUXT_PUBLIC_FEISHU_APP_ID is present
       // Table IDs (flat) — map from NUXT_PUBLIC_LARK_TABLE_{NAME}
       larkTableIndustrySites: '',
       larkTableUsers: '',

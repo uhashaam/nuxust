@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
         lark: {
             appId: mask(config.larkAppId),
             appSecret: mask(config.larkAppSecret),
+            feishuAppId: mask(config.public.feishuAppId),
             baseAppToken: mask(config.larkBaseAppToken),
         },
         tables: {
