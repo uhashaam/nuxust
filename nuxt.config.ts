@@ -102,32 +102,33 @@ export default defineNuxtConfig({
 
   // Environment variables (distinguish different sub-sites, dynamically injected during batch deployment)
   runtimeConfig: {
-    // Server-only secrets (never exposed to client)
-    larkAppId: process.env.NUXT_PUBLIC_FEISHU_APP_ID,
-    larkAppSecret: process.env.NUXT_PUBLIC_FEISHU_APP_SECRET,
-    larkBaseAppToken: process.env.LARK_BASE_APP_TOKEN,
-    jwtSecret: process.env.JWT_SECRET,
-    cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN,
-    cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
-    cloudflareZoneId: process.env.CLOUDFLARE_ZONE_ID,
-    deepseekApiKey: process.env.DEEPSEEK_API_KEY,
-    volcAccessKey: process.env.VOLC_ACCESS_KEY,
-    volcSecretKey: process.env.VOLC_SECRET_KEY,
-    arkApiKey: process.env.ARK_API_KEY,
-    volcEndpointId: process.env.VOLC_ENDPOINT_ID, // Adding placeholder for endpoint ID
-    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
-    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-    cloudflareProjectName: process.env.CLOUDFLARE_PROJECT_NAME || 'b-2b',
+    // Server-only secrets
+    // Nuxt auto-maps these from env vars: NUXT_LARK_APP_ID, NUXT_LARK_APP_SECRET, etc.
+    larkAppId: '',
+    larkAppSecret: '',
+    larkBaseAppToken: '',
+    jwtSecret: '',
+    cloudflareApiToken: '',
+    cloudflareAccountId: '',
+    cloudflareZoneId: '',
+    deepseekApiKey: '',
+    volcAccessKey: '',
+    volcSecretKey: '',
+    arkApiKey: '',
+    volcEndpointId: '',
+    stripeSecretKey: '',
+    stripeWebhookSecret: '',
+    cloudflareProjectName: 'b-2b',
 
     public: {
       stationCode: 'tech', // Subsite identifier (e.g., tech, finance)
-      feishuAppId: process.env.NUXT_PUBLIC_FEISHU_APP_ID,
+      feishuAppId: '',
       larkTableIds: {
-        industrySites: process.env.LARK_TABLE_INDUSTRY_SITES,
-        users: process.env.LARK_TABLE_USERS,
-        plansCoupons: process.env.LARK_TABLE_PLANS_COUPONS,
-        newsContent: process.env.LARK_TABLE_NEWS_CONTENT,
-        adminSettings: process.env.LARK_TABLE_ADMIN_SETTINGS,
+        industrySites: '',
+        users: '',
+        plansCoupons: '',
+        newsContent: '',
+        adminSettings: '',
       }
     }
   }

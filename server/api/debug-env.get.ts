@@ -1,18 +1,28 @@
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
+
+    const mask = (val: string) => val ? `${val.substring(0, 4)}...` : '❌ NOT SET'
 
     return {
         timestamp: new Date().toISOString(),
         status: 'debug_info_active',
-        config_values_present: {
-            larkBaseAppToken: !!config.larkBaseAppToken,
-            feishuAppId: !!config.public.feishuAppId,
-            feishuAppSecret: !!config.public.feishuAppSecret,
-            industrySitesTable: !!config.public.larkTableIds?.industrySites,
-            usersTable: !!config.public.larkTableIds?.users,
-            newsTable: !!config.public.larkTableIds?.newsContent,
+        lark: {
+            appId: mask(config.larkAppId),
+            appSecret: mask(config.larkAppSecret),
+            baseAppToken: mask(config.larkBaseAppToken),
+        },
+        tables: {
+            industrySites: mask(config.public.larkTableIds?.industrySites ?? ''),
+            users: mask(config.public.larkTableIds?.users ?? ''),
+            newsContent: mask(config.public.larkTableIds?.newsContent ?? ''),
+            plansCoupons: mask(config.public.larkTableIds?.plansCoupons ?? ''),
+            adminSettings: mask(config.public.larkTableIds?.adminSettings ?? ''),
+        },
+        other: {
+            jwtSecret: !!config.jwtSecret,
+            deepseekApiKey: !!config.deepseekApiKey,
             cloudflareAccountId: !!config.cloudflareAccountId,
-            deepseekApiKey: !!config.deepseekApiKey
-        }
+        },
+        hint: 'If any value shows ❌ NOT SET, add the env var to Cloudflare Pages dashboard.'
     }
 })
