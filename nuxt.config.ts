@@ -128,6 +128,7 @@ export default defineNuxtConfig({
     larkTablePlansCoupons: '',
     larkTableNewsContent: '',
     larkTableAdminSettings: '',
+    larkTableProducts: '',
 
     public: {
       // Station code is used on frontend

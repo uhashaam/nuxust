@@ -64,10 +64,9 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
         if (error.statusCode) throw error;
 
-        return createError({
+        throw createError({
             statusCode: 500,
-            statusMessage: `Internal Server Error: ${error.message || 'Unknown'}`,
-            data: { stack: error.stack }
+            statusMessage: `Login Error: ${error.message || 'Unknown error'}`
         });
     }
 });

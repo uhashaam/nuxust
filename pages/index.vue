@@ -172,9 +172,21 @@ const { config } = useCompanyConfig()
 const { productList } = useProducts()
 const { newsList, popularNews, categories } = useNews()
 
-// Fetch real subdomain sites from Lark
+// Fetch real subdomain sites from Lark with SSR support
 const { data: sitesData } = await useAsyncData('home-sites', () => $fetch('/api/sites/all'))
 const larkSites = computed(() => (sitesData.value as any)?.sites || [])
+
+// Fetch news and products with SSR support to ensure hydration
+const { data: homeNewsData } = await useAsyncData('home-news', () => $fetch('/api/news/all'))
+const { data: homeProductsData } = await useAsyncData('home-products', () => $fetch('/api/products/all'))
+
+// Hydrate shared states if data is available from SSR
+if (homeNewsData.value?.success) {
+  newsList.value = (homeNewsData.value as any).news
+}
+if (homeProductsData.value?.success) {
+  productList.value = (homeProductsData.value as any).products
+}
 
 const featuredArticle = computed(() => 
   newsList.value.find(n => n.featured) || newsList.value[0]

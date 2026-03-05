@@ -19,36 +19,31 @@ export default defineEventHandler(async (event) => {
         const industryTableId = config.larkTableIndustrySites;
         const newsTableId = config.larkTableNewsContent;
         const plansTableId = config.larkTablePlansCoupons;
-
+        const productTableId = config.larkTableProducts;
 
         if (!appToken) return { success: false, error: 'Missing app token' };
 
         // Handle Industry Site Changes (New or Updated)
         if (eventData.table_id === industryTableId) {
-            // The event typically contains the changed fields array or we verify specifically
+            // ... existing logic ...
             const recordId = eventData.record_id;
-
             if (recordId) {
                 try {
                     const record = await getRecord(appToken, industryTableId, recordId);
                     if (record && record.fields) {
                         const subdomain = record.fields['Subdomain'] || record.fields['subdomain'];
-
                         if (subdomain) {
-                            // Provision DNS
                             const { createSubdomain } = useCloudflare();
-                            const result = await createSubdomain(subdomain);
-
-                            if (result.success) {
-                                // Failed to provision
-                            }
+                            await createSubdomain(subdomain);
                         }
                     }
-                } catch (error) {
-                    // Error processing change
-                }
+                } catch (error) { }
             }
-        } else if (eventData.table_id === newsTableId || eventData.table_id === plansTableId) {
+        } else if (
+            eventData.table_id === newsTableId ||
+            eventData.table_id === plansTableId ||
+            eventData.table_id === productTableId
+        ) {
             // Content table updated
             const { triggerRedeployment } = useCloudflare();
             const result = await triggerRedeployment();

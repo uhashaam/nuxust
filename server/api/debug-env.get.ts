@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
             newsContent: mask(config.larkTableNewsContent ?? ''),
             plansCoupons: mask(config.larkTablePlansCoupons ?? ''),
             adminSettings: mask(config.larkTableAdminSettings ?? ''),
+            products: mask(config.larkTableProducts ?? ''),
         },
         other: {
             jwtSecret: !!config.jwtSecret,

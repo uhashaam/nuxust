@@ -12,6 +12,12 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 401, message: 'Unauthorized' });
     }
 
+    const host = getRequestHost(event)
+    const isMainDomain = host === 'b-2b.com' || host === 'localhost' || host.includes('b-2b.pages.dev')
+    if (!isMainDomain) {
+        throw createError({ statusCode: 403, message: 'Product management is only allowed on the main domain.' });
+    }
+
     try {
         const body = await readBody(event)
         const product = await productRepository.createProduct(body)

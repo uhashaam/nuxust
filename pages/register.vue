@@ -88,7 +88,7 @@ const handleRegister = async () => {
         })
         navigateTo('/dashboard')
       } catch (error: any) {
-        ElMessage.error(error.statusMessage || 'Registration failed')
+        ElMessage.error(error.data?.statusMessage || error.data?.message || error.message || 'Registration failed')
       }
     }
   })

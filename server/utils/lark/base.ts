@@ -12,7 +12,6 @@ export interface LarkBaseListOptions {
     filter?: string
     sort?: Array<{ field_name: string; desc?: boolean }>
 }
-
 async function larkFetch(url: string, options: any = {}) {
     const token = await getTenantAccessToken()
 

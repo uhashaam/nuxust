@@ -112,16 +112,20 @@ export async function processWebhookEvent(event: LarkWebhookEvent) {
  * Trigger sync actions based on table changes
  */
 async function triggerSyncActions(tableId: string, action: string) {
-    // Placeholder for sync actions
-    // In a real implementation, this would:
-    // 1. Trigger Cloudflare Pages rebuild if industry site changed
-    // 2. Invalidate cache if news content changed
-    // 3. Update user permissions if user table changed
+    const config = useRuntimeConfig()
 
-    // Skip logging or use a safe logging utility
-
-
-    // TODO: Implement actual sync logic
+    // Trigger Cloudflare redeploy if products or industry sites changed
+    // since this site uses SSG (Static Site Generation)
+    if (tableId === config.larkTableProducts || tableId === config.larkTableIndustrySites) {
+        console.log(`Sync action triggered for table ${tableId} (${action}) - Starting redeployment...`)
+        try {
+            const { useCloudflare } = await import('../cloudflare')
+            const cf = useCloudflare()
+            await cf.triggerRedeployment()
+        } catch (e: any) {
+            console.error('Failed to trigger redeployment:', e.message)
+        }
+    }
 }
 
 /**
@@ -134,6 +138,7 @@ export async function scheduledSyncCheck() {
         config.larkTableUsers,
         config.larkTablePlansCoupons,
         config.larkTableNewsContent,
+        config.larkTableProducts,
     ].filter(Boolean)
 
     for (const tableId of tables) {

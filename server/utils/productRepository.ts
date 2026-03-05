@@ -2,15 +2,16 @@ import { fetchAllRecords, createRecord, updateRecord, deleteRecord, type LarkBas
 
 export interface ProductRecord extends LarkBaseRecord {
     fields: {
-        news_id?: string;
-        site_id: any[];
-        news_title: string;
-        news_content: string;
-        generation_method: string; // 'Product'
-        release_time: number;
-        release_status: 'Published' | 'Draft' | 'Trending';
-        featured_image?: string | any[];
-        author_email?: string; // Used for Price / Categories as JSON if needed
+        product_id?: string;
+        Text: string; // Primary field
+        description: string;
+        short_description?: string;
+        price?: number;
+        category?: string;
+        specifications?: string; // JSON string
+        slug: string;
+        featured_image?: any[];
+        is_featured?: boolean;
     }
 }
 
@@ -18,45 +19,41 @@ export const productRepository = {
     async getAllProducts(): Promise<ProductRecord[]> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.larkTableNewsContent;
+        const tableId = config.larkTableProducts;
 
         if (!appToken || !tableId) {
             throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing for products' });
         }
 
         const records = await fetchAllRecords(appToken, tableId);
-        // Filter for products (assuming we use generation_method or a specific category)
-        return records.filter(r => r.fields.generation_method === 'Product') as ProductRecord[];
+        return records as ProductRecord[];
     },
 
     async createProduct(productData: any): Promise<ProductRecord> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.larkTableNewsContent;
+        const tableId = config.larkTableProducts;
 
         const fields: Record<string, any> = {
-            news_title: productData.name,
-            news_content: productData.description,
-            generation_method: 'Product', // Mark as product
-            release_time: Date.now(),
-            release_status: 'Published',
-            // Hack: Store complex data in author_email if it's just a string, 
-            // or better, if LARK_TABLE_PRODUCTS exists, use real fields.
-            author_email: JSON.stringify({
-                category: productData.category,
-                price: productData.price,
-                shortDescription: productData.shortDescription,
-                specifications: productData.specifications,
-                slug: productData.slug
-            })
+            Text: productData.name,
+            description: productData.description,
+            short_description: productData.shortDescription,
+            price: Number(productData.price) || 0,
+            category: productData.category,
+            specifications: typeof productData.specifications === 'string'
+                ? productData.specifications
+                : JSON.stringify(productData.specifications || {}),
+            slug: productData.slug || productData.name?.toLowerCase().replace(/\s+/g, '-'),
+            is_featured: !!productData.featured
         };
 
-        if (productData.site_id) {
-            fields.site_id = Array.isArray(productData.site_id) ? productData.site_id : [productData.site_id];
-        }
-
         if (productData.image) {
-            fields.featured_image = productData.image;
+            // Handle image as attachment format
+            if (typeof productData.image === 'string' && !productData.image.startsWith('http')) {
+                fields.featured_image = [{ file_token: productData.image }];
+            } else if (Array.isArray(productData.image)) {
+                fields.featured_image = productData.image;
+            }
         }
 
         return await createRecord(appToken, tableId, fields) as ProductRecord;
@@ -65,25 +62,29 @@ export const productRepository = {
     async updateProduct(recordId: string, productData: any): Promise<ProductRecord> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.larkTableNewsContent;
+        const tableId = config.larkTableProducts;
 
         const updates: Record<string, any> = {};
-        if (productData.name) updates.news_title = productData.name;
-        if (productData.description) updates.news_content = productData.description;
-
-        // Merge existing metadata
-        const metadata: any = {};
-        if (productData.category) metadata.category = productData.category;
-        if (productData.price) metadata.price = productData.price;
-        if (productData.shortDescription) metadata.shortDescription = productData.shortDescription;
-        if (productData.specifications) metadata.specifications = productData.specifications;
-        if (productData.slug) metadata.slug = productData.slug;
-
-        if (Object.keys(metadata).length > 0) {
-            updates.author_email = JSON.stringify(metadata);
+        if (productData.name) updates.Text = productData.name;
+        if (productData.description) updates.description = productData.description;
+        if (productData.shortDescription) updates.short_description = productData.shortDescription;
+        if (productData.price !== undefined) updates.price = Number(productData.price);
+        if (productData.category) updates.category = productData.category;
+        if (productData.specifications) {
+            updates.specifications = typeof productData.specifications === 'string'
+                ? productData.specifications
+                : JSON.stringify(productData.specifications);
         }
+        if (productData.slug) updates.slug = productData.slug;
+        if (productData.featured !== undefined) updates.is_featured = !!productData.featured;
 
-        if (productData.image) updates.featured_image = productData.image;
+        if (productData.image) {
+            if (typeof productData.image === 'string' && !productData.image.startsWith('http')) {
+                updates.featured_image = [{ file_token: productData.image }];
+            } else if (Array.isArray(productData.image)) {
+                updates.featured_image = productData.image;
+            }
+        }
 
         return await updateRecord(appToken, tableId, recordId, updates) as ProductRecord;
     },
@@ -91,7 +92,7 @@ export const productRepository = {
     async deleteProduct(recordId: string): Promise<boolean> {
         const config = useRuntimeConfig();
         const appToken = config.larkBaseAppToken;
-        const tableId = process.env.LARK_TABLE_PRODUCTS || config.larkTableNewsContent;
+        const tableId = config.larkTableProducts;
 
         return await deleteRecord(appToken, tableId, recordId);
     }
