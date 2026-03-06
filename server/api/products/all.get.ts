@@ -3,9 +3,11 @@ import { productRepository } from '../../utils/productRepository'
 export default defineEventHandler(async (event) => {
     try {
         const host = getRequestHost(event)
-        const isMainDomain = host === 'b-2b.com' || host.startsWith('localhost') || host.includes('b-2b.pages.dev')
+        // Allow all for now to debug, but specifically ensure localhost and b-2b domains work
+        const isAllowed = host.includes('localhost') || host.includes('b-2b.com') || host.includes('pages.dev') || host.includes('127.0.0.1')
 
-        if (!isMainDomain) {
+        if (!isAllowed && process.env.NODE_ENV === 'production') {
+            console.log('Blocked host access:', host)
             return {
                 success: true,
                 products: []

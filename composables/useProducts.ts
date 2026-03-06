@@ -45,13 +45,6 @@ export const useProducts = () => {
         }
     }
 
-    // Initial load
-    if (process.server || (process.client && productList.value.length === 0)) {
-        if (!isLoading.value) {
-            fetchProducts()
-        }
-    }
-
     const categories = computed(() => {
         const cats = new Set(productList.value.map(p => p.category))
         return Array.from(cats)

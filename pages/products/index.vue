@@ -64,6 +64,15 @@ import { useHead } from 'nuxt/app'
 
 const { productList, categories } = useProducts()
 
+// Explicitly fetch on SSR to ensure hydration
+await useAsyncData('products-page-fetch', async () => {
+  const res = await $fetch('/api/products/all')
+  if (res.success) {
+    productList.value = res.products
+  }
+  return res
+})
+
 const selectedCategory = ref<string | null>(null)
 
 const filteredProducts = computed(() => {
