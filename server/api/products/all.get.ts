@@ -26,7 +26,9 @@ export default defineEventHandler(async (event) => {
                 category: r.fields.category || 'Default',
                 specifications: r.fields.specifications ? JSON.parse(r.fields.specifications) : {},
                 slug: r.fields.slug || `product-${r.record_id}`,
-                image: Array.isArray(r.fields.featured_image) ? r.fields.featured_image[0]?.url : r.fields.featured_image,
+                image: Array.isArray(r.fields.featured_image) && r.fields.featured_image[0]
+                    ? (r.fields.featured_image[0].file_token ? `/api/images/${r.fields.featured_image[0].file_token}` : (r.fields.featured_image[0].url || ''))
+                    : (typeof r.fields.featured_image === 'string' ? r.fields.featured_image : ''),
                 featured: !!r.fields.is_featured
             }
         })

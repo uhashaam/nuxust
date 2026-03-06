@@ -62,19 +62,19 @@ export default defineEventHandler(async (event) => {
 
         const siteMap = new Map(sites.map(s => [s.record_id, { name: s.fields.industry_name, subdomain: s.fields.subdomain }]))
 
-        
+
         const filtered = news.filter(n => {
             const hasTitle = !!n.fields.news_title
             const hasContent = !!n.fields.news_content
             const isPublished = n.fields.release_status === 'Published' || n.fields.release_status === 'Trending'
 
             if (!isPublished) {
-                
+
             }
 
             return hasTitle && hasContent && isPublished
         })
-        
+
 
         return {
             success: true,
@@ -109,7 +109,11 @@ export default defineEventHandler(async (event) => {
                         imageUrl = featuredImgField
                     } else if (featuredImgField && Array.isArray(featuredImgField) && featuredImgField.length > 0) {
                         const img = featuredImgField[0]
-                        imageUrl = img.tmp_url || img.url || imageUrl
+                        if (img.file_token) {
+                            imageUrl = `/api/images/${img.file_token}`
+                        } else {
+                            imageUrl = img.tmp_url || img.url || imageUrl
+                        }
                     }
 
                     return {
