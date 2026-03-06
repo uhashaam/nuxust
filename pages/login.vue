@@ -16,7 +16,7 @@
 
         <div class="remember-forgot">
           <el-checkbox v-model="form.remember">Remember me</el-checkbox>
-          <!-- <NuxtLink to="/forgot-password">Forgot password?</NuxtLink> -->
+          <NuxtLink to="/forgot-password" class="forgot-link">Forgot password?</NuxtLink>
         </div>
 
         <el-button type="primary" size="large" class="submit-btn" :loading="isLoading" @click="handleLogin">
@@ -138,6 +138,17 @@ h2 {
 }
 
 .auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.forgot-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
   text-decoration: underline;
 }
 </style>
