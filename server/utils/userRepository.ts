@@ -4,7 +4,7 @@ import { fetchRecords, createRecord, updateRecord, type LarkBaseRecord } from '.
 // Define User Interface matching Lark Base schema
 export interface User extends LarkBaseRecord {
     fields: {
-        user_id?: string | number; // Was 77224 in probe
+        user_id?: string | number;
         username: string;
         password_hash: string;
         user_type?: 'admin' | 'user' | 'vip1' | 'vip2' | 'vip3' | 'vip4';
@@ -13,6 +13,11 @@ export interface User extends LarkBaseRecord {
         bound_site_id?: any[];
         user_status?: 'active' | 'inactive' | 'suspended' | 'pending_verification';
         email?: string;
+        plan_expires_at?: number;
+        renewal_notified_at?: number;
+        password_reset_code?: string;
+        verification_code?: string;
+        code_expires_at?: number;
     }
 }
 
