@@ -12,12 +12,41 @@ export const sendEmail = async (options: EmailOptions) => {
     const appToken = config.larkBaseAppToken;
     const adminSettingsTableId = config.larkTableAdminSettings;
 
+    // Priority 1: Check env var directly (fastest, no Lark lookup needed)
+    const envResendApiKey = (config as any).resendApiKey || '';
+
+    // If we have the Resend key directly from env, use it immediately
+    if (envResendApiKey) {
+        const res = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${envResendApiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                from: `B2B Platform <smtp@zjdu.com>`,
+                to: [options.to],
+                subject: options.subject,
+                text: options.text,
+                html: options.html || options.text
+            })
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({})) as any;
+            throw new Error(errorData.message || `Resend API Error: ${res.status} ${res.statusText}`);
+        }
+
+        const data = await res.json() as any;
+        return { success: true, message: `Email sent via Resend (env): ${data.id}` };
+    }
+
     if (!appToken || !adminSettingsTableId) {
         throw new Error('Missing Lark Base configuration for Admin Settings.');
     }
 
     try {
-        // Fetch SMTP/Email config from Lark
+        // Priority 2: Fetch config from Lark admin settings
         let records: any[] = [];
         try {
             const result = await fetchRecords(appToken, adminSettingsTableId);

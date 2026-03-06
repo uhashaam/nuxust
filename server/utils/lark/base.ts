@@ -143,7 +143,7 @@ export async function updateRecord(
 ): Promise<LarkBaseRecord> {
     try {
         const response = await larkFetch(`https://open.larksuite.com/open-apis/bitable/v1/apps/${appToken}/tables/${tableId}/records/${recordId}`, {
-            method: 'PATCH', // Changed from PUT to PATCH for partial updates
+            method: 'PUT',
             body: {
                 fields,
             }

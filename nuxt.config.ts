@@ -109,6 +109,7 @@ export default defineNuxtConfig({
     larkBaseAppToken: '',
     jwtSecret: '',
     cronSecret: '',
+    resendApiKey: '',
     cloudflareApiToken: '',
     cloudflareAccountId: '',
     cloudflareZoneId: '',
