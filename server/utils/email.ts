@@ -35,10 +35,39 @@ export const sendEmail = async (options: EmailOptions) => {
         const portStr = getSetting('smtp_port', '465');
         const user = getSetting('smtp_user', 'smtp@zjdu.com');
         const pass = getSetting('smtp_password', 'Kengnu@1smtp');
-        
+
         const fromEmail = getSetting('smtp_from_email', user);
         const fromName = getSetting('smtp_from_name', 'B2B Subdomain Platform');
 
+        const resendApiKey = getSetting('resend_api_key', '');
+
+        // Use Resend HTTP API if configured (Cloudflare EDGE Compatible)
+        if (resendApiKey) {
+            const res = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${resendApiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from: `${fromName} <${fromEmail}>`,
+                    to: [options.to],
+                    subject: options.subject,
+                    text: options.text,
+                    html: options.html || options.text
+                })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || `Resend API Error: ${res.status} ${res.statusText}`);
+            }
+
+            const data = await res.json();
+            return { success: true, message: `Email sent via Resend HTTP API: ${data.id}` };
+        }
+
+        // Fallback: Legacy Nodemailer (Works locally, crashes on Cloudflare Pages)
         const port = parseInt(portStr, 10) || 465;
         const secure = port === 465;
 

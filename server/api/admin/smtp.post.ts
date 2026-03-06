@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
         }, {} as Record<string, string>);
 
         const keysToUpdate = [
-            'smtp_host', 'smtp_port', 'smtp_user', 'smtp_from_email', 'smtp_from_name'
+            'smtp_host', 'smtp_port', 'smtp_user', 'smtp_from_email', 'smtp_from_name', 'resend_api_key'
         ];
 
         // Only process password if it's not the masked placeholder
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
             message: 'SMTP Configuration saved successfully'
         };
     } catch (error: any) {
-        
+
         throw createError({ statusCode: 500, message: 'Failed to save SMTP Configuration' });
     }
 });

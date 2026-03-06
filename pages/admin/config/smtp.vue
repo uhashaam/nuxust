@@ -15,6 +15,21 @@
             <div class="form-section">
             <h3>Mail Server Settings</h3>
             <div class="form-grid">
+                <div class="form-group full-width" style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <label for="resendApiKey" style="color: #1e40af; font-weight: 700;">Resend API Key (Recommended for Cloudflare)</label>
+                    <input
+                        id="resendApiKey"
+                        v-model="formData.resend_api_key"
+                        type="password"
+                        placeholder="re_..."
+                    />
+                    <small style="margin-top: 4px; color: #475569;">Because Cloudflare blocks standard SMTP, using <a href="https://resend.com" target="_blank">Resend.com</a> is highly recommended. If provided, this will securely override standard SMTP.</small>
+                </div>
+
+                <div class="form-group full-width" style="margin-top: 1rem;">
+                    <h4 style="margin: 0 0 10px 0; color: #64748b;">Or use Legacy SMTP (Works locally, fails on Cloudflare)</h4>
+                </div>
+                
                 <div class="form-group full-width">
                 <label for="smtpHost">SMTP Host Server *</label>
                 <input
@@ -116,7 +131,8 @@ const formData = ref({
     smtp_user: '',
     smtp_password: '',
     smtp_from_name: '',
-    smtp_from_email: ''
+    smtp_from_email: '',
+    resend_api_key: ''
 })
 
 const saveMessage = ref('')
