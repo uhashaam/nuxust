@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!token) {
         throw createError({ statusCode: 401, message: 'Not authenticated' });
     }
-    const payload = userAuth.verifyToken(token);
+    const payload = await userAuth.verifyToken(token);
     if (!payload || (payload.user_type !== 'Admin' && payload.user_type !== 'Developer')) {
         throw createError({ statusCode: 401, message: 'Unauthorized' });
     }

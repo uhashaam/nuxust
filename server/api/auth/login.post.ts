@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
         // 3. Generate JWT (Using user_type for both role and planId as they seem merged in this schema)
         const role = (user.fields.user_type || 'user').toLowerCase();
-        const token = userAuth.generateToken({
+        const token = await userAuth.generateToken({
             userId: user.record_id,
             username: user.fields.username,
             role: role,

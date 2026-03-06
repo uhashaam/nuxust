@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 401, message: 'Not authenticated' })
     }
 
-    const payload = userAuth.verifyToken(token)
+    const payload = await userAuth.verifyToken(token)
     if (!payload) {
         throw createError({ statusCode: 401, message: 'Invalid session' })
     }

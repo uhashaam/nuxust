@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const payload = userAuth.verifyToken(token);
+    const payload = await userAuth.verifyToken(token);
     if (!payload) {
         throw createError({
             statusCode: 401,

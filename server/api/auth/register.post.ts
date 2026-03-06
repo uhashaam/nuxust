@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
         });
 
         // Generate JWT token for immediate login
-        const token = userAuth.generateToken({
+        const token = await userAuth.generateToken({
             userId: newUser.record_id,
             username: newUser.fields.username,
             role: newUser.fields.user_type || 'user'
