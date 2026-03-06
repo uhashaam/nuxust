@@ -21,9 +21,10 @@ export default defineEventHandler(async (event) => {
             smtp_host: '',
             smtp_port: '465',
             smtp_user: '',
-            smtp_password: '', // Ideally we shouldn't send password to frontend, but for edit purposes we might send a masked ver or just empty string 
+            smtp_password: '',
             smtp_from_email: '',
-            smtp_from_name: ''
+            smtp_from_name: '',
+            resend_api_key: ''
         };
 
         // Find matching records and populate
@@ -33,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
             if (key && Object.keys(smtpConfig).includes(key as string)) {
                 // Mask password for security
-                if (key === 'smtp_password' && val) {
+                if ((key === 'smtp_password' || key === 'resend_api_key') && val) {
                     smtpConfig[key] = '********'; // Just an indicator that it exists
                 } else {
                     smtpConfig[key] = val as string || '';
@@ -46,7 +47,7 @@ export default defineEventHandler(async (event) => {
             config: smtpConfig
         };
     } catch (error: any) {
-        
+
         throw createError({ statusCode: 500, message: 'Failed to fetch SMTP Configuration' });
     }
 });

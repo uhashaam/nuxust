@@ -25,12 +25,15 @@ export default defineEventHandler(async (event) => {
         }, {} as Record<string, string>);
 
         const keysToUpdate = [
-            'smtp_host', 'smtp_port', 'smtp_user', 'smtp_from_email', 'smtp_from_name', 'resend_api_key'
+            'smtp_host', 'smtp_port', 'smtp_user', 'smtp_from_email', 'smtp_from_name'
         ];
 
         // Only process password if it's not the masked placeholder
         if (body.smtp_password && body.smtp_password !== '********') {
             keysToUpdate.push('smtp_password');
+        }
+        if (body.resend_api_key && body.resend_api_key !== '********') {
+            keysToUpdate.push('resend_api_key');
         }
 
         // Loop through keys and update or insert
@@ -61,7 +64,10 @@ export default defineEventHandler(async (event) => {
             message: 'SMTP Configuration saved successfully'
         };
     } catch (error: any) {
-
-        throw createError({ statusCode: 500, message: 'Failed to save SMTP Configuration' });
+        console.error('SMTP Save Error:', error);
+        throw createError({
+            statusCode: 500,
+            message: `Failed to save SMTP Configuration: ${error.message || 'Unknown error'}`
+        });
     }
 });
