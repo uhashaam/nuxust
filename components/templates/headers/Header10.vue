@@ -2,18 +2,18 @@
   <header class="header-10">
     <div class="header-container">
       <div class="branding">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b.com</a>
         <span class="industry-label">{{ industryName }}</span>
       </div>
       
       <nav class="retro-nav">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
-        <NuxtLink to="/pricing" class="nav-item">Packages</NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About</a>
-        <NuxtLink v-if="!user" to="/login" class="nav-item">Login</NuxtLink>
+        <a href="/" class="nav-item">Home</a>
+        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
+        <a href="/news" class="nav-item">News</a>
+        <a href="/about" class="nav-item">About</a>
+        <a v-if="!user" href="https://b-2b.com/login" class="nav-item">Login</a>
         <div class="user-retro" v-else>
-          <NuxtLink to="/dashboard" class="nav-item">Dashboard</NuxtLink>
+          <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
           <button class="retro-logout" @click="logout">EXIT</button>
         </div>
       </nav>
@@ -24,15 +24,15 @@
 
       <div class="mobile-overlay" :class="{ 'visible': isOpen }">
         <nav class="mobile-links">
-          <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isOpen = false">HOME</a>
-          <NuxtLink to="/pricing" @click="isOpen = false">PACKAGES</NuxtLink>
-          <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isOpen = false">NEWS CENTER</a>
+          <a href="/" @click="isOpen = false">HOME</a>
+          <a href="https://b-2b.com/pricing" @click="isOpen = false">PACKAGES</a>
+          <a href="/news" @click="isOpen = false">NEWS CENTER</a>
           <template v-if="!user">
-            <NuxtLink to="/login" @click="isOpen = false">LOGIN</NuxtLink>
-            <NuxtLink to="/register" @click="isOpen = false">REGISTER</NuxtLink>
+            <a href="https://b-2b.com/login" @click="isOpen = false">LOGIN</a>
+            <a href="https://b-2b.com/register" @click="isOpen = false">REGISTER</a>
           </template>
           <template v-else>
-            <NuxtLink to="/dashboard" @click="isOpen = false">DASHBOARD</NuxtLink>
+            <a href="https://b-2b.com/dashboard" @click="isOpen = false">DASHBOARD</a>
             <a href="#" @click.prevent="logout(); isOpen = false">LOGOUT</a>
           </template>
         </nav>

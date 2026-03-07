@@ -8,21 +8,21 @@
       </div>
       
       <nav class="nav-center">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
-        <NuxtLink to="/pricing" class="nav-item">Packages</NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News Center</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About Us</a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item">Contact</a>
+        <a href="/" class="nav-item">Home</a>
+        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
+        <a href="/news" class="nav-item">News Center</a>
+        <a href="/about" class="nav-item">About Us</a>
+        <a href="/contact" class="nav-item">Contact</a>
       </nav>
 
       <div class="right-actions">
         <template v-if="user">
-          <NuxtLink to="/dashboard" class="nav-item dashboard-text">Dashboard</NuxtLink>
+          <a href="https://b-2b.com/dashboard" class="nav-item dashboard-text">Dashboard</a>
           <el-button link @click="logout">Logout</el-button>
         </template>
         <template v-else>
-          <NuxtLink to="/login" class="nav-item login-text">Login</NuxtLink>
-          <NuxtLink to="/register" class="register-btn">Register</NuxtLink>
+          <a href="https://b-2b.com/login" class="nav-item login-text">Login</a>
+          <a href="https://b-2b.com/register" class="register-btn">Register</a>
         </template>
       </div>
 
@@ -31,17 +31,17 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'is-open': menuOpen }">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="menuOpen = false">Home</a>
-        <NuxtLink to="/pricing" @click="menuOpen = false">Packages</NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="menuOpen = false">News Center</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" @click="menuOpen = false">About Us</a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" @click="menuOpen = false">Contact</a>
+        <a href="/" @click="menuOpen = false">Home</a>
+        <a href="https://b-2b.com/pricing" @click="menuOpen = false">Packages</a>
+        <a href="/news" @click="menuOpen = false">News Center</a>
+        <a href="/about" @click="menuOpen = false">About Us</a>
+        <a href="/contact" @click="menuOpen = false">Contact</a>
         <div class="mobile-split" v-if="!user">
-          <NuxtLink to="/login" @click="menuOpen = false">Login</NuxtLink>
-          <NuxtLink to="/register" @click="menuOpen = false" class="primary">Join Now</NuxtLink>
+          <a href="https://b-2b.com/login" @click="menuOpen = false">Login</a>
+          <a href="https://b-2b.com/register" @click="menuOpen = false" class="primary">Join Now</a>
         </div>
         <div class="mobile-split" v-else>
-          <NuxtLink to="/dashboard" @click="menuOpen = false">Dashboard</NuxtLink>
+          <a href="https://b-2b.com/dashboard" @click="menuOpen = false">Dashboard</a>
           <a href="#" @click.prevent="logout(); menuOpen = false">Logout</a>
         </div>
       </div>

@@ -2,22 +2,22 @@
   <header class="header-04">
     <div class="top-row">
       <div class="container">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b.com</a>
         <div class="industry-name">{{ industryName }}</div>
       </div>
     </div>
     <div class="bottom-row">
       <div class="container">
         <nav class="nav-links">
-          <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
+          <a href="/" class="nav-item">Home</a>
           <div class="dot"></div>
-          <NuxtLink to="/pricing" class="nav-item">Packages</NuxtLink>
+          <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
           <div class="dot"></div>
-          <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News</a>
+          <a href="/news" class="nav-item">News</a>
           <div class="dot"></div>
-          <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About</a>
+          <a href="/about" class="nav-item">About</a>
           <div class="dot"></div>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item">Contact</a>
+          <a href="/contact" class="nav-item">Contact</a>
         </nav>
       </div>
     </div>
@@ -25,38 +25,38 @@
     <div class="auth-row">
       <div class="container justify-center">
         <template v-if="user">
-          <NuxtLink to="/dashboard" class="auth-link">Personal Center</NuxtLink>
+          <a href="https://b-2b.com/dashboard" class="auth-link">Personal Center</a>
           <span class="auth-divider">/</span>
           <a href="#" @click.prevent="logout" class="auth-link">Sign Out</a>
         </template>
         <template v-else>
-          <NuxtLink to="/login" class="auth-link">Login</NuxtLink>
+          <a href="https://b-2b.com/login" class="auth-link">Login</a>
           <span class="auth-divider">/</span>
-          <NuxtLink to="/register" class="auth-link">Register</NuxtLink>
+          <a href="https://b-2b.com/register" class="auth-link">Register</a>
         </template>
       </div>
     </div>
 
     <!-- Mobile Navigation -->
     <div class="mobile-nav-bar">
-      <a :href="subdomain ? `/i/${subdomain}` : '/'" class="mobile-logo">b-2b.com</a>
+      <a href="/" class="mobile-logo">b-2b.com</a>
       <button class="mobile-toggle" @click="isOpen = !isOpen">
         <el-icon><Menu v-if="!isOpen" /><Close v-else /></el-icon>
       </button>
     </div>
     <div class="mobile-overlay" :class="{ 'active': isOpen }">
       <nav class="mobile-menu">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isOpen = false">Home</a>
-        <NuxtLink to="/pricing" @click="isOpen = false">Packages</NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isOpen = false">News Center</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" @click="isOpen = false">About Us</a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" @click="isOpen = false">Contact</a>
+        <a href="/" @click="isOpen = false">Home</a>
+        <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
+        <a href="/news" @click="isOpen = false">News Center</a>
+        <a href="/about" @click="isOpen = false">About Us</a>
+        <a href="/contact" @click="isOpen = false">Contact</a>
         <div class="mobile-auth-grid" v-if="!user">
-          <NuxtLink to="/login" @click="isOpen = false">Login</NuxtLink>
-          <NuxtLink to="/register" @click="isOpen = false">Register</NuxtLink>
+          <a href="https://b-2b.com/login" @click="isOpen = false">Login</a>
+          <a href="https://b-2b.com/register" @click="isOpen = false">Register</a>
         </div>
         <div class="mobile-auth-grid" v-else>
-          <NuxtLink to="/dashboard" @click="isOpen = false">Dashboard</NuxtLink>
+          <a href="https://b-2b.com/dashboard" @click="isOpen = false">Dashboard</a>
           <a href="#" @click.prevent="logout(); isOpen = false">Logout</a>
         </div>
       </nav>

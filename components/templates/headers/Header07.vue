@@ -2,22 +2,22 @@
   <header class="header-07" :class="{ 'is-scrolled': isScrolled }">
     <div class="header-container">
       <div class="logo-section">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="domain-label">b-2b.com</a>
+        <a href="/" class="domain-label">b-2b.com</a>
         <span class="industry-name">{{ industryName }}</span>
       </div>
       
       <nav class="core-nav">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
-        <NuxtLink to="/pricing" class="nav-item">Packages</NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News</a>
+        <a href="/" class="nav-item">Home</a>
+        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
+        <a href="/news" class="nav-item">News</a>
         <div class="auth-minimal">
           <template v-if="user">
-            <NuxtLink to="/dashboard" class="nav-item">Dashboard</NuxtLink>
+            <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
             <a href="#" @click.prevent="logout" class="nav-item">Logout</a>
           </template>
           <template v-else>
-            <NuxtLink to="/login" class="nav-item">Login</NuxtLink>
-            <NuxtLink to="/register" class="nav-item bold">Join</NuxtLink>
+            <a href="https://b-2b.com/login" class="nav-item">Login</a>
+            <a href="https://b-2b.com/register" class="nav-item bold">Join</a>
           </template>
         </div>
       </nav>
@@ -28,13 +28,13 @@
 
       <div class="mobile-overlay" :class="{ 'active': isOpen }">
         <div class="mobile-content">
-          <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isOpen = false">Home</a>
-          <NuxtLink to="/pricing" @click="isOpen = false">Packages</NuxtLink>
-          <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isOpen = false">News Center</a>
-          <NuxtLink v-if="!user" to="/login" @click="isOpen = false">Login</NuxtLink>
-          <NuxtLink v-if="!user" to="/register" @click="isOpen = false">Register</NuxtLink>
+          <a href="/" @click="isOpen = false">Home</a>
+          <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
+          <a href="/news" @click="isOpen = false">News Center</a>
+          <a href="https://b-2b.com/login" v-if="!user" @click="isOpen = false">Login</a>
+          <a href="https://b-2b.com/register" v-if="!user" @click="isOpen = false">Register</a>
           <template v-else>
-            <NuxtLink to="/dashboard" @click="isOpen = false">Dashboard</NuxtLink>
+            <a href="https://b-2b.com/dashboard" @click="isOpen = false">Dashboard</a>
             <a href="#" @click.prevent="logout(); isOpen = false">Logout</a>
           </template>
         </div>

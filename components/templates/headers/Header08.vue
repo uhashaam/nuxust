@@ -2,17 +2,17 @@
   <header class="header-08">
     <div class="header-container">
       <div class="logo-group">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b.com</a>
         <div class="industry-tag">{{ industryName }}</div>
       </div>
       
       <nav class="nav-horizontal">
         <div class="nav-wrapper">
-          <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
-          <NuxtLink to="/pricing" class="nav-item">Packages</NuxtLink>
+          <a href="/" class="nav-item">Home</a>
+          <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
           
           <div class="nav-item has-dropdown">
-            <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="drop-trigger">
+            <a href="/news" class="drop-trigger">
               News Center
               <el-icon class="arrow"><ArrowDown /></el-icon>
             </a>
@@ -34,19 +34,19 @@
             </div>
           </div>
 
-          <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About Us</a>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item">Contact</a>
+          <a href="/about" class="nav-item">About Us</a>
+          <a href="/contact" class="nav-item">Contact</a>
         </div>
       </nav>
 
       <div class="auth-cluster">
         <template v-if="user">
-          <NuxtLink to="/dashboard" class="auth-icon-btn"><el-icon><User /></el-icon></NuxtLink>
+          <a href="https://b-2b.com/dashboard" class="auth-icon-btn"><el-icon><User /></el-icon></a>
           <button class="logout-text-btn" @click="logout">Logout</button>
         </template>
         <template v-else>
-          <NuxtLink to="/login" class="nav-item">Login</NuxtLink>
-          <el-button type="primary" size="large" @click="navigateTo('/register')" class="reg-btn-8">Join Now</el-button>
+          <a href="https://b-2b.com/login" class="nav-item">Login</a>
+          <el-button type="primary" size="large" @click="navigateTo('https://b-2b.com/register', { external: true })" class="reg-btn-8">Join Now</el-button>
         </template>
       </div>
 
@@ -55,17 +55,17 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'open': isMobileOpen }">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isMobileOpen = false">Home</a>
-        <NuxtLink to="/pricing" @click="isMobileOpen = false">Packages</NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isMobileOpen = false">News Center</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" @click="isMobileOpen = false">About Us</a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" @click="isMobileOpen = false">Contact</a>
+        <a href="/" @click="isMobileOpen = false">Home</a>
+        <a href="https://b-2b.com/pricing" @click="isMobileOpen = false">Packages</a>
+        <a href="/news" @click="isMobileOpen = false">News Center</a>
+        <a href="/about" @click="isMobileOpen = false">About Us</a>
+        <a href="/contact" @click="isMobileOpen = false">Contact</a>
         <div class="mobile-auth-stack" v-if="!user">
-          <NuxtLink to="/login" @click="isMobileOpen = false">Login</NuxtLink>
-          <NuxtLink to="/register" @click="isMobileOpen = false" class="primary">Join Free</NuxtLink>
+          <a href="https://b-2b.com/login" @click="isMobileOpen = false">Login</a>
+          <a href="https://b-2b.com/register" @click="isMobileOpen = false" class="primary">Join Free</a>
         </div>
         <div class="mobile-auth-stack" v-else>
-          <NuxtLink to="/dashboard" @click="isMobileOpen = false">Dashboard</NuxtLink>
+          <a href="https://b-2b.com/dashboard" @click="isMobileOpen = false">Dashboard</a>
           <a href="#" @click.prevent="logout(); isMobileOpen = false">Sign Out</a>
         </div>
       </div>

@@ -7,46 +7,46 @@
       </div>
       
       <nav class="nav-vertical">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">
+        <a href="/" class="nav-item">
           <span class="nav-icon">■</span>
           <span class="label">Home</span>
         </a>
-        <NuxtLink to="/pricing" class="nav-item">
+        <a href="https://b-2b.com/pricing" class="nav-item">
           <span class="nav-icon">■</span>
           <span class="label">Packages</span>
-        </NuxtLink>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">
+        </a>
+        <a href="/news" class="nav-item">
           <span class="nav-icon">■</span>
           <span class="label">News Center</span>
         </a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">
+        <a href="/about" class="nav-item">
           <span class="nav-icon">■</span>
           <span class="label">About Us</span>
         </a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item">
+        <a href="/contact" class="nav-item">
           <span class="nav-icon">■</span>
           <span class="label">Contact</span>
         </a>
         <div class="auth-sidebar-group">
           <template v-if="user">
-            <NuxtLink to="/dashboard" class="nav-item">
+            <a href="https://b-2b.com/dashboard" class="nav-item">
               <span class="nav-icon">■</span>
               <span class="label">Dashboard</span>
-            </NuxtLink>
+            </a>
             <a href="#" @click.prevent="logout" class="nav-item">
               <span class="nav-icon">■</span>
               <span class="label">Logout</span>
             </a>
           </template>
           <template v-else>
-            <NuxtLink to="/login" class="nav-item">
+            <a href="https://b-2b.com/login" class="nav-item">
               <span class="nav-icon">■</span>
               <span class="label">Login</span>
-            </NuxtLink>
-            <NuxtLink to="/register" class="nav-item register-btn-sidebar">
+            </a>
+            <a href="https://b-2b.com/register" class="nav-item register-btn-sidebar">
               <span class="nav-icon">■</span>
               <span class="label">Join Now</span>
-            </NuxtLink>
+            </a>
           </template>
         </div>
       </nav>
@@ -66,17 +66,17 @@
       </div>
       <div class="mobile-drawer" :class="{ 'is-open': menuOpen }">
         <nav class="mobile-nav">
-          <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="menuOpen = false">Home</a>
-          <NuxtLink to="/pricing" @click="menuOpen = false">Packages</NuxtLink>
-          <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="menuOpen = false">News Center</a>
-          <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" @click="menuOpen = false">About Us</a>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" @click="menuOpen = false">Contact</a>
+          <a href="/" @click="menuOpen = false">Home</a>
+          <a href="https://b-2b.com/pricing" @click="menuOpen = false">Packages</a>
+          <a href="/news" @click="menuOpen = false">News Center</a>
+          <a href="/about" @click="menuOpen = false">About Us</a>
+          <a href="/contact" @click="menuOpen = false">Contact</a>
           <div class="mobile-auth-section" v-if="!user">
-            <NuxtLink to="/login" @click="menuOpen = false">Login</NuxtLink>
-            <NuxtLink to="/register" @click="menuOpen = false">Register</NuxtLink>
+            <a href="https://b-2b.com/login" @click="menuOpen = false">Login</a>
+            <a href="https://b-2b.com/register" @click="menuOpen = false">Register</a>
           </div>
           <div class="mobile-auth-section" v-else>
-            <NuxtLink to="/dashboard" @click="menuOpen = false">Dashboard</NuxtLink>
+            <a href="https://b-2b.com/dashboard" @click="menuOpen = false">Dashboard</a>
             <a href="#" @click.prevent="logout(); menuOpen = false">Logout</a>
           </div>
         </nav>
