@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+// Email functionality uses Resend API exclusively for Cloudflare Edge compatibility.
 
 export interface EmailOptions {
     to: string;
@@ -96,29 +96,9 @@ export const sendEmail = async (options: EmailOptions) => {
             return { success: true, message: `Email sent via Resend HTTP API: ${data.id}` };
         }
 
-        // Fallback: Legacy Nodemailer (Works locally, crashes on Cloudflare Pages)
-        const port = parseInt(portStr, 10) || 465;
-        const secure = port === 465;
-
-        const transporter = nodemailer.createTransport({
-            host,
-            port,
-            secure,
-            auth: {
-                user,
-                pass,
-            },
-        });
-
-        const info = await transporter.sendMail({
-            from: `"${fromName}" <${fromEmail}>`,
-            to: options.to,
-            subject: options.subject,
-            text: options.text || '',
-            html: options.html || options.text || '',
-        });
-
-        return { success: true, message: `Email sent via Nodemailer: ${info.messageId}` };
+        // Fallback: No valid key found
+        console.warn('No Resend API key found in env or Lark Base. Email sending skipped.');
+        throw new Error('Email service not configured. Please add Resend API Key.');
 
     } catch (error: any) {
         throw new Error(error.message || 'Error occurred while sending email');

@@ -31,66 +31,66 @@ function getPlanFromEmail(email: string): 'admin' | 'vip1' | 'vip2' | 'vip3' | '
 // ───────────────────────────────────────────────────────────────────────────
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
-    const { username, email, password, verificationCode } = body;
-
-    if (!username || !email || !password) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Missing required fields: username, email, password'
-        });
-    }
-
-    if (!verificationCode) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Email verification code is required'
-        });
-    }
-
-    // Validate code from secure cookie
-    const rawCookie = getCookie(event, 'reg_code');
-    if (!rawCookie) {
-        throw createError({ statusCode: 400, statusMessage: 'Verification session expired. Please request a new code.' });
-    }
-
-    let cookieData: { email: string; code: string; expiresAt: number };
     try {
-        cookieData = JSON.parse(rawCookie);
-    } catch {
-        throw createError({ statusCode: 400, statusMessage: 'Invalid verification session' });
-    }
+        const body = await readBody(event);
+        const { username, email, password, verificationCode } = body;
 
-    if (cookieData.email !== email) {
-        throw createError({ statusCode: 400, statusMessage: 'Verification code does not match this email' });
-    }
-    if (cookieData.code !== verificationCode) {
-        throw createError({ statusCode: 400, statusMessage: 'Invalid verification code' });
-    }
-    if (cookieData.expiresAt < Date.now()) {
-        throw createError({ statusCode: 400, statusMessage: 'Verification code has expired. Please request a new one.' });
-    }
+        if (!username || !email || !password) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'Missing required fields: username, email, password'
+            });
+        }
 
-    // Clear the registration code cookie
-    deleteCookie(event, 'reg_code');
+        if (!verificationCode) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'Email verification code is required'
+            });
+        }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Invalid email format'
-        });
-    }
+        // Validate code from secure cookie
+        const rawCookie = getCookie(event, 'reg_code');
+        if (!rawCookie) {
+            throw createError({ statusCode: 400, statusMessage: 'Verification session expired. Please request a new code.' });
+        }
 
-    if (password.length < 8) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Password must be at least 8 characters long'
-        });
-    }
+        let cookieData: { email: string; code: string; expiresAt: number };
+        try {
+            cookieData = JSON.parse(rawCookie);
+        } catch {
+            throw createError({ statusCode: 400, statusMessage: 'Invalid verification session' });
+        }
 
-    try {
+        if (cookieData.email !== email) {
+            throw createError({ statusCode: 400, statusMessage: 'Verification code does not match this email' });
+        }
+        if (cookieData.code !== verificationCode) {
+            throw createError({ statusCode: 400, statusMessage: 'Invalid verification code' });
+        }
+        if (cookieData.expiresAt < Date.now()) {
+            throw createError({ statusCode: 400, statusMessage: 'Verification code has expired. Please request a new one.' });
+        }
+
+        // Clear the registration code cookie
+        deleteCookie(event, 'reg_code');
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'Invalid email format'
+            });
+        }
+
+        if (password.length < 8) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'Password must be at least 8 characters long'
+            });
+        }
+
         // Hash password
         const passwordHash = await userAuth.hashPassword(password);
 
@@ -161,11 +161,9 @@ export default defineEventHandler(async (event) => {
         };
 
     } catch (error: any) {
-        if (error.statusCode) throw error;
-
         throw createError({
-            statusCode: 500,
-            statusMessage: `Registration Error: ${error.message || 'Unknown error'}`
+            statusCode: error.statusCode || 500,
+            statusMessage: `[Nuxt API Error - Global]: ${error.message || error.statusMessage || String(error)}`
         });
     }
 });
