@@ -1,17 +1,24 @@
 import { newsRepository } from '../../utils/newsRepository'
 
 export default defineEventHandler(async (event) => {
-    // Authenticate via cookie JWT
-    const token = getCookie(event, 'auth_token');
-    if (!token) {
-        throw createError({ statusCode: 401, message: 'Not authenticated' });
-    }
-    const payload = await userAuth.verifyToken(token);
-    if (!payload) {
-        throw createError({ statusCode: 401, message: 'Invalid or expired token' });
-    }
-
     try {
+        // Authenticate via cookie JWT
+        const token = getCookie(event, 'auth_token');
+        if (!token) {
+            throw createError({ statusCode: 401, message: 'Not authenticated' });
+        }
+
+        let payload;
+        try {
+            payload = await userAuth.verifyToken(token);
+        } catch (authErr: any) {
+            throw createError({ statusCode: 401, message: `Token verification failed: ${authErr.message}` });
+        }
+
+        if (!payload) {
+            throw createError({ statusCode: 401, message: 'Invalid or expired token' });
+        }
+
         const body = await readBody(event)
         const { id, title, content, release_status, featured_image, category, author, publishedAt, slug } = body
 
@@ -49,7 +56,7 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
         throw createError({
             statusCode: error.statusCode || 500,
-            message: `[Nuxt API Error]: ${error.message}`
+            message: `[Nuxt API Error - Global]: ${error.message || error.statusMessage || String(error)}`
         })
     }
 })
