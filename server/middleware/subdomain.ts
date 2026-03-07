@@ -1,9 +1,9 @@
 import { defineEventHandler } from 'h3'
 
 export default defineEventHandler((event) => {
-    const url = getRequestURL(event)
-    const host = url.host
-    const path = url.pathname
+    // Use standard H3 utilities to get URL info
+    const host = getRequestHeader(event, 'host') || ''
+    const path = event.node.req.url || '/'
 
     // Skip static assets, API routes, and internal /i/ routes
     if (
@@ -21,7 +21,6 @@ export default defineEventHandler((event) => {
 
     if (!isMainDomain) {
         // Extract subdomain (e.g., 'laser' from 'laser.b-2b.com')
-        // This regex handles both production and local sub-site domains
         const subdomainMatch = hostname.match(/^([a-z0-9-]+)(\.b-2b\.com|\.localhost)?$/)
 
         if (subdomainMatch) {
@@ -30,9 +29,9 @@ export default defineEventHandler((event) => {
 
             if (!skipSubdomains.includes(subdomain)) {
                 // Internally rewrite the path to the industry route
-                // Using event.path is the standard way for Nitro silent rewrites
+                // event.node.req.url is the standard way to internal rewrite in Nitro
                 const newPath = `/i/${subdomain}${path === '/' ? '' : path}`
-                event.path = newPath
+                event.node.req.url = newPath
             }
         }
     }
