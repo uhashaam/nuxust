@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
         }
 
         const body = await readBody(event)
-        const { id, title, content, release_status, featured_image, category, author, publishedAt, slug } = body
+        const { id, title, content, release_status, featured_image, siteId, author, publishedAt, slug } = body
 
         if (!id) {
             throw createError({ statusCode: 400, message: 'Post ID is required' })
@@ -32,6 +32,12 @@ export default defineEventHandler(async (event) => {
         if (release_status !== undefined) updates.release_status = release_status
         if (author !== undefined) updates.author_email = author
         if (publishedAt !== undefined) updates.release_time = new Date(publishedAt).getTime()
+
+        // Handle site association
+        if (siteId !== undefined) {
+            updates.site_id = siteId ? [siteId] : []
+        }
+
         // Note: 'slug' and 'category' are NOT fields in the Lark News table - strip them to avoid FieldNameNotFound errors
 
         // Handle featured_image carefully

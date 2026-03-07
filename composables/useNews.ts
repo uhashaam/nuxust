@@ -18,6 +18,7 @@ export interface NewsItem {
     tags: string[]
     slug: string
     industry?: string
+    siteId?: string
 }
 
 const generateSlug = (title: string): string => {

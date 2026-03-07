@@ -80,11 +80,14 @@
                 </div>
               </el-form-item>
 
-              <el-form-item label="Category" prop="category">
-                <el-select v-model="form.category" placeholder="Select or type to add" filterable allow-create default-first-option style="width: 100%">
-                  <el-option v-for="cat in categories" :key="cat" :label="cat" :value="cat" />
+              <el-form-item label="Target Industry Subdomain" prop="siteId">
+                <el-select v-model="form.siteId" placeholder="Select industry subdomain" filterable style="width: 100%" :loading="!sites.length">
+                  <el-option label="None / Main Domain" value="" />
+                  <el-option v-for="site in sites" :key="site.id" :label="site.subdomain" :value="site.id">
+                    <span>{{ site.subdomain }} <small class="text-slate-400">({{ site.name }})</small></span>
+                  </el-option>
                 </el-select>
-                <p class="help-text">Type a new name and press enter to create it.</p>
+                <p class="help-text">Select which industry site this news belongs to.</p>
               </el-form-item>
 
               <el-form-item label="Author" prop="author">
@@ -126,8 +129,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
-import { useRoute, navigateTo } from 'nuxt/app'
+import { ref, onMounted, nextTick, computed } from 'vue'
+import { useRoute, navigateTo, useAsyncData } from '#imports'
 import { useNews } from '~/composables/useNews'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
@@ -145,11 +148,13 @@ definePageMeta({
   middleware: 'admin-auth'
 })
 
+const { data: sitesData } = await useAsyncData('admin-all-sites', () => 
+  $fetch('/api/sites/all')
+)
+const sites = computed(() => sitesData.value?.sites || [])
 
-
-const categories = ref(['Industry', 'Enterprise', 'Policy', 'Market', 'Strategy'])
 const route = useRoute()
-const { getNewsById, addNews, updateNews } = useNews()
+const { getNewsById } = useNews()
 
 const isNew = route.params.id === 'new'
 const saving = ref(false)
@@ -157,7 +162,7 @@ const formRef = ref()
 
 const mediaLibraryVisible = ref(false)
 
-const form = ref<Omit<NewsItem, 'id'>>({
+const form = ref<Omit<NewsItem, 'id'> & { siteId?: string }>({
   title: '',
   category: 'Industry',
   content: '',
@@ -171,13 +176,14 @@ const form = ref<Omit<NewsItem, 'id'>>({
   metaTitle: '',
   metaDescription: '',
   metaKeywords: '',
-  slug: ''
+  slug: '',
+  siteId: ''
 })
 
 const rules = {
   title: [{ required: true, message: 'Please enter title', trigger: 'blur' }],
   content: [{ required: true, message: 'Please enter content', trigger: 'blur' }],
-  category: [{ required: true, message: 'Please select category', trigger: 'change' }]
+  siteId: [{ required: false, message: 'Please select an industry', trigger: 'change' }]
 }
 
 const quill = ref<any>(null)
@@ -211,7 +217,6 @@ onMounted(async () => {
       if (!isNew) {
         const existing = getNewsById(route.params.id as string)
         if (existing) {
-          // Exclude 'id' and explicitly map to Omit<NewsItem, 'id'>
           const { id, ...data } = existing
           form.value = {
             title: data.title || '',
@@ -227,7 +232,8 @@ onMounted(async () => {
             metaTitle: data.metaTitle || '',
             metaDescription: data.metaDescription || '',
             metaKeywords: data.metaKeywords || '',
-            slug: data.slug || ''
+            slug: data.slug || '',
+            siteId: data.siteId || ''
           }
           if (quill.value) {
             quill.value.root.innerHTML = form.value.content
@@ -246,7 +252,6 @@ onMounted(async () => {
 const handleMediaSelect = (asset: { url: string; alt: string; token?: string }) => {
   form.value.image = asset.url
   form.value.imageAlt = asset.alt
-  // If there's a token, we should ideally store it to send to Lark
   if (asset.token) {
     (form.value as any).imageToken = asset.token
   }
@@ -270,7 +275,7 @@ const handleSave = async () => {
               title: form.value.title,
               content: form.value.content,
               slug: form.value.slug,
-              category: form.value.category,
+              siteId: form.value.siteId,
               image_url: (form.value as any).imageToken || form.value.image,
               featured: form.value.featured,
               trending: form.value.trending,
@@ -286,6 +291,7 @@ const handleSave = async () => {
               title: form.value.title,
               content: form.value.content,
               slug: form.value.slug,
+              siteId: form.value.siteId,
               release_status: (form.value as any).featured ? 'Trending' : 'Published',
               featured_image: (form.value as any).imageToken || form.value.image,
               author: form.value.author,

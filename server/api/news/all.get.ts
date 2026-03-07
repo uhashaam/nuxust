@@ -130,6 +130,7 @@ export default defineEventHandler(async (event) => {
                         trending: n.fields.release_status === 'Trending',
                         featured: true,
                         slug: n.fields.slug || `news-${n.record_id}`,
+                        siteId: siteIdsField[0]?.record_ids?.[0] || siteIdsField[0]?.record_id || (typeof siteIdsField[0] === 'string' ? siteIdsField[0] : ''),
                         tags: []
                     }
                 })
