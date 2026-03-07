@@ -136,7 +136,7 @@ const handleSendCode = async () => {
       startResendCountdown()
       ElMessage.success('Verification code sent to your email!')
     } catch (error: any) {
-      ElMessage.error(error.data?.statusMessage || error.message || 'Failed to send verification code')
+      ElMessage.error(error.data?.message || error.data?.statusMessage || error.message || 'Failed to send verification code')
     } finally {
       isLoading.value = false
     }

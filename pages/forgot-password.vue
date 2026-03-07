@@ -129,7 +129,7 @@ const handleSendReset = async () => {
       startResendCountdown()
       ElMessage.success('Reset code sent! Check your email.')
     } catch (error: any) {
-      ElMessage.error(error.data?.statusMessage || 'Failed to send reset code')
+      ElMessage.error(error.data?.message || error.data?.statusMessage || 'Failed to send reset code')
     } finally {
       isLoading.value = false
     }
@@ -152,7 +152,7 @@ const handleResetPassword = async () => {
       })
       step.value = 3
     } catch (error: any) {
-      ElMessage.error(error.data?.statusMessage || 'Failed to reset password')
+      ElMessage.error(error.data?.message || error.data?.statusMessage || 'Failed to reset password')
     } finally {
       isLoading.value = false
     }

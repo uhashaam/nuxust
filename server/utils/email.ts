@@ -1,4 +1,5 @@
 // Email functionality uses Resend API exclusively for Cloudflare Edge compatibility.
+import { fetchRecords } from './lark/base';
 
 export interface EmailOptions {
     to: string;
