@@ -7,10 +7,10 @@
       </div>
       
       <nav class="retro-nav">
-        <a href="/" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a href="/news" class="nav-item">News</a>
-        <a href="/about" class="nav-item">About</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
+        <a :href="`/i/${subdomain}/about`" class="nav-item">About</a>
         <a v-if="!user" href="https://b-2b.com/login" class="nav-item">Login</a>
         <div class="user-retro" v-else>
           <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
@@ -24,9 +24,9 @@
 
       <div class="mobile-overlay" :class="{ 'visible': isOpen }">
         <nav class="mobile-links">
-          <a href="/" @click="isOpen = false">HOME</a>
+          <a :href="`/i/${subdomain}`" @click="isOpen = false">HOME</a>
           <a href="https://b-2b.com/pricing" @click="isOpen = false">PACKAGES</a>
-          <a href="/news" @click="isOpen = false">NEWS CENTER</a>
+          <a :href="`/i/${subdomain}/news`" @click="isOpen = false">NEWS CENTER</a>
           <template v-if="!user">
             <a href="https://b-2b.com/login" @click="isOpen = false">LOGIN</a>
             <a href="https://b-2b.com/register" @click="isOpen = false">REGISTER</a>

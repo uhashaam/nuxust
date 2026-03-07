@@ -8,11 +8,11 @@
       </div>
       
       <nav class="nav-center">
-        <a href="/" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a href="/news" class="nav-item">News Center</a>
-        <a href="/about" class="nav-item">About Us</a>
-        <a href="/contact" class="nav-item">Contact</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
+        <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
+        <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
       </nav>
 
       <div class="right-actions">
@@ -31,11 +31,11 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'is-open': menuOpen }">
-        <a href="/" @click="menuOpen = false">Home</a>
+        <a :href="`/i/${subdomain}`" @click="menuOpen = false">Home</a>
         <a href="https://b-2b.com/pricing" @click="menuOpen = false">Packages</a>
-        <a href="/news" @click="menuOpen = false">News Center</a>
-        <a href="/about" @click="menuOpen = false">About Us</a>
-        <a href="/contact" @click="menuOpen = false">Contact</a>
+        <a :href="`/i/${subdomain}/news`" @click="menuOpen = false">News Center</a>
+        <a :href="`/i/${subdomain}/about`" @click="menuOpen = false">About Us</a>
+        <a :href="`/i/${subdomain}/contact`" @click="menuOpen = false">Contact</a>
         <div class="mobile-split" v-if="!user">
           <a href="https://b-2b.com/login" @click="menuOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="menuOpen = false" class="primary">Join Now</a>

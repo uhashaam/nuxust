@@ -8,11 +8,11 @@
       
       <nav class="nav-horizontal">
         <div class="nav-wrapper">
-          <a href="/" class="nav-item">Home</a>
+          <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
           <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
           
           <div class="nav-item has-dropdown">
-            <a href="/news" class="drop-trigger">
+            <a :href="`/i/${subdomain}/news`" class="drop-trigger">
               News Center
               <el-icon class="arrow"><ArrowDown /></el-icon>
             </a>
@@ -20,22 +20,22 @@
               <div class="dropdown-inner">
                 <div class="dropdown-column">
                   <h4>Industry News</h4>
-                  <a href="/news/trends">Market Trends</a>
-                  <a href="/news/tech">Technology</a>
-                  <a href="/news/events">Events</a>
+                  <a :href="`/i/${subdomain}/news/trends`">Market Trends</a>
+                  <a :href="`/i/${subdomain}/news/tech`">Technology</a>
+                  <a :href="`/i/${subdomain}/news/events`">Events</a>
                 </div>
                 <div class="dropdown-column">
                   <h4>Insights</h4>
-                  <a href="/news/reports">Reports</a>
-                  <a href="/news/interviews">Interviews</a>
-                  <a href="/news/analysis">Analysis</a>
+                  <a :href="`/i/${subdomain}/news/reports`">Reports</a>
+                  <a :href="`/i/${subdomain}/news/interviews`">Interviews</a>
+                  <a :href="`/i/${subdomain}/news/analysis`">Analysis</a>
                 </div>
               </div>
             </div>
           </div>
 
-          <a href="/about" class="nav-item">About Us</a>
-          <a href="/contact" class="nav-item">Contact</a>
+          <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
+          <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
         </div>
       </nav>
 
@@ -55,11 +55,11 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'open': isMobileOpen }">
-        <a href="/" @click="isMobileOpen = false">Home</a>
+        <a :href="`/i/${subdomain}`" @click="isMobileOpen = false">Home</a>
         <a href="https://b-2b.com/pricing" @click="isMobileOpen = false">Packages</a>
-        <a href="/news" @click="isMobileOpen = false">News Center</a>
-        <a href="/about" @click="isMobileOpen = false">About Us</a>
-        <a href="/contact" @click="isMobileOpen = false">Contact</a>
+        <a :href="`/i/${subdomain}/news`" @click="isMobileOpen = false">News Center</a>
+        <a :href="`/i/${subdomain}/about`" @click="isMobileOpen = false">About Us</a>
+        <a :href="`/i/${subdomain}/contact`" @click="isMobileOpen = false">Contact</a>
         <div class="mobile-auth-stack" v-if="!user">
           <a href="https://b-2b.com/login" @click="isMobileOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="isMobileOpen = false" class="primary">Join Free</a>

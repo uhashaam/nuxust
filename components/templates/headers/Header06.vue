@@ -7,11 +7,11 @@
       </div>
       
       <nav class="nav-center">
-        <a href="/" class="nav-item"><span>Home</span></a>
+        <a :href="`/i/${subdomain}`" class="nav-item"><span>Home</span></a>
         <a href="https://b-2b.com/pricing" class="nav-item"><span>Packages</span></a>
-        <a href="/news" class="nav-item"><span>News Center</span></a>
-        <a href="/about" class="nav-item"><span>About Us</span></a>
-        <a href="/contact" class="nav-item"><span>Contact</span></a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item"><span>News Center</span></a>
+        <a :href="`/i/${subdomain}/about`" class="nav-item"><span>About Us</span></a>
+        <a :href="`/i/${subdomain}/contact`" class="nav-item"><span>Contact</span></a>
       </nav>
 
       <div class="right-panel">
@@ -31,11 +31,11 @@
       </div>
 
       <div class="mobile-menu" :class="{ 'is-open': mobileOpen }">
-        <a href="/" @click="mobileOpen = false">Home</a>
+        <a :href="`/i/${subdomain}`" @click="mobileOpen = false">Home</a>
         <a href="https://b-2b.com/pricing" @click="mobileOpen = false">Packages</a>
-        <a href="/news" @click="mobileOpen = false">News Center</a>
-        <a href="/about" @click="mobileOpen = false">About Us</a>
-        <a href="/contact" @click="mobileOpen = false">Contact</a>
+        <a :href="`/i/${subdomain}/news`" @click="mobileOpen = false">News Center</a>
+        <a :href="`/i/${subdomain}/about`" @click="mobileOpen = false">About Us</a>
+        <a :href="`/i/${subdomain}/contact`" @click="mobileOpen = false">Contact</a>
         <div class="mobile-auth-btn" v-if="!user">
           <a href="https://b-2b.com/login" @click="mobileOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="mobileOpen = false" class="highlight">Register</a>

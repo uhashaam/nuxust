@@ -7,9 +7,9 @@
       </div>
       
       <nav class="core-nav">
-        <a href="/" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a href="/news" class="nav-item">News</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
         <div class="auth-minimal">
           <template v-if="user">
             <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
@@ -28,9 +28,9 @@
 
       <div class="mobile-overlay" :class="{ 'active': isOpen }">
         <div class="mobile-content">
-          <a href="/" @click="isOpen = false">Home</a>
+          <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
           <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
-          <a href="/news" @click="isOpen = false">News Center</a>
+          <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
           <a href="https://b-2b.com/login" v-if="!user" @click="isOpen = false">Login</a>
           <a href="https://b-2b.com/register" v-if="!user" @click="isOpen = false">Register</a>
           <template v-else>
