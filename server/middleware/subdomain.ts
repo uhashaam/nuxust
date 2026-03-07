@@ -1,8 +1,8 @@
 import { defineEventHandler } from 'h3'
 
 export default defineEventHandler((event) => {
-    const host = getRequestHeader(event, 'host') || ''
-    const url = new URL(event.node.req.url || '/', `http://${host}`)
+    const url = getRequestURL(event)
+    const host = url.host
     const path = url.pathname
 
     // Skip static assets, API routes, and internal /i/ routes
@@ -16,20 +16,24 @@ export default defineEventHandler((event) => {
     }
 
     const hostname = host.split(':')[0]
-    const mainDomain = 'b-2b.com'
+    // Allow local testing on localhost or .local
+    const isMainDomain = hostname === 'b-2b.com' || hostname === 'localhost' || hostname.endsWith('.local')
 
-    // Extract subdomain (e.g., 'laser' from 'laser.b-2b.com')
-    const subdomainMatch = hostname.match(/^([a-z0-9-]+)\.b-2b\.com$/)
+    if (!isMainDomain) {
+        // Extract subdomain (e.g., 'laser' from 'laser.b-2b.com')
+        // This regex handles both production and local sub-site domains
+        const subdomainMatch = hostname.match(/^([a-z0-9-]+)(\.b-2b\.com|\.localhost)?$/)
 
-    if (subdomainMatch) {
-        const subdomain = subdomainMatch[1]
-        const skipSubdomains = ['www', 'mail', 'api', 'cdn']
+        if (subdomainMatch) {
+            const subdomain = subdomainMatch[1]
+            const skipSubdomains = ['www', 'mail', 'api', 'cdn']
 
-        if (!skipSubdomains.includes(subdomain)) {
-            // Internally rewrite the path to the industry route
-            // This happens server-side, so the browser URL stays clean
-            const newPath = `/i/${subdomain}${path === '/' ? '' : path}`
-            event.node.req.url = newPath
+            if (!skipSubdomains.includes(subdomain)) {
+                // Internally rewrite the path to the industry route
+                // Using event.path is the standard way for Nitro silent rewrites
+                const newPath = `/i/${subdomain}${path === '/' ? '' : path}`
+                event.path = newPath
+            }
         }
     }
 })

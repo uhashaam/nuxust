@@ -89,10 +89,13 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: 'https://b-2b.com',
+    // Dynamic URL based on host to avoid forced canonical redirects on subdomains
+    url: process.env.NUXT_PUBLIC_SITE_URL,
     name: 'B2B New Station',
     description: 'Focus on news coverage of the XX industry, providing the latest industry trends, policy interpretations, and market analysis',
-    defaultLocale: 'en'
+    defaultLocale: 'en',
+    // Disable host enforcement to allow subdomains
+    trailingSlash: false,
   },
 
   sitemap: {
