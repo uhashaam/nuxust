@@ -25,7 +25,7 @@ export const sendEmail = async (options: EmailOptions) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                from: `B2B Platform <smtp@zjdu.com>`,
+                from: `B2B Platform <noreply@b-2b.com>`,
                 to: [options.to],
                 subject: options.subject,
                 text: options.text,
