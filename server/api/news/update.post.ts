@@ -23,10 +23,18 @@ export default defineEventHandler(async (event) => {
         if (title !== undefined) updates.news_title = title
         if (content !== undefined) updates.news_content = content
         if (release_status !== undefined) updates.release_status = release_status
-        if (featured_image !== undefined) updates.featured_image = featured_image
         if (author !== undefined) updates.author_email = author
         if (publishedAt !== undefined) updates.release_time = new Date(publishedAt).getTime()
-        if (slug !== undefined) updates.slug = slug
+        // Note: 'slug' and 'category' are NOT fields in the Lark News table - strip them to avoid FieldNameNotFound errors
+
+        // Handle featured_image carefully
+        if (featured_image !== undefined) {
+            if (typeof featured_image === 'string' && featured_image.startsWith('data:image')) {
+                // Skip base64, Lark doesn't support it as attachment
+            } else {
+                updates.featured_image = featured_image
+            }
+        }
 
         // Update news record in Lark
         const news = await newsRepository.updateNews(id, updates)
