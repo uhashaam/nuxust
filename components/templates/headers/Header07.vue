@@ -82,13 +82,16 @@ onUnmounted(() => {
   align-items: center;
   z-index: 1000;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff; /* Default to white for transparent state */
 }
 
 .header-07.is-scrolled {
   height: 70px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: #000000; /* Switch to dark when scrolled */
 }
 
 .header-container {
@@ -111,44 +114,67 @@ onUnmounted(() => {
   font-weight: 900;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #000000;
+  color: inherit;
   text-decoration: none;
   margin-bottom: 0.25rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.is-scrolled .domain-label {
+  text-shadow: none;
 }
 
 .industry-name {
   font-size: 1.5rem;
   font-weight: 300;
-  color: #000000;
+  color: inherit;
   letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.is-scrolled .industry-name {
+  text-shadow: none;
+  font-weight: 700;
 }
 
 .core-nav {
   display: flex;
+  align-items: center;
   gap: 3rem;
 }
 
 .nav-item {
   text-decoration: none;
-  color: #000000;
+  color: inherit;
   font-weight: 500;
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   position: relative;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.is-scrolled .nav-item {
+  text-shadow: none;
 }
 
 .nav-item:hover {
-  opacity: 0.6;
+  opacity: 0.7;
+  transform: translateY(-1px);
 }
 
 .auth-minimal {
   display: flex;
+  align-items: center;
   gap: 2rem;
   margin-left: 2rem;
   padding-left: 2rem;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid currentColor;
+}
+
+.is-scrolled .auth-minimal {
+  border-left-color: rgba(0, 0, 0, 0.1);
 }
 
 .nav-item.bold {
@@ -161,6 +187,7 @@ onUnmounted(() => {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: inherit;
 }
 
 .mobile-overlay {
