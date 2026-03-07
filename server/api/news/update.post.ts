@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     } catch (error: any) {
         throw createError({
             statusCode: error.statusCode || 500,
-            message: error.message || 'Failed to update post'
+            message: `[Nuxt API Error]: ${error.message}`
         })
     }
 })
