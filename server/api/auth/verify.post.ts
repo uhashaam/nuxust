@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const user = await userRepository.findByEmail(email);
-    if (!user) {
+    if (!user || !user.record_id) {
         throw createError({ statusCode: 404, statusMessage: 'User not found' });
     }
 
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
     // Activate user
     await userRepository.updateUser(user.record_id, {
-        status: 'active',
+        user_status: 'active',
         verification_code: null as any,
         code_expires_at: null as any
     });

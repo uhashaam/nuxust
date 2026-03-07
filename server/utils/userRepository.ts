@@ -84,8 +84,8 @@ export const userRepository = {
         try {
             const record = await createRecord(appToken, tableId, newUserFields);
             return record as User;
-        } catch (error) {
-            throw createError({ statusCode: 500, statusMessage: 'Failed to create user record' });
+        } catch (error: any) {
+            throw createError({ statusCode: 500, statusMessage: `Failed to create user record: ${error.message || String(error)}` });
         }
     },
 
@@ -104,8 +104,8 @@ export const userRepository = {
         try {
             const record = await updateRecord(appToken, tableId, recordId, updates);
             return record as User;
-        } catch (error) {
-            throw createError({ statusCode: 500, statusMessage: 'Failed to update user record' });
+        } catch (error: any) {
+            throw createError({ statusCode: 500, statusMessage: `Failed to update user record: ${error.message || String(error)}` });
         }
     }
 };
