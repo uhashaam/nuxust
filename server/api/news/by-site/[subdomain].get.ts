@@ -52,13 +52,15 @@ export default defineEventHandler(async (event) => {
             throw createError({ statusCode: 500, message: 'Lark configuration missing' })
         }
 
-        // Fetch sites and news in parallel to reduce latency
         const [sites, news] = await Promise.all([
             fetchAllRecords(appToken, siteTableId),
             fetchAllRecords(appToken, newsTableId)
         ])
 
-        const site = sites.find(s => s.fields.subdomain === subdomain)
+        const site = sites.find(s =>
+            s.fields.subdomain &&
+            String(s.fields.subdomain).trim().toLowerCase() === subdomain.trim().toLowerCase()
+        )
         if (!site) {
             throw createError({ statusCode: 404, message: 'Site not found' })
         }

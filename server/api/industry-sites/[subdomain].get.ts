@@ -28,7 +28,10 @@ export default defineEventHandler(async (event) => {
         // Fetch all records and filter by subdomain
         // Note: Lark Base API filter syntax might differ, this is a simple approach
         const records = await fetchAllRecords(appToken, tableId)
-        const record = records.find(r => r.fields.subdomain === subdomain)
+        const record = records.find(r =>
+            r.fields.subdomain &&
+            String(r.fields.subdomain).trim().toLowerCase() === subdomain.trim().toLowerCase()
+        )
 
         if (!record) {
             throw createError({

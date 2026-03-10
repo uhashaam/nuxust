@@ -23,7 +23,7 @@
           </template>
         </el-dropdown>
         
-        <NuxtLink v-if="!subdomain" to="/products" class="nav-item" active-class="active">Technologies</NuxtLink>
+        <NuxtLink :to="subdomain ? `/i/${subdomain}/products` : '/products'" class="nav-item" active-class="active">Technologies</NuxtLink>
         <NuxtLink :to="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item" active-class="active">About</NuxtLink>
         <NuxtLink :to="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item" active-class="active">Contact</NuxtLink>
       </nav>
@@ -63,7 +63,7 @@
       <div v-if="isMobileMenuOpen" class="mobile-menu-overlay" @click="isMobileMenuOpen = false">
         <nav class="mobile-nav" @click.stop>
           <NuxtLink :to="subdomain ? `/i/${subdomain}` : '/'" class="mobile-nav-item" @click="isMobileMenuOpen = false">Home</NuxtLink>
-          <NuxtLink v-if="!subdomain" to="/products" class="mobile-nav-item" @click="isMobileMenuOpen = false">Technologies</NuxtLink>
+          <NuxtLink :to="subdomain ? `/i/${subdomain}/products` : '/products'" class="mobile-nav-item" @click="isMobileMenuOpen = false">Technologies</NuxtLink>
           <NuxtLink :to="subdomain ? `/i/${subdomain}/about` : '/about'" class="mobile-nav-item" @click="isMobileMenuOpen = false">About</NuxtLink>
           <NuxtLink :to="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="mobile-nav-item" @click="isMobileMenuOpen = false">Contact</NuxtLink>
           

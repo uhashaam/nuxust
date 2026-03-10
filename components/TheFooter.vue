@@ -13,7 +13,7 @@
       <div class="footer-links">
         <h4>Navigation</h4>
         <NuxtLink :to="subdomain ? `/i/${subdomain}` : '/'">Home</NuxtLink>
-        <NuxtLink v-if="!subdomain" to="/products">Products</NuxtLink>
+        <NuxtLink :to="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</NuxtLink>
         <NuxtLink :to="subdomain ? `/i/${subdomain}/about` : '/about'">About Us</NuxtLink>
         <NuxtLink :to="subdomain ? `/i/${subdomain}/news` : '/news'">News</NuxtLink>
         <NuxtLink :to="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact</NuxtLink>

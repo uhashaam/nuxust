@@ -98,11 +98,34 @@ export const newsRepository = {
         // Handle featured_image (Transitioning from Text to Attachment)
         if (newsData.featured_image) {
             const img = newsData.featured_image;
-            // If it's a base64 string, IGNORE it for now as Lark doesn't support it directly as attachment
-            if (typeof img === 'string' && img.startsWith('data:image')) {
-                // Base64 image detected - skipping Lark attachment upload
-            } else if (typeof img === 'string' && !img.startsWith('http')) {
-                // If it's a token (doesn't start with http), treat as attachment
+            
+            // If it's a base64 string, upload as attachment
+            if (typeof img === 'string' && (img.startsWith('data:image') || img.length > 500)) {
+                try {
+                    // Extract base64 data and metadata
+                    const match = img.match(/^data:([^;]+);base64,(.+)$/);
+                    if (match) {
+                        const contentType = match[1];
+                        const base64Data = match[2];
+                        const buffer = Buffer.from(base64Data, 'base64');
+                        const ext = contentType.split('/')[1] || 'jpg';
+                        
+                        const fileToken = await uploadAttachment(appToken, tableId, {
+                            fileName: `news_image_${Date.now()}.${ext}`,
+                            contentType: contentType,
+                            buffer: buffer
+                        });
+                        
+                        fields.featured_image = [{ file_token: fileToken }];
+                    } else {
+                        // Not a formal base64 data URL but potentially just base64 data
+                        // Skip if it looks like garbage to avoid Lark errors
+                    }
+                } catch (err) {
+                    console.error('Failed to upload base64 image to Lark:', err);
+                }
+            } else if (typeof img === 'string' && !img.startsWith('http') && img.length < 200) {
+                // If it's a token (doesn't start with http and is short), treat as attachment
                 fields.featured_image = [{ file_token: img }]
             } else {
                 // It's likely a URL or a pre-formatted array (for updates)

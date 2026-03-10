@@ -15,20 +15,24 @@ export default defineEventHandler((event) => {
     }
 
     const hostname = host.split(':')[0]
+    const parts = hostname.split('.')
+
     // Skip if we are on the main domain or localhost/local without a subdomain
-    const isMainDomain = hostname === 'b-2b.com' || hostname === 'localhost' || hostname.endsWith('.local')
+    const isMainDomain = hostname === 'b-2b.com' ||
+        hostname === 'localhost' ||
+        hostname.endsWith('.local') ||
+        (hostname.endsWith('b-2b.com') && parts.length <= 2) ||
+        (hostname === 'www.b-2b.com')
+
     if (isMainDomain) return
 
     // Extract subdomain
-    const subdomainMatch = hostname.match(/^([a-z0-9-]+)(\.b-2b\.com|\.localhost)?$/)
-    if (subdomainMatch) {
-        const subdomain = subdomainMatch[1]
-        const skipSubdomains = ['www', 'mail', 'api', 'cdn']
+    const subdomain = (parts[0] || '').toLowerCase().trim()
+    const skipSubdomains = ['www', 'mail', 'api', 'cdn']
 
-        if (!skipSubdomains.includes(subdomain)) {
-            // Perform a 302 redirect to the industry path
-            const targetPath = `/i/${subdomain}${path === '/' ? '' : path}`
-            return sendRedirect(event, targetPath, 302)
-        }
+    if (subdomain && !skipSubdomains.includes(subdomain)) {
+        // Perform a 302 redirect to the industry path
+        const targetPath = `/i/${subdomain}${path === '/' ? '' : path}`
+        return sendRedirect(event, targetPath, 302)
     }
 })
