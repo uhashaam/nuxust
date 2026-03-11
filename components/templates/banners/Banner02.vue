@@ -72,8 +72,8 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1581
   color: #000000; /* Bold in black as requested */
   margin: 0 0 0.5rem 0;
   text-transform: uppercase;
-  font-family: 'Arial Black', sans-serif;
-  letter-spacing: -0.05em;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.04em;
   line-height: 1;
 }
 

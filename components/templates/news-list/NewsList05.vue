@@ -62,8 +62,9 @@ const hoverId = ref<string | null>(null)
   gap: 1.5rem;
   padding: 1.5rem;
   background: #ffffff;
-  border: 1px solid #e0f2fe;
-  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
   margin-bottom: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -84,9 +85,10 @@ const hoverId = ref<string | null>(null)
 }
 
 .tech-row:hover {
-  background: #f0f9ff;
+  background: #f8fafc;
   border-color: #3b82f6;
-  transform: translateX(10px);
+  transform: translateX(8px);
+  box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.08); /* Soft blue glow */
 }
 
 .tech-row:hover::before {
@@ -122,13 +124,15 @@ const hoverId = ref<string | null>(null)
 }
 
 .news-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #1e3a8a;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .pub-date {

@@ -8,6 +8,7 @@
       
       <nav class="nav-center">
         <a :href="`/i/${subdomain}`" class="nav-item"><span>Home</span></a>
+        <a :href="`/i/${subdomain}/products`" class="nav-item"><span>Technologies</span></a>
         <a href="https://b-2b.com/pricing" class="nav-item"><span>Packages</span></a>
         <a :href="`/i/${subdomain}/news`" class="nav-item"><span>News Center</span></a>
         <a :href="`/i/${subdomain}/about`" class="nav-item"><span>About Us</span></a>
@@ -32,6 +33,7 @@
 
       <div class="mobile-menu" :class="{ 'is-open': mobileOpen }">
         <a :href="`/i/${subdomain}`" @click="mobileOpen = false">Home</a>
+        <a :href="`/i/${subdomain}/products`" @click="mobileOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="mobileOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="mobileOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="mobileOpen = false">About Us</a>
@@ -66,12 +68,17 @@ const mobileOpen = ref(false)
 
 <style scoped>
 .header-06 {
-  background: #0f172a;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #ffffff;
-  height: 80px;
+  height: 85px;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-container {
@@ -92,17 +99,21 @@ const mobileOpen = ref(false)
 }
 
 .domain-logo {
-  font-size: 1.5rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
   color: #3b82f6;
   text-decoration: none;
+  letter-spacing: -0.02em;
 }
 
 .industry-name {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: #94a3b8;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .nav-center {
@@ -133,7 +144,8 @@ const mobileOpen = ref(false)
   width: 0;
   height: 2px;
   background: #3b82f6;
-  transition: width 0.3s ease;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
 }
 
 .nav-item:hover::after {

@@ -55,14 +55,14 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1517
 }
 
 .industry-name {
+  font-family: 'Outfit', sans-serif;
   font-size: 4.5rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #ffffff; /* White text as requested */
   margin: 0;
-  text-shadow: 4px 4px 15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0,0,0,0.5); /* Shadow effect as requested */
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 4px 10px rgba(0,0,0,0.5); /* Enhanced shadow effect */
   text-transform: uppercase;
-  font-family: 'Georgia', serif;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.03em;
 }
 
 .slogan {

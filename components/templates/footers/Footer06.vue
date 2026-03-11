@@ -20,6 +20,8 @@
           <span class="tag" v-if="subdomain">{{ subdomain }}</span>
         </div>
         <div class="bottom-links">
+          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
+          <span class="divider">•</span>
           <span>© 2026 b-2b.com</span>
           <span class="divider">•</span>
           <a href="/privacy">Privacy Policy</a>
@@ -39,9 +41,10 @@ defineProps<{
 
 <style scoped>
 .footer-06 {
-  background: #0f172a;
+  background: #020617;
   color: #ffffff;
-  padding: 5rem 0;
+  padding: 7rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-container {
@@ -95,8 +98,11 @@ defineProps<{
 }
 
 .logo {
-  font-size: 1.75rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #f8fafc;
 }
 
 .tag {

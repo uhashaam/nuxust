@@ -3,8 +3,8 @@
     <div class="header-container">
       <div class="left-section">
         <div class="icon-stack">
-          <el-icon><Box /></el-icon>
-          <el-icon><Printer /></el-icon>
+          <el-icon><component :is="getIndustryIcon(industryName)" /></el-icon>
+          <el-icon><Lock /></el-icon>
         </div>
         <a href="/" class="domain-logo">b-2b.com</a>
       </div>
@@ -15,6 +15,7 @@
 
       <nav class="nav-right">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
         <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
         <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
@@ -34,6 +35,7 @@
 
       <div class="mobile-nav" :class="{ 'active': isOpen }">
         <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
+        <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
@@ -53,8 +55,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Menu, Close, Box, Printer } from '@element-plus/icons-vue'
+import { Menu, Close, Monitor, Cpu, Operation, Sunny, Odometer, Connection, Lock } from '@element-plus/icons-vue'
 import { useAuth } from '~/composables/useAuth'
+import { getIndustryIcon } from '~/utils/icons'
 
 defineProps<{
   industryName: string
@@ -67,11 +70,16 @@ const isOpen = ref(false)
 
 <style scoped>
 .header-09 {
-  background: #ffffff;
-  height: 90px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  height: 95px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-container {
@@ -98,10 +106,12 @@ const isOpen = ref(false)
 }
 
 .domain-logo {
-  font-size: 1.125rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #1e293b;
+  color: #0f172a;
   text-decoration: none;
+  letter-spacing: -0.02em;
 }
 
 .center-section {
@@ -109,11 +119,12 @@ const isOpen = ref(false)
 }
 
 .industry-name {
-  font-size: 1.25rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
   color: #0f172a;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   margin: 0;
 }
 

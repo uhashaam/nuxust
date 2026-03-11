@@ -48,14 +48,16 @@ defineEmits(['page-change'])
 }
 
 .news-item {
-  padding: 2rem 0;
-  border-bottom: 1px solid #e2e8f0; /* Thin lines as requested */
+  padding: 2.5rem 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08); /* Sophisticated subtle line */
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .news-item:hover {
-  background-color: rgba(248, 250, 252, 0.5);
+  background-color: #f8fafc;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .news-item:last-child {
@@ -71,12 +73,14 @@ defineEmits(['page-change'])
 }
 
 .news-title {
+  font-family: 'Outfit', sans-serif;
   font-size: 1.5rem;
   font-weight: 800; /* Bold titles as requested */
-  color: #1e293b;
+  color: #0f172a;
   margin: 0;
   flex: 1;
   text-align: left; /* Left-aligned as requested */
+  letter-spacing: -0.01em;
 }
 
 .pub-date {

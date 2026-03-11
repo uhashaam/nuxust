@@ -79,6 +79,11 @@ export async function fetchAllRecords(
         })
 
         allRecords.push(...result.records)
+        // Prevent infinite loops if pageToken is missing but hasMore is true
+        if (result.hasMore && (!result.pageToken || result.pageToken === pageToken)) {
+            console.warn('[Lark API] Infinite loop prevented: hasMore is true but pageToken did not update.')
+            break
+        }
         hasMore = result.hasMore
         pageToken = result.pageToken
     }

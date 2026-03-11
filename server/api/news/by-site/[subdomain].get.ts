@@ -31,12 +31,13 @@ const IMAGE_MAP: Record<string, string[]> = {
 
 function pickNewsImage(title: string = '', subdomain: string = ''): string {
     const key = subdomain.toLowerCase()
-    const pool = IMAGE_MAP[key] || IMAGE_MAP.default
+    const pool = IMAGE_MAP[key] || IMAGE_MAP.default || []
+    if (!pool.length) return ''
     const idx = title.length % pool.length
-    return pool[idx]
+    return pool[idx] || ''
 }
 
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
     try {
         const subdomain = getRouterParam(event, 'subdomain')
         if (!subdomain) {
@@ -127,4 +128,8 @@ export default defineEventHandler(async (event) => {
             message: error.message || 'Failed to fetch news'
         })
     }
+}, {
+    maxAge: 60 * 30, // 30 minutes
+    swr: true,
+    getKey: (event) => `news-site-${getRouterParam(event, 'subdomain') || 'default'}`
 })

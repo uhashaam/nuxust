@@ -8,6 +8,7 @@
       
       <nav class="core-nav">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
         <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
         <div class="auth-minimal">
@@ -29,6 +30,7 @@
       <div class="mobile-overlay" :class="{ 'active': isOpen }">
         <div class="mobile-content">
           <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
+          <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
           <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
           <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
           <a href="https://b-2b.com/login" v-if="!user" @click="isOpen = false">Login</a>
@@ -110,14 +112,15 @@ onUnmounted(() => {
 }
 
 .domain-label {
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.3em;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   color: inherit;
   text-decoration: none;
   margin-bottom: 0.25rem;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .is-scrolled .domain-label {
@@ -125,11 +128,12 @@ onUnmounted(() => {
 }
 
 .industry-name {
-  font-size: 1.5rem;
-  font-weight: 300;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 400;
   color: inherit;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
 
 .is-scrolled .industry-name {

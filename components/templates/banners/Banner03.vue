@@ -48,10 +48,10 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1495
 
 .industry-name {
   font-size: 3.5rem;
-  font-weight: 300;
-  color: #1e293b;
+  font-weight: 800;
+  color: #0f172a;
   margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
   font-family: 'Outfit', sans-serif;
 }
 

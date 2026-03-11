@@ -20,6 +20,8 @@ export default defineNuxtConfig({
     '/i/**': { swr: 3600 },
     '/products/**': { swr: 3600 },
     '/news/**': { swr: 3600 },
+    '/api/industry-sites/**': { swr: 3600 },
+    '/api/news/by-site/**': { swr: 1800 },
     // Cache static assets aggressively
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
   },

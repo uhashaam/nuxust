@@ -15,6 +15,8 @@
           <p>Phone: +1 (555) 000-0000</p>
         </div>
         <div class="links">
+          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
+          <br>
           <a href="/privacy">Privacy Policy</a>
         </div>
       </div>
@@ -31,8 +33,8 @@ defineProps<{
 <style scoped>
 .footer-02 {
   background: #f8fafc;
-  padding: 4rem 0;
-  border-top: 1px solid #e2e8f0;
+  padding: 6rem 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .footer-container {
@@ -52,9 +54,11 @@ defineProps<{
 }
 
 .logo {
+  font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 1.5rem;
-  color: #1e293b;
+  font-size: 1.65rem;
+  color: #0f172a;
+  letter-spacing: -0.03em;
 }
 
 .subdomain {
@@ -78,11 +82,13 @@ defineProps<{
 }
 
 .contact h4 {
-  font-size: 0.875rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9375rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #0f172a;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
 }
 
 .contact p {

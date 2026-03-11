@@ -11,6 +11,10 @@
           <span class="nav-icon">■</span>
           <span class="label">Home</span>
         </a>
+        <a :href="`/i/${subdomain}/products`" class="nav-item">
+          <span class="nav-icon">■</span>
+          <span class="label">Technologies</span>
+        </a>
         <a href="https://b-2b.com/pricing" class="nav-item">
           <span class="nav-icon">■</span>
           <span class="label">Packages</span>
@@ -67,6 +71,7 @@
       <div class="mobile-drawer" :class="{ 'is-open': menuOpen }">
         <nav class="mobile-nav">
           <a :href="`/i/${subdomain}`" @click="menuOpen = false">Home</a>
+          <a :href="`/i/${subdomain}/products`" @click="menuOpen = false">Technologies</a>
           <a href="https://b-2b.com/pricing" @click="menuOpen = false">Packages</a>
           <a :href="`/i/${subdomain}/news`" @click="menuOpen = false">News Center</a>
           <a :href="`/i/${subdomain}/about`" @click="menuOpen = false">About Us</a>
@@ -125,13 +130,14 @@ const menuOpen = ref(false)
 }
 
 .domain-logo {
-  font-size: 1.5rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
   color: #ffffff;
   text-decoration: none;
   display: block;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
 }
 
 .industry-badge {
@@ -156,27 +162,31 @@ const menuOpen = ref(false)
 .nav-item {
   color: #94a3b8;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.5rem 0;
 }
 
 .nav-icon {
   font-size: 0.5rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: scale(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #3b82f6;
 }
 
 .nav-item:hover {
   color: #ffffff;
-  transform: translateX(8px);
+  transform: translateX(10px);
 }
 
 .nav-item:hover .nav-icon {
   opacity: 1;
+  transform: scale(1);
 }
 
 .auth-sidebar-group {

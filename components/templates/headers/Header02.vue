@@ -9,6 +9,7 @@
       
       <nav class="nav-center">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
         <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
         <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
@@ -32,6 +33,7 @@
 
       <div class="mobile-nav" :class="{ 'is-open': menuOpen }">
         <a :href="`/i/${subdomain}`" @click="menuOpen = false">Home</a>
+        <a :href="`/i/${subdomain}/products`" @click="menuOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="menuOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="menuOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="menuOpen = false">About Us</a>
@@ -66,10 +68,10 @@ const menuOpen = ref(false)
 <style scoped>
 .header-02 {
   background: #f8fafc;
-  height: 90px;
+  height: 95px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 .header-container {
@@ -89,35 +91,42 @@ const menuOpen = ref(false)
 }
 
 .domain-logo {
-  font-weight: 900;
-  color: #334155;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  color: #0f172a;
   text-decoration: none;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
 }
 
 .divider {
-  color: #94a3b8;
+  color: #cbd5e1;
+  font-weight: 300;
+  margin: 0 0.25rem;
 }
 
 .industry-name {
+  font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  color: #64748b;
-  font-size: 1rem;
+  color: #475569;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
 }
 
 .nav-center {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   background: #ffffff;
-  padding: 0.5rem;
+  padding: 0.375rem 0.5rem;
   border-radius: 99px;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.03), 0 2px 6px -2px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.03);
 }
 
 .nav-item {
   text-decoration: none;
   color: #475569;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.875rem;
   padding: 0.625rem 1.25rem;
   border-radius: 99px;
@@ -127,7 +136,8 @@ const menuOpen = ref(false)
 .nav-item:hover {
   background: #0f172a;
   color: #ffffff;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.15);
 }
 
 .mobile-toggle {

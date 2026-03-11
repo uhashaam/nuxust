@@ -61,11 +61,13 @@ defineProps<Props>()
 
 .title {
   text-align: center; /* Centered title as requested */
-  font-size: 3rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.5rem;
   font-weight: 800; /* Bold as requested */
-  color: #000000; /* Black as requested */
+  color: #0f172a; /* Rich slate */
   margin: 0 0 1.5rem 0;
-  line-height: 1.2;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .meta {
@@ -92,9 +94,10 @@ defineProps<Props>()
 
 .content {
   font-size: 1.125rem;
-  line-height: 1.5; /* 1.5x line spacing as requested */
-  color: #1f2937;
+  line-height: 1.8; /* Supreme legibility */
+  color: #334155;
   margin-bottom: 5rem;
+  -webkit-font-smoothing: antialiased;
 }
 
 .content :deep(p) {
@@ -126,20 +129,25 @@ defineProps<Props>()
 
 .rec-item {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   cursor: pointer;
-  transition: opacity 0.2s;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rec-item:hover {
-  opacity: 0.7;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 .rec-img {
-  width: 100px;
-  height: 60px;
+  width: 120px;
+  height: 80px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .rec-name {

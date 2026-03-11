@@ -9,6 +9,7 @@
       <nav class="nav-horizontal">
         <div class="nav-wrapper">
           <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+          <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
           <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
           
           <div class="nav-item has-dropdown">
@@ -56,6 +57,7 @@
 
       <div class="mobile-nav" :class="{ 'open': isMobileOpen }">
         <a :href="`/i/${subdomain}`" @click="isMobileOpen = false">Home</a>
+        <a :href="`/i/${subdomain}/products`" @click="isMobileOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="isMobileOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isMobileOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isMobileOpen = false">About Us</a>
@@ -90,11 +92,16 @@ const isMobileOpen = ref(false)
 
 <style scoped>
 .header-08 {
-  background: #f0f7ff;
-  height: 80px;
+  background: rgba(240, 247, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  height: 85px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #dbeafe;
+  border-bottom: 1px solid rgba(219, 234, 254, 0.8);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-container {
@@ -114,20 +121,25 @@ const isMobileOpen = ref(false)
 }
 
 .domain-logo {
-  font-size: 1.25rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
   color: #1e40af;
   text-decoration: none;
+  letter-spacing: -0.02em;
 }
 
 .industry-tag {
+  font-family: 'Outfit', sans-serif;
   background: #ffffff;
   color: #1e3a8a;
-  padding: 0.375rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
+  font-size: 0.9375rem;
   font-weight: 700;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .nav-wrapper {

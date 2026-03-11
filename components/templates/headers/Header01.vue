@@ -8,11 +8,12 @@
       </div>
       
       <nav class="nav-links">
-        <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
+        <a :href="subdomain ? `/i/${subdomain}/products` : '/products'" class="nav-item">Technologies</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
-        <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
-        <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
+        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News</a>
+        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About</a>
+        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item">Contact</a>
       </nav>
 
       <div class="auth-group">
@@ -31,11 +32,12 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'active': isMenuOpen }">
-        <a :href="`/i/${subdomain}`" @click="isMenuOpen = false">Home</a>
+        <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isMenuOpen = false">Home</a>
+        <a :href="subdomain ? `/i/${subdomain}/products` : '/products'" @click="isMenuOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="isMenuOpen = false">Packages</a>
-        <a :href="`/i/${subdomain}/news`" @click="isMenuOpen = false">News Center</a>
-        <a :href="`/i/${subdomain}/about`" @click="isMenuOpen = false">About Us</a>
-        <a :href="`/i/${subdomain}/contact`" @click="isMenuOpen = false">Contact</a>
+        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isMenuOpen = false">News</a>
+        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" @click="isMenuOpen = false">About</a>
+        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" @click="isMenuOpen = false">Contact</a>
         <div class="mobile-auth" v-if="!user">
           <a href="https://b-2b.com/login" @click="isMenuOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="isMenuOpen = false">Register</a>
@@ -79,20 +81,23 @@ onUnmounted(() => {
 
 <style scoped>
 .header-01 {
-  background: #ffffff;
-  border-bottom: 1px solid #f1f5f9;
-  height: 80px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  height: 85px;
   display: flex;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header-01.is-scrolled {
-  height: 64px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  height: 68px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
 }
 
 .header-container {
@@ -113,22 +118,26 @@ onUnmounted(() => {
 }
 
 .domain-logo {
-  font-size: 1.25rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
   font-weight: 800;
-  color: #1e293b;
+  color: #0f172a;
   text-decoration: none;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
 
 .divider {
   color: #cbd5e1;
+  font-weight: 300;
 }
 
 .industry-name {
-  font-weight: 800;
-  font-size: 1.125rem;
-  color: #0f172a;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #1e293b;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .nav-links {
@@ -137,15 +146,33 @@ onUnmounted(() => {
 }
 
 .nav-item {
+  position: relative;
   text-decoration: none;
-  color: #64748b;
+  color: #475569;
   font-weight: 600;
   font-size: 0.9375rem;
-  transition: color 0.2s;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.5rem 0;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #0f172a;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
 }
 
 .nav-item:hover {
   color: #0f172a;
+}
+
+.nav-item:hover::after {
+  width: 100%;
 }
 
 .mobile-menu-btn {

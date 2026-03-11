@@ -8,6 +8,7 @@
       
       <nav class="retro-nav">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
         <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
         <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
         <a :href="`/i/${subdomain}/about`" class="nav-item">About</a>
@@ -25,6 +26,7 @@
       <div class="mobile-overlay" :class="{ 'visible': isOpen }">
         <nav class="mobile-links">
           <a :href="`/i/${subdomain}`" @click="isOpen = false">HOME</a>
+          <a :href="`/i/${subdomain}/products`" @click="isOpen = false">TECHNOLOGIES</a>
           <a href="https://b-2b.com/pricing" @click="isOpen = false">PACKAGES</a>
           <a :href="`/i/${subdomain}/news`" @click="isOpen = false">NEWS CENTER</a>
           <template v-if="!user">
@@ -56,13 +58,18 @@ const isOpen = ref(false)
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
 .header-10 {
   background: #ffffff;
   color: #000000;
-  height: 70px;
+  height: 75px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-container {
@@ -82,18 +89,21 @@ const isOpen = ref(false)
 }
 
 .domain-logo {
-  font-family: serif;
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
   color: #000000;
   text-decoration: none;
+  letter-spacing: -0.02em;
+  font-style: italic;
 }
 
 .industry-label {
+  font-family: 'Outfit', sans-serif;
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
 }
 
 .retro-nav {

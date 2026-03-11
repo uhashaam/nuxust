@@ -77,10 +77,12 @@ defineProps<Props>()
 }
 
 .title {
-  font-size: 2.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.25;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   margin-bottom: 1rem;
 }
 
@@ -169,13 +171,18 @@ defineProps<Props>()
 .rec-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   cursor: pointer;
-  transition: all 0.2s;
+  background: #ffffff;
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rec-card:hover {
-  transform: translateX(10px);
+  transform: translateY(-2px) translateX(4px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
   color: #3b82f6;
 }
 

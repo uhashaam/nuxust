@@ -6,6 +6,8 @@
         <div class="sub-label" v-if="subdomain">〔 {{ subdomain }} 〕</div>
         <p class="copyright">© 2026 b-2b.com 著作権所有</p>
         <div class="bottom-links">
+          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">工业技术</a>
+          <span class="sep">｜</span>
           <a :href="subdomain ? `/i/${subdomain}/privacy` : '/privacy'">隐私政策</a>
           <span class="sep">｜</span>
           <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">联系我们</a>
@@ -27,9 +29,9 @@ defineProps<{
 .footer-10 {
   background: #fdfaf5;
   color: #2c2c2c;
-  padding: 6rem 0;
+  padding: 8rem 0;
   font-family: 'Noto Serif SC', serif;
-  border-top: 1px solid #e5e0d8;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .footer-container {
@@ -47,9 +49,10 @@ defineProps<{
 }
 
 .logo {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #000;
+  letter-spacing: -0.02em;
 }
 
 .sub-label {

@@ -23,6 +23,7 @@
           <h4 class="column-title">Navigation</h4>
           <nav class="footer-nav">
             <a :href="subdomain ? `/i/${subdomain}` : '/'">Home</a>
+            <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
             <a :href="subdomain ? `/i/${subdomain}/news` : '/news'">News Center</a>
             <a :href="subdomain ? `/i/${subdomain}/about` : '/about'">About Us</a>
             <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact</a>
@@ -42,10 +43,10 @@ defineProps<{
 
 <style scoped>
 .footer-03 {
-  background: #1e293b;
+  background: #020617;
   color: #f8fafc;
-  padding: 5rem 0;
-  border-top: 1px solid #334155;
+  padding: 7rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-container {
@@ -68,10 +69,11 @@ defineProps<{
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  color: #3b82f6;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #ffffff;
 }
 
 .industry-label {
@@ -91,8 +93,9 @@ defineProps<{
 }
 
 .column-title {
-  font-size: 1rem;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 2rem;
   color: #ffffff;

@@ -45,7 +45,7 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1504
 .professional-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(241, 245, 249, 0.9) 0%, rgba(203, 213, 225, 0.7) 100%);
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.8) 100%);
 }
 
 .banner-content {
@@ -62,11 +62,12 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1504
 }
 
 .industry-name {
+  font-family: 'Outfit', sans-serif;
   font-size: 4rem;
   font-weight: 900;
   color: #0f172a;
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .slogan {

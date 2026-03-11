@@ -26,6 +26,7 @@
           <h4>Navigation</h4>
           <nav class="links">
             <a :href="subdomain ? `/i/${subdomain}` : '/'">Home</a>
+            <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
             <a :href="subdomain ? `/i/${subdomain}/news` : '/news'">News Center</a>
             <a :href="subdomain ? `/i/${subdomain}/about` : '/about'">About Us</a>
           </nav>
@@ -44,8 +45,8 @@ defineProps<{
 <style scoped>
 .footer-08 {
   background: #ffffff;
-  padding: 6rem 0;
-  border-top: 1px solid #e2e8f0;
+  padding: 8rem 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .footer-container {
@@ -61,17 +62,21 @@ defineProps<{
 }
 
 .column h4 {
+  font-family: 'Outfit', sans-serif;
   font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
-  color: #1e293b;
+  color: #0f172a;
   margin-bottom: 2rem;
   letter-spacing: 0.05em;
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
   margin-bottom: 1.5rem;
 }
 

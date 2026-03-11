@@ -11,6 +11,8 @@
           <span>Contact: support@b-2b.com</span>
         </div>
         <div class="links">
+          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'" class="link">Technologies</a>
+          <span class="sep" v-if="subdomain">|</span>
           <a href="/privacy" class="link">Privacy Policy</a>
         </div>
       </div>
@@ -26,9 +28,9 @@ defineProps<{
 
 <style scoped>
 .footer-01 {
-  background: #ffffff;
-  padding: 4rem 0;
-  border-top: 1px solid #f1f5f9;
+  background: #fcfdfe;
+  padding: 6rem 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .footer-container {
@@ -52,9 +54,11 @@ defineProps<{
 }
 
 .logo {
+  font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .subdomain {

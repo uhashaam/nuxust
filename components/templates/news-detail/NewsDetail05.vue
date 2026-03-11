@@ -66,11 +66,13 @@ defineProps<Props>()
 }
 
 .title {
-  font-size: 2.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
   font-weight: 800;
-  color: #94a3b8; /* Light gray bold centered as requested */
+  color: #64748b;
   margin: 0 0 1.5rem 0;
-  line-height: 1.3;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .author-meta {
@@ -150,11 +152,11 @@ defineProps<Props>()
 .rec-mini-card {
   text-align: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rec-mini-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-6px);
 }
 
 .rec-mini-card img {

@@ -13,6 +13,8 @@
 
         <div class="right">
           <nav class="inline-nav">
+            <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">TECHNOLOGIES</a>
+            <span class="sep">•</span>
             <a :href="subdomain ? `/i/${subdomain}/privacy` : '/privacy'">PRIVACY</a>
             <span class="sep">•</span>
             <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">CONTACT</a>
@@ -32,8 +34,8 @@ defineProps<{
 <style scoped>
 .footer-09 {
   background: #ffffff;
-  padding: 4rem 0;
-  border-top: 4px solid #000000;
+  padding: 6rem 0;
+  border-top: 4px solid #0f172a;
 }
 
 .footer-container {
@@ -49,10 +51,11 @@ defineProps<{
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 950;
-  color: #000;
-  letter-spacing: -0.05em;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.03em;
 }
 
 .sub {

@@ -11,6 +11,8 @@
         <nav class="nav-links">
           <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
           <div class="dot"></div>
+          <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
+          <div class="dot"></div>
           <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
           <div class="dot"></div>
           <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
@@ -47,6 +49,7 @@
     <div class="mobile-overlay" :class="{ 'active': isOpen }">
       <nav class="mobile-menu">
         <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
+        <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
@@ -98,20 +101,24 @@ const isOpen = ref(false)
 }
 
 .domain-logo {
-  font-size: 2rem;
-  font-weight: 900;
-  color: #000000;
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #0f172a;
   text-decoration: none;
   text-transform: lowercase;
+  letter-spacing: -0.04em;
 }
 
 .industry-name {
+  font-family: 'Outfit', sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
-  color: #000000;
+  color: #0f172a;
   text-transform: uppercase;
-  border: 2px solid #000000;
+  border: 2px solid #0f172a;
   padding: 0.5rem 1.5rem;
+  letter-spacing: 0.05em;
 }
 
 .bottom-row {
@@ -128,23 +135,33 @@ const isOpen = ref(false)
 }
 
 .nav-item {
+  position: relative;
   text-decoration: none;
-  color: #000000;
-  font-weight: 800;
-  font-size: 1rem;
+  color: #475569;
+  font-weight: 700;
+  font-size: 0.9375rem;
   text-transform: uppercase;
-  transition: color 0.2s;
+  letter-spacing: 0.05em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-item:hover {
   color: #4ade80; /* Green for agriculture/food feel */
+  transform: translateY(-1px);
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
-  background: #e2e8f0;
+  width: 4px;
+  height: 4px;
+  background: #cbd5e1;
   border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover + .dot,
+.dot:has(+ .nav-item:hover) {
+  background: #4ade80;
+  transform: scale(1.5);
 }
 
 /* Mobile Styles */

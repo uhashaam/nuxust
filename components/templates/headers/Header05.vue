@@ -4,7 +4,7 @@
       <div class="brand-section">
         <a href="/" class="domain-logo">b-2b.com</a>
         <div class="industry-box">
-          <el-icon class="industry-icon"><Setting /></el-icon>
+          <el-icon class="industry-icon"><component :is="getIndustryIcon(industryName)" /></el-icon>
           <span class="industry-name">{{ industryName }}</span>
         </div>
       </div>
@@ -34,6 +34,7 @@
 
       <div class="mobile-nav" :class="{ 'active': isOpen }">
         <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
+        <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
         <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
@@ -53,8 +54,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Menu, Close, Setting, SwitchButton } from '@element-plus/icons-vue'
+import { Menu, Close, Setting, SwitchButton, Cpu, Operation, Sunny, Odometer, Connection, Lock } from '@element-plus/icons-vue'
 import { useAuth } from '~/composables/useAuth'
+import { getIndustryIcon } from '~/utils/icons'
 
 defineProps<{
   industryName: string
@@ -67,11 +69,16 @@ const isOpen = ref(false)
 
 <style scoped>
 .header-05 {
-  background: #ffffff;
-  height: 80px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  height: 85px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-container {
@@ -91,13 +98,20 @@ const isOpen = ref(false)
 }
 
 .domain-logo {
-  font-size: 1.25rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #0f172a;
   text-decoration: none;
   background: #f8fafc;
   padding: 0.5rem 1rem;
   border-radius: 8px;
+  letter-spacing: -0.02em;
+  transition: all 0.3s ease;
+}
+
+.domain-logo:hover {
+  background: #f1f5f9;
 }
 
 .industry-box {
@@ -113,7 +127,8 @@ const isOpen = ref(false)
 }
 
 .industry-name {
-  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
   font-size: 0.9375rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -121,24 +136,25 @@ const isOpen = ref(false)
 
 .nav-right {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
 }
 
 .nav-item {
   text-decoration: none;
-  color: #1e293b;
+  color: #475569;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.05em;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-item:hover {
-  background: #f1f5f9;
-  color: #3b82f6;
+  background: rgba(15, 23, 42, 0.04);
+  color: #0f172a;
 }
 
 .auth-pill {

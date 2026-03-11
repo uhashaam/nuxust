@@ -3,7 +3,7 @@ import { fetchAllRecords } from '../../utils/lark/base'
 /**
  * Get a specific industry site by subdomain
  */
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
     try {
         const subdomain = getRouterParam(event, 'subdomain')
 
@@ -67,4 +67,8 @@ export default defineEventHandler(async (event) => {
             message: error.message || 'Failed to fetch industry site'
         })
     }
+}, {
+    maxAge: 60 * 60, // 1 hour
+    swr: true,
+    getKey: (event) => `industry-site-${getRouterParam(event, 'subdomain') || 'default'}`
 })

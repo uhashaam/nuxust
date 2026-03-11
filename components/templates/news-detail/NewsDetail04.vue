@@ -67,12 +67,14 @@ defineProps<Props>()
 }
 
 .title {
+  font-family: 'Outfit', sans-serif;
   font-size: 3.5rem;
   font-weight: 900;
-  color: #000000; /* Black bold left-aligned as requested */
+  color: #0f172a;
   margin: 0 0 1rem 0;
   line-height: 1.1;
   text-align: left;
+  letter-spacing: -0.02em;
 }
 
 .header-meta {
@@ -104,9 +106,10 @@ defineProps<Props>()
 
 .content {
   font-size: 1.125rem;
-  line-height: 1.6; /* 1.6x line spacing as requested */
-  color: #333333;
+  line-height: 1.8; /* Premium legibility */
+  color: #334155;
   letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
 }
 
 .content :deep(p) {
@@ -148,13 +151,13 @@ defineProps<Props>()
   background: #ffffff;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rec-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
 .rec-content h4 {

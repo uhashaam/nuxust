@@ -42,7 +42,7 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1518
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(59, 130, 246, 0.7) 100%);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(37, 99, 235, 0.8) 100%);
 }
 
 .content {
@@ -71,9 +71,10 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1518
   font-size: 4rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .slogan {

@@ -13,6 +13,8 @@
 
         <div class="column right">
           <div class="contact-box">
+            <a :href="subdomain ? `/i/${subdomain}/products` : '/products'" class="privacy">Technologies</a>
+            <span class="sep">|</span>
             <a href="/privacy" class="privacy">Privacy Policy</a>
             <span class="sep">|</span>
             <span class="mail">contact@b-2b.com</span>
@@ -32,8 +34,8 @@ defineProps<{
 <style scoped>
 .footer-05 {
   background: #f0f7ff;
-  padding: 3rem 0;
-  border-top: 2px solid #dbeafe;
+  padding: 6rem 0;
+  border-top: 1px solid rgba(59, 130, 246, 0.15);
 }
 
 .footer-container {
@@ -49,10 +51,11 @@ defineProps<{
 }
 
 .domain-name {
-  font-size: 1.5rem;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
   color: #1e3a8a;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .industry {

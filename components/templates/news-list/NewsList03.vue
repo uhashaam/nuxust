@@ -58,16 +58,16 @@ defineEmits(['page-change'])
   background: #ffffff;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.03), 0 2px 6px -2px rgba(0, 0, 0, 0.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   display: flex;
   flex-direction: column;
 }
 
 .grid-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
 }
 
 .card-image {
@@ -130,11 +130,13 @@ defineEmits(['page-change'])
 }
 
 .card-title {
-  font-size: 1.125rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #1e293b;
+  color: #0f172a;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .pagination-wrapper {

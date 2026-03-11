@@ -7,6 +7,8 @@
       </div>
       <p class="copyright">© 2026 b-2b.com</p>
       <div class="links">
+        <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
+        <span class="sep">/</span>
         <a href="/privacy">Privacy</a>
       </div>
     </div>
@@ -22,7 +24,7 @@ defineProps<{
 <style scoped>
 .footer-04 {
   background: transparent;
-  padding: 3rem 0;
+  padding: 6rem 0;
 }
 
 .footer-container {
@@ -41,9 +43,11 @@ defineProps<{
 }
 
 .logo {
-  font-size: 1.125rem;
-  font-weight: 900;
-  color: #000000;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .sub {

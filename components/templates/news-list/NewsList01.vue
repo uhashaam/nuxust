@@ -56,15 +56,15 @@ defineEmits(['page-change'])
   background: #ffffff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Subtle shadow as requested */
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; /* Hover-up animation */
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.03), 0 2px 6px -2px rgba(0, 0, 0, 0.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Premium lift */
   cursor: pointer;
-  border: 1px solid #f1f5f9;
+  border: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .news-card:hover {
-  transform: translateY(-8px); /* Hover-up animation */
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
 }
 
 .thumbnail-col {
@@ -102,11 +102,13 @@ defineEmits(['page-change'])
 }
 
 .news-title {
-  font-size: 1.25rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0;
   line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .pub-date {

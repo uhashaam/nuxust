@@ -75,12 +75,14 @@ defineProps<Props>()
 }
 
 .title {
-  font-size: 2.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
   font-weight: 900;
-  color: #1e293b; /* Bold dark gray title as requested */
+  color: #0f172a; /* Bold dark gray title as requested */
   margin: 0 0 2rem 0;
   line-height: 1.1;
   text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .meta {
@@ -157,16 +159,19 @@ defineProps<Props>()
   display: flex;
   gap: 1.5rem;
   align-items: center;
-  background: #f8fafc;
+  background: #ffffff;
   padding: 1.25rem;
   cursor: pointer;
   border-left: 4px solid #334155;
-  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .related-card:hover {
-  background: #f1f5f9;
-  border-left-width: 8px;
+  background: #f8fafc;
+  border-left-width: 10px;
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .related-card img {

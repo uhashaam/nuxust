@@ -8,6 +8,8 @@
         </div>
         <p class="copyright">© 2026 b-2b.com. All rights reserved.</p>
         <div class="base-links">
+          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
+          <span class="dot">•</span>
           <a :href="subdomain ? `/i/${subdomain}/privacy` : '/privacy'">Privacy Policy</a>
           <span class="dot">•</span>
           <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact Us</a>
@@ -29,8 +31,8 @@ defineProps<{
 <style scoped>
 .footer-07 {
   background: #ffffff;
-  padding: 5rem 0;
-  border-top: 1px solid #f1f5f9;
+  padding: 7rem 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .footer-container {
@@ -54,9 +56,11 @@ defineProps<{
 }
 
 .logo {
-  font-weight: 900;
-  font-size: 1.25rem;
-  color: #1e293b;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .sub {
