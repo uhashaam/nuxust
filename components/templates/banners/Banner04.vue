@@ -1,12 +1,12 @@
 <template>
-  <div class="banner-04" :style="{ backgroundImage: `url(${bgImage})` }">
+  <div class="banner-04">
     <div class="grid-pattern"></div>
     <div class="professional-overlay"></div>
     <div class="banner-content">
-      <div class="decorator-line Top"></div>
+      <div class="line-top"></div>
       <h1 class="industry-name">{{ industryName }}</h1>
       <p class="slogan">{{ siteSlogan }}</p>
-      <div class="decorator-line Bottom"></div>
+      <div class="line-bottom"></div>
     </div>
   </div>
 </template>
@@ -18,65 +18,84 @@ interface Props {
   backgroundImage?: string
 }
 
-const props = defineProps<Props>()
-const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1920&h=500'
+defineProps<Props>()
 </script>
 
 <style scoped>
 .banner-04 {
   width: 100%;
   height: 500px;
-  background-size: cover;
-  background-position: center;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(
+    135deg,
+    #eef2f7 0%,
+    #e2e8f0 30%,
+    #dbeafe 60%,
+    #e0e7ff 100%
+  );
+  overflow: hidden;
 }
 
 .grid-pattern {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
 }
 
 .professional-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.8) 100%);
+  background: radial-gradient(
+    ellipse at 70% 30%,
+    rgba(59, 130, 246, 0.06) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
 .banner-content {
   position: relative;
   z-index: 1;
   text-align: center;
+  max-width: 800px;
+  padding: 0 2rem;
 }
 
-.decorator-line {
-  width: 60px;
-  height: 3px;
-  background: #3b82f6;
+.line-top,
+.line-bottom {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #818cf8);
   margin: 1.5rem auto;
+  border-radius: 1px;
 }
 
 .industry-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 4rem;
-  font-weight: 900;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 3.25rem;
+  font-weight: 800;
   color: #0f172a;
   margin: 0;
   letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .slogan {
-  font-size: 1.125rem;
-  color: #475569;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.0625rem;
+  color: #64748b;
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.2em;
   margin-top: 1rem;
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {
@@ -84,11 +103,11 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1504
     height: 350px;
   }
   .industry-name {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
   .slogan {
-    font-size: 0.875rem;
-    letter-spacing: 0.15em;
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
   }
 }
 </style>

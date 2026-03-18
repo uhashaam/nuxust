@@ -5,7 +5,7 @@
         <h1 class="title">{{ title }}</h1>
         <div class="meta">
           <div class="meta-item">
-            <el-icon class="icon"><Setting /></el-icon> <!-- Industrial icon -->
+            <el-icon class="icon"><Setting /></el-icon>
             <span>{{ publishedAt }}</span>
           </div>
           <div class="meta-item">
@@ -22,7 +22,7 @@
       <div class="content" v-html="content"></div>
 
       <div v-if="relatedNews && relatedNews.length" class="related-industrial">
-        <h3>EQUIPMENT INSIGHTS</h3>
+        <h3>RELATED REPORTS</h3>
         <div class="related-list">
           <div 
             v-for="item in relatedNews" 
@@ -30,10 +30,10 @@
             class="related-card"
             @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
           >
-            <img :src="item.image" :alt="item.title" />
+            <img v-if="item.image" :src="item.image" :alt="item.title" />
             <div class="card-text">
               <h4>{{ item.title }}</h4>
-              <span>{{ item.publishedAt }}</span>
+              <span v-if="item.publishedAt">{{ item.publishedAt }}</span>
             </div>
           </div>
         </div>
@@ -61,141 +61,149 @@ defineProps<Props>()
 
 <style scoped>
 .news-detail-03 {
-  max-width: 1000px;
+  max-width: 920px;
   margin: 2rem auto;
-  padding: 3rem;
-  background: #f1f5f9; /* Subtle shading for the page */
+  padding: 2rem;
+  background: #f1f5f9;
 }
 
 .industrial-frame {
   background: #ffffff;
-  padding: 4rem;
-  border: 4px solid #334155; /* Heavy industry feel */
-  box-shadow: 10px 10px 0px #cbd5e1;
+  padding: 3rem;
+  border: 3px solid #334155;
+  box-shadow: 6px 6px 0px #cbd5e1;
 }
 
 .title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 3rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 2.25rem;
   font-weight: 900;
-  color: #0f172a; /* Bold dark gray title as requested */
-  margin: 0 0 2rem 0;
-  line-height: 1.1;
+  color: #1e293b;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.15;
   text-transform: uppercase;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .meta {
   display: flex;
-  gap: 3rem;
-  margin-bottom: 3rem;
-  padding-bottom: 1.5rem;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.25rem;
   border-bottom: 2px solid #e2e8f0;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   color: #64748b;
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
 }
 
 .icon {
-  font-size: 1.25rem;
-  color: #334155;
+  font-size: 1rem;
+  color: #475569;
 }
 
 .featured-image {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
   border: 2px solid #e2e8f0;
 }
 
 .featured-image img {
   width: 100%;
-  filter: grayscale(20%);
+  display: block;
+  filter: grayscale(15%);
 }
 
 .content {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   line-height: 1.7;
   color: #334155;
 }
 
 .content :deep(p) {
-  margin-bottom: 2rem;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); /* Slightly more apparent subtle shading */
+  margin-bottom: 1.5rem;
+  background: linear-gradient(transparent 92%, rgba(51, 65, 85, 0.04) 92%);
 }
 
 .content :deep(h2) {
   font-weight: 900;
   color: #0f172a;
   text-transform: uppercase;
-  margin: 4rem 0 2rem;
+  font-size: 1.375rem;
+  margin: 3rem 0 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.content :deep(img) {
+  max-width: 100%;
+  border: 2px solid #e2e8f0;
+  margin: 1.5rem 0;
 }
 
 .related-industrial {
-  margin-top: 5rem;
-  padding-top: 3rem;
-  border-top: 4px solid #334155;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 3px solid #334155;
 }
 
 .related-industrial h3 {
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   font-weight: 900;
-  color: #334155;
-  margin-bottom: 2rem;
-  letter-spacing: 0.1em;
+  color: #475569;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.12em;
 }
 
 .related-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .related-card {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   align-items: center;
-  background: #ffffff;
-  padding: 1.25rem;
+  padding: 1rem;
   cursor: pointer;
-  border-left: 4px solid #334155;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 3px solid #334155;
+  transition: all 0.25s ease;
 }
 
 .related-card:hover {
   background: #f8fafc;
-  border-left-width: 10px;
-  transform: translateY(-2px);
-  box-shadow: 4px 8px 15px rgba(0, 0, 0, 0.1);
+  border-left-width: 6px;
+  transform: translateX(3px);
 }
 
 .related-card img {
-  width: 120px;
-  height: 80px;
+  width: 100px;
+  height: 68px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .card-text h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1rem;
-  font-weight: 800;
+  margin: 0 0 0.375rem 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 .card-text span {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: #94a3b8;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
   .news-detail-03 { padding: 1rem; }
-  .industrial-frame { padding: 2rem; }
-  .title { font-size: 1.75rem; }
-  .meta { flex-direction: column; gap: 1rem; }
+  .industrial-frame { padding: 1.5rem; }
+  .title { font-size: 1.5rem; }
+  .meta { flex-direction: column; gap: 0.75rem; }
 }
 </style>

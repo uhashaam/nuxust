@@ -8,10 +8,9 @@
       
       <nav class="retro-nav">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
-        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
-        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
-        <a :href="`/i/${subdomain}/about`" class="nav-item">About</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
+        <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
+        <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
         <a v-if="!user" href="https://b-2b.com/login" class="nav-item">Login</a>
         <div class="user-retro" v-else>
           <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
@@ -26,9 +25,9 @@
       <div class="mobile-overlay" :class="{ 'visible': isOpen }">
         <nav class="mobile-links">
           <a :href="`/i/${subdomain}`" @click="isOpen = false">HOME</a>
-          <a :href="`/i/${subdomain}/products`" @click="isOpen = false">TECHNOLOGIES</a>
-          <a href="https://b-2b.com/pricing" @click="isOpen = false">PACKAGES</a>
           <a :href="`/i/${subdomain}/news`" @click="isOpen = false">NEWS CENTER</a>
+          <a :href="`/i/${subdomain}/about`" @click="isOpen = false">ABOUT US</a>
+          <a :href="`/i/${subdomain}/contact`" @click="isOpen = false">CONTACT</a>
           <template v-if="!user">
             <a href="https://b-2b.com/login" @click="isOpen = false">LOGIN</a>
             <a href="https://b-2b.com/register" @click="isOpen = false">REGISTER</a>
@@ -62,11 +61,11 @@ const isOpen = ref(false)
 
 .header-10 {
   background: #ffffff;
-  color: #000000;
-  height: 75px;
+  color: #0f0f0f;
+  height: 68px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #000000;
+  border-bottom: 1.5px solid #0f0f0f;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -85,36 +84,39 @@ const isOpen = ref(false)
 .branding {
   display: flex;
   align-items: baseline;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .domain-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.75rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #000000;
+  color: #0f0f0f;
   text-decoration: none;
   letter-spacing: -0.02em;
   font-style: italic;
 }
 
 .industry-label {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.75rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.25em;
+  color: #737373;
 }
 
 .retro-nav {
   display: flex;
-  gap: 2.5rem;
+  align-items: center;
+  gap: 2rem;
 }
 
 .nav-item {
   text-decoration: none;
-  color: #000000;
-  font-size: 0.8125rem;
+  color: #0f0f0f;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.75rem;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -129,8 +131,8 @@ const isOpen = ref(false)
   left: 0;
   width: 0;
   height: 1px;
-  background: #000000;
-  transition: width 0.3s ease;
+  background: #0f0f0f;
+  transition: width 0.35s ease;
 }
 
 .nav-item:hover::after {
@@ -140,29 +142,45 @@ const isOpen = ref(false)
 .user-retro {
   display: flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 .retro-logout {
   background: none;
-  border: 1px solid #000;
-  font-size: 0.625rem;
-  padding: 0.25rem 0.5rem;
+  border: 1px solid #0f0f0f;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.5625rem;
+  padding: 0.25rem 0.625rem;
   cursor: pointer;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+
+.retro-logout:hover {
+  background: #0f0f0f;
+  color: #ffffff;
 }
 
 .menu-btn {
   display: none;
   background: none;
-  border: 1px solid #000000;
-  padding: 0.5rem 1rem;
+  border: 1px solid #0f0f0f;
+  padding: 0.4rem 0.875rem;
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.menu-btn:hover {
+  background: #0f0f0f;
+  color: #ffffff;
 }
 
 .btn-text {
-  font-size: 0.75rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.625rem;
   letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 .mobile-overlay {
@@ -183,11 +201,13 @@ const isOpen = ref(false)
     display: flex;
     position: fixed;
     inset: 0;
-    background: white;
+    background: #ffffff;
     z-index: 1000;
-    padding: 6rem 2rem;
+    padding: 5rem 2rem;
     transform: translateY(-100%);
-    transition: transform 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: flex-start;
+    justify-content: center;
   }
 
   .mobile-overlay.visible {
@@ -197,16 +217,28 @@ const isOpen = ref(false)
   .mobile-links {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
+    width: 100%;
   }
 
   .mobile-links a {
-    font-size: 1.5rem;
-    color: black;
+    font-family: 'Inter', 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #0f0f0f;
     text-decoration: none;
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
+    letter-spacing: 0.12em;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 0.75rem;
+    transition: opacity 0.2s;
+  }
+
+  .mobile-links a:hover {
+    opacity: 0.5;
+  }
+
+  .mobile-links a:last-child {
+    border-bottom: none;
   }
 }
 </style>

@@ -2,53 +2,45 @@
   <div class="header-03-wrapper">
     <header class="header-03">
       <div class="logo-section">
-        <a href="/" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b<span class="dot">.</span>com</a>
         <div class="industry-badge">{{ industryName }}</div>
       </div>
       
       <nav class="nav-vertical">
         <a :href="`/i/${subdomain}`" class="nav-item">
-          <span class="nav-icon">■</span>
+          <span class="nav-indicator"></span>
           <span class="label">Home</span>
         </a>
-        <a :href="`/i/${subdomain}/products`" class="nav-item">
-          <span class="nav-icon">■</span>
-          <span class="label">Technologies</span>
-        </a>
-        <a href="https://b-2b.com/pricing" class="nav-item">
-          <span class="nav-icon">■</span>
-          <span class="label">Packages</span>
-        </a>
         <a :href="`/i/${subdomain}/news`" class="nav-item">
-          <span class="nav-icon">■</span>
+          <span class="nav-indicator"></span>
           <span class="label">News Center</span>
         </a>
         <a :href="`/i/${subdomain}/about`" class="nav-item">
-          <span class="nav-icon">■</span>
+          <span class="nav-indicator"></span>
           <span class="label">About Us</span>
         </a>
         <a :href="`/i/${subdomain}/contact`" class="nav-item">
-          <span class="nav-icon">■</span>
+          <span class="nav-indicator"></span>
           <span class="label">Contact</span>
         </a>
         <div class="auth-sidebar-group">
           <template v-if="user">
             <a href="https://b-2b.com/dashboard" class="nav-item">
-              <span class="nav-icon">■</span>
+              <span class="nav-indicator"></span>
               <span class="label">Dashboard</span>
             </a>
             <a href="#" @click.prevent="logout" class="nav-item">
-              <span class="nav-icon">■</span>
+              <span class="nav-indicator"></span>
               <span class="label">Logout</span>
             </a>
           </template>
           <template v-else>
             <a href="https://b-2b.com/login" class="nav-item">
-              <span class="nav-icon">■</span>
+              <span class="nav-indicator"></span>
               <span class="label">Login</span>
             </a>
-            <a href="https://b-2b.com/register" class="nav-item register-btn-sidebar">
-              <span class="nav-icon">■</span>
+            <a href="https://b-2b.com/register" class="nav-item cta-link">
+              <span class="nav-indicator"></span>
               <span class="label">Join Now</span>
             </a>
           </template>
@@ -60,10 +52,10 @@
       </div>
     </header>
 
-    <!-- Mobile Header (Vertical styles usually need a separate mobile horizontal version) -->
+    <!-- Mobile Header -->
     <header class="mobile-header-03">
       <div class="mobile-container">
-        <a href="/" class="domain-logo">b-2b.com</a>
+        <a href="/" class="mobile-logo">b-2b<span class="dot">.</span>com</a>
         <button class="menu-toggle" @click="menuOpen = !menuOpen">
           <el-icon><Menu v-if="!menuOpen" /><Close v-else /></el-icon>
         </button>
@@ -71,14 +63,12 @@
       <div class="mobile-drawer" :class="{ 'is-open': menuOpen }">
         <nav class="mobile-nav">
           <a :href="`/i/${subdomain}`" @click="menuOpen = false">Home</a>
-          <a :href="`/i/${subdomain}/products`" @click="menuOpen = false">Technologies</a>
-          <a href="https://b-2b.com/pricing" @click="menuOpen = false">Packages</a>
           <a :href="`/i/${subdomain}/news`" @click="menuOpen = false">News Center</a>
           <a :href="`/i/${subdomain}/about`" @click="menuOpen = false">About Us</a>
           <a :href="`/i/${subdomain}/contact`" @click="menuOpen = false">Contact</a>
           <div class="mobile-auth-section" v-if="!user">
             <a href="https://b-2b.com/login" @click="menuOpen = false">Login</a>
-            <a href="https://b-2b.com/register" @click="menuOpen = false">Register</a>
+            <a href="https://b-2b.com/register" @click="menuOpen = false" class="cta">Register</a>
           </div>
           <div class="mobile-auth-section" v-else>
             <a href="https://b-2b.com/dashboard" @click="menuOpen = false">Dashboard</a>
@@ -94,7 +84,6 @@
 import { ref } from 'vue'
 import { Menu, Close } from '@element-plus/icons-vue'
 import { useAuth } from '~/composables/useAuth'
-import { navigateTo } from 'nuxt/app'
 
 defineProps<{
   industryName: string
@@ -115,96 +104,103 @@ const menuOpen = ref(false)
   left: 0;
   top: 0;
   bottom: 0;
-  width: 280px;
-  background: #1e293b;
+  width: 260px;
+  background: #1b1f2e;
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  padding: 3rem 2rem;
+  padding: 2.5rem 1.75rem;
   z-index: 1000;
-  border-right: 1px solid #334155;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .logo-section {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .domain-logo {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.65rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #ffffff;
   text-decoration: none;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   letter-spacing: -0.03em;
 }
 
+.dot {
+  color: #60a5fa;
+}
+
 .industry-badge {
-  font-size: 0.75rem;
-  font-weight: 800;
+  font-size: 0.6875rem;
+  font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background: #0f172a;
-  padding: 0.25rem 0.75rem;
+  letter-spacing: 0.12em;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.375rem 0.75rem;
   display: inline-block;
-  border-radius: 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .nav-vertical {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.25rem;
   flex-grow: 1;
 }
 
 .nav-item {
   color: #94a3b8;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-weight: 500;
+  font-size: 0.875rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0.5rem 0;
+  gap: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.75rem 0.875rem;
+  border-radius: 8px;
+  letter-spacing: 0.01em;
 }
 
-.nav-icon {
-  font-size: 0.5rem;
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #3b82f6;
+.nav-indicator {
+  width: 3px;
+  height: 0;
+  background: #60a5fa;
+  border-radius: 4px;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-item:hover {
   color: #ffffff;
-  transform: translateX(10px);
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.nav-item:hover .nav-icon {
-  opacity: 1;
-  transform: scale(1);
+.nav-item:hover .nav-indicator {
+  height: 18px;
+}
+
+.cta-link .label {
+  color: #60a5fa;
 }
 
 .auth-sidebar-group {
-  margin-top: 3rem;
-  border-top: 1px solid #334155;
-  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.register-btn-sidebar .label {
-  color: #3b82f6;
+  gap: 0.25rem;
 }
 
 .header-footer {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: #475569;
+  letter-spacing: 0.02em;
 }
 
 /* Mobile styles */
@@ -223,10 +219,10 @@ const menuOpen = ref(false)
     top: 0;
     left: 0;
     right: 0;
-    height: 70px;
-    background: #1e293b;
+    height: 64px;
+    background: #1b1f2e;
     z-index: 1001;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .mobile-container {
@@ -237,24 +233,40 @@ const menuOpen = ref(false)
     align-items: center;
   }
 
+  .mobile-logo {
+    font-family: 'Inter', 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+    letter-spacing: -0.03em;
+  }
+
   .menu-toggle {
     background: none;
     border: none;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.06);
   }
 
   .mobile-drawer {
     position: fixed;
-    top: 70px;
+    top: 64px;
     left: 0;
     right: 0;
     bottom: 0;
-    background: #0f172a;
+    background: #141725;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    padding: 2rem;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 1.5rem;
   }
 
   .mobile-drawer.is-open {
@@ -264,23 +276,38 @@ const menuOpen = ref(false)
   .mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 0.375rem;
   }
 
   .mobile-nav a {
-    color: white;
+    color: #e2e8f0;
     text-decoration: none;
-    font-size: 1.25rem;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .mobile-nav a:hover {
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .mobile-auth-section {
-    border-top: 2px solid #334155;
-    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 1rem;
+    margin-top: 0.75rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.375rem;
+  }
+
+  .mobile-auth-section .cta {
+    background: #60a5fa;
+    color: #0f172a;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
   }
 }
 </style>

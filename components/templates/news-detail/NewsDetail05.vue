@@ -28,7 +28,9 @@
           class="rec-mini-card"
           @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
         >
-          <img :src="item.image" :alt="item.title" />
+          <div class="image-wrapper" v-if="item.image">
+            <img :src="item.image" :alt="item.title" />
+          </div>
           <h5>{{ item.title }}</h5>
         </div>
       </div>
@@ -56,90 +58,106 @@ defineProps<Props>()
 .news-detail-05 {
   max-width: 800px;
   margin: 0 auto;
-  padding: 6rem 2rem;
+  padding: 5rem 2rem 6rem;
   background: #ffffff;
+  font-family: 'Inter', sans-serif;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3.5rem;
 }
 
 .title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 3rem;
-  font-weight: 800;
-  color: #64748b;
-  margin: 0 0 1.5rem 0;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #94a3b8; /* Light gray bold title as requested */
+  margin: 0 0 1.25rem 0;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .author-meta {
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: #64748b;
+  color: #cbd5e1;
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .fresh-image {
-  margin-bottom: 4rem;
-  border-radius: 24px;
+  margin-bottom: 3.5rem;
+  border-radius: 16px;
   overflow: hidden;
 }
 
 .fresh-image img {
   width: 100%;
-  opacity: 0.95;
+  display: block;
 }
 
 .content {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   line-height: 1.8;
-  color: #475569; /* Dark gray body text as requested */
+  color: #475569; /* Light-colored body text (dark gray) as requested */
+  font-weight: 300;
 }
 
 .content :deep(p) {
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #f1f5f9; /* Thin line breaks as requested */
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9; /* Thin line breaks separate paragraphs as requested */
 }
 
 .content :deep(p):last-child {
   border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .content :deep(h2) {
   text-align: center;
-  color: #94a3b8;
-  font-weight: 800;
-  margin: 4rem 0 2rem;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 3.5rem 0 1.5rem;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.content :deep(img) {
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 2rem 0;
 }
 
 .fresh-rec {
-  margin-top: 8rem;
+  margin-top: 6rem;
 }
 
 .rec-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .rec-header span {
-  font-size: 0.8125rem;
-  font-weight: 800;
-  color: #cbd5e1;
-  letter-spacing: 0.2em;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.15em;
 }
 
 .line {
   height: 1px;
-  width: 100px;
+  width: 60px;
   background: #f1f5f9;
 }
 
@@ -156,21 +174,33 @@ defineProps<Props>()
 }
 
 .rec-mini-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
-.rec-mini-card img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 50%; /* Playful/Fresh look for Agri/Beauty */
+.image-wrapper {
   margin-bottom: 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  aspect-ratio: 1;
   border: 4px solid #f8fafc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.3s;
+}
+
+.rec-mini-card:hover .image-wrapper {
+  border-color: #f1f5f9;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .rec-mini-card h5 {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
   margin: 0;
   color: #64748b;
   display: -webkit-box;
@@ -178,10 +208,11 @@ defineProps<Props>()
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  line-height: 1.4;
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 2rem; }
-  .rec-row { grid-template-columns: repeat(2, 1fr); }
+  .title { font-size: 1.75rem; }
+  .rec-row { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
 }
 </style>

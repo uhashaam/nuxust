@@ -1,10 +1,16 @@
 <template>
   <div class="banner-02" :style="{ backgroundImage: `url(${bgImage})` }">
     <div class="base-overlay"></div>
-    <div class="metallic-accents"></div>
+    <div class="metallic-sheen"></div>
+    <div class="noise-texture"></div>
     <div class="banner-content">
       <div class="metallic-frame">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
         <h1 class="industry-name">{{ industryName }}</h1>
+        <div class="separator"></div>
         <p class="slogan">{{ siteSlogan }}</p>
       </div>
     </div>
@@ -19,7 +25,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-// Using real-world industry visual as requested
 const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1920&h=500'
 </script>
 
@@ -33,19 +38,39 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1581
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #374151; /* Dark gray base */
+  background-color: #1f2937;
 }
 
 .base-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(55, 65, 81, 0.4);
+  background: linear-gradient(
+    160deg,
+    rgba(31, 41, 55, 0.85) 0%,
+    rgba(55, 65, 81, 0.75) 50%,
+    rgba(31, 41, 55, 0.9) 100%
+  );
 }
 
-.metallic-accents {
+.metallic-sheen {
   position: absolute;
   inset: 0;
-  background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 55%, transparent 60%);
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 60%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.noise-texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   pointer-events: none;
 }
 
@@ -56,42 +81,64 @@ const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1581
 }
 
 .metallic-frame {
-  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #64748b 100%);
-  padding: 3rem 4rem;
-  border: 8px solid;
-  border-image: linear-gradient(to bottom right, #cbd5e1, #475569, #94a3b8) 1;
-  box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.5),
-    inset 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: skew(-2deg);
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(209, 213, 219, 0.95) 0%,
+    rgba(156, 163, 175, 0.9) 40%,
+    rgba(107, 114, 128, 0.85) 100%
+  );
+  padding: 3rem 4.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
 }
 
+.corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: rgba(0, 0, 0, 0.4);
+  border-style: solid;
+}
+.corner.tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+.corner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+.corner.bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+.corner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
 .industry-name {
-  font-size: 4rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 3.5rem;
   font-weight: 900;
-  color: #000000; /* Bold in black as requested */
-  margin: 0 0 0.5rem 0;
+  color: #111827;
+  margin: 0;
   text-transform: uppercase;
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 
+.separator {
+  width: 50px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  margin: 1.25rem 0;
+}
+
 .slogan {
-  font-size: 1.25rem;
-  color: #1a202c; /* Near black slogan */
-  font-weight: 700;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  border-top: 2px solid #475569;
-  padding-top: 1rem;
-  margin-top: 1rem;
+  letter-spacing: 0.12em;
 }
 
 @media (max-width: 768px) {
-  .banner-02 { height: 350px; }
-  .metallic-frame { padding: 1.5rem 2rem; }
-  .industry-name { font-size: 2.25rem; }
-  .slogan { font-size: 0.875rem; letter-spacing: 0.1em; }
+  .banner-02 { height: 380px; }
+  .metallic-frame { padding: 2rem 2.5rem; }
+  .industry-name { font-size: 2rem; }
+  .slogan { font-size: 0.8125rem; letter-spacing: 0.08em; }
 }
 </style>

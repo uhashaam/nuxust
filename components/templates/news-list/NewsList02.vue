@@ -1,22 +1,21 @@
 <template>
   <div class="news-list-02">
-    <div v-for="item in newsItems" :key="item.id" class="news-item" @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)">
+    <div 
+      v-for="item in newsItems" 
+      :key="item.id" 
+      class="list-item" 
+      @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
+    >
       <div class="item-header">
-        <h3 class="news-title">{{ item.title }}</h3>
-        <span class="pub-date">{{ item.publishedAt }}</span>
+        <h3 class="title">{{ item.title }}</h3>
+        <span class="date">{{ item.publishedAt }}</span>
       </div>
-      <div class="abstract-row">
-        <p v-if="item.excerpt" class="excerpt">{{ item.excerpt }}</p>
-      </div>
-      <div class="item-footer">
-        <span class="read-more">Read Full Report →</span>
-      </div>
+      <p v-if="item.excerpt" class="abstract">{{ item.excerpt }}</p>
     </div>
     
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="pagination-wrapper">
+    <div v-if="totalPages > 1" class="pagination-container">
       <el-pagination
-        small
         background
         layout="prev, pager, next"
         :total="totalPages * 10"
@@ -47,20 +46,22 @@ defineEmits(['page-change'])
   margin: 0 auto;
 }
 
-.news-item {
-  padding: 2.5rem 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08); /* Sophisticated subtle line */
+.list-item {
+  padding: 2.25rem 0;
+  border-bottom: 1px solid #e2e8f0; /* Thin line separator requested */
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s ease;
 }
 
-.news-item:hover {
+.list-item:hover {
   background-color: #f8fafc;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 8px;
+  border-bottom-color: transparent;
 }
 
-.news-item:last-child {
+.list-item:last-child {
   border-bottom: none;
 }
 
@@ -72,57 +73,37 @@ defineEmits(['page-change'])
   margin-bottom: 1rem;
 }
 
-.news-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 800; /* Bold titles as requested */
+.title {
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 800; /* Bold title as requested */
   color: #0f172a;
   margin: 0;
   flex: 1;
   text-align: left; /* Left-aligned as requested */
   letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
-.pub-date {
+.date {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 500;
   text-align: right; /* Right-aligned as requested */
   white-space: nowrap;
 }
 
-.abstract-row {
-  margin-bottom: 1rem;
-}
-
-.excerpt {
+.abstract {
   font-size: 1rem;
   color: #475569;
-  line-height: 1.7;
+  line-height: 1.6;
   margin: 0;
   display: block; /* Abstract on a new line as requested */
 }
 
-.item-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.read-more {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.news-item:hover .read-more {
-  color: #3b82f6;
-}
-
-.pagination-wrapper {
-  margin-top: 3rem;
-  padding: 2rem 0;
+.pagination-container {
+  margin-top: 3.5rem;
+  padding: 1rem 0;
   display: flex;
   justify-content: center;
 }
@@ -132,11 +113,11 @@ defineEmits(['page-change'])
     flex-direction: column;
     gap: 0.5rem;
   }
-  .pub-date {
+  .date {
     text-align: left;
   }
-  .news-title {
-    font-size: 1.25rem;
+  .title {
+    font-size: 1.125rem;
   }
 }
 </style>

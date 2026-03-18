@@ -3,10 +3,9 @@
     <div class="header-container">
       <div class="left-section">
         <div class="icon-stack">
-          <el-icon><component :is="getIndustryIcon(industryName)" /></el-icon>
-          <el-icon><Lock /></el-icon>
+          <el-icon class="ind-icon"><component :is="getIndustryIcon(industryName)" /></el-icon>
         </div>
-        <a href="/" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b<span class="dot">.</span>com</a>
       </div>
       
       <div class="center-section">
@@ -15,17 +14,15 @@
 
       <nav class="nav-right">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
-        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
-        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
         <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
         <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
         <div class="auth-side" v-if="!user">
           <a href="https://b-2b.com/login" class="nav-item">Login</a>
         </div>
         <div class="auth-side" v-else>
-          <a href="https://b-2b.com/dashboard" class="nav-item highlight">Dashboard</a>
-          <button class="logout-minimal-9" @click="logout">Logout</button>
+          <a href="https://b-2b.com/dashboard" class="nav-item accent">Dashboard</a>
+          <button class="logout-btn" @click="logout">Logout</button>
         </div>
       </nav>
 
@@ -35,8 +32,6 @@
 
       <div class="mobile-nav" :class="{ 'active': isOpen }">
         <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
-        <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
-        <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
         <a :href="`/i/${subdomain}/contact`" @click="isOpen = false">Contact</a>
@@ -55,7 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Menu, Close, Monitor, Cpu, Operation, Sunny, Odometer, Connection, Lock } from '@element-plus/icons-vue'
+import { Menu, Close } from '@element-plus/icons-vue'
 import { useAuth } from '~/composables/useAuth'
 import { getIndustryIcon } from '~/utils/icons'
 
@@ -70,48 +65,58 @@ const isOpen = ref(false)
 
 <style scoped>
 .header-09 {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  height: 95px;
+  background: #ffffff;
+  height: 76px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid #f1f5f9;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
 .header-container {
-  max-width: 1400px;
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 2.5rem;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
 }
 
 .left-section {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .icon-stack {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border-radius: 10px;
+}
+
+.ind-icon {
+  font-size: 1rem;
   color: #6366f1;
-  font-size: 1.25rem;
 }
 
 .domain-logo {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.25rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #0f172a;
   text-decoration: none;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+}
+
+.dot {
+  color: #6366f1;
 }
 
 .center-section {
@@ -119,8 +124,8 @@ const isOpen = ref(false)
 }
 
 .industry-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.35rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #0f172a;
   text-transform: uppercase;
@@ -131,51 +136,73 @@ const isOpen = ref(false)
 .nav-right {
   display: flex;
   justify-content: flex-end;
-  gap: 2rem;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .nav-item {
   text-decoration: none;
   color: #64748b;
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: 500;
+  font-size: 0.8125rem;
   transition: color 0.2s;
+  padding: 0.5rem 0.625rem;
+  border-radius: 6px;
+  letter-spacing: 0.01em;
 }
 
 .nav-item:hover {
   color: #6366f1;
+  background: #f8fafc;
 }
 
 .auth-side {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin-left: 2rem;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
   border-left: 1px solid #f1f5f9;
-  padding-left: 2rem;
+  padding-left: 0.75rem;
 }
 
-.nav-item.highlight {
+.nav-item.accent {
   color: #6366f1;
+  font-weight: 600;
 }
 
-.logout-minimal-9 {
+.logout-btn {
   background: none;
   border: none;
   color: #94a3b8;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.375rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  color: #ef4444;
+  background: #fef2f2;
 }
 
 .mobile-toggle {
   display: none;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   cursor: pointer;
   justify-self: end;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: #334155;
+}
+
+.mobile-toggle:hover {
+  background: #f1f5f9;
 }
 
 .mobile-nav {
@@ -193,24 +220,27 @@ const isOpen = ref(false)
   }
   
   .mobile-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-nav {
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 90px;
+    top: 76px;
     left: 0;
     right: 0;
     background: white;
-    padding: 2rem;
-    gap: 1.5rem;
-    border-bottom: 2px solid #f1f5f9;
-    transform: translateY(-100%);
+    padding: 1.25rem 1.5rem;
+    gap: 0.375rem;
+    border-bottom: 1px solid #f1f5f9;
+    transform: translateY(-110%);
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
   }
 
   .mobile-nav.active {
@@ -221,17 +251,24 @@ const isOpen = ref(false)
   .mobile-nav a {
     text-decoration: none;
     color: #0f172a;
-    font-weight: 800;
-    padding: 1rem;
+    font-weight: 600;
+    padding: 0.875rem 1rem;
     background: #f8fafc;
     border-radius: 8px;
     text-align: center;
+    transition: all 0.2s;
+  }
+
+  .mobile-nav a:hover {
+    background: #eef2ff;
+    color: #6366f1;
   }
 
   .mobile-auth-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
   }
 
   .mobile-auth-row a.primary {

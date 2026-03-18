@@ -13,7 +13,7 @@
 
     <div v-if="image" class="tech-image">
       <img :src="image" :alt="title" />
-      <div class="image-scan-effect"></div>
+      <div class="image-tint"></div>
     </div>
     
     <div class="content" v-html="content"></div>
@@ -56,104 +56,116 @@ defineProps<Props>()
 
 <style scoped>
 .news-detail-02 {
-  max-width: 900px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 4rem 2rem;
-  background: #fcfdfe;
+  padding: 4rem 2rem 6rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .tech-header {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .blue-accent-line {
-  width: 6px;
-  min-height: 80px;
-  background: #3b82f6; /* Blue vertical line as requested */
+  width: 4px;
+  min-height: 60px;
+  background: linear-gradient(180deg, #3b82f6, #60a5fa);
   flex-shrink: 0;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  border-radius: 2px;
 }
 
 .title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 3rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 2.25rem;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.02em;
-  margin-bottom: 1rem;
+  margin-bottom: 0.875rem;
 }
 
 .meta {
   display: flex;
-  gap: 2rem;
-  font-size: 0.875rem;
+  gap: 1.5rem;
+  font-size: 0.75rem;
   color: #94a3b8;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .tech-image {
   position: relative;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
 }
 
 .tech-image img {
   width: 100%;
-  opacity: 0.9;
+  display: block;
 }
 
-.image-scan-effect {
+.image-tint {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(rgba(59, 130, 246, 0), rgba(59, 130, 246, 0.05));
+  inset: 0;
+  background: linear-gradient(transparent 60%, rgba(59, 130, 246, 0.04) 100%);
   pointer-events: none;
 }
 
 .content {
-  font-size: 1.0625rem;
-  line-height: 1.8;
-  color: #64748b; /* Thin gray body text as requested */
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #94a3b8;
   font-weight: 300;
 }
 
-.content :deep(strong), .content :deep(b) {
-  color: #3b82f6; /* Bold key content in blue as requested */
+.content :deep(strong),
+.content :deep(b) {
+  color: #3b82f6;
   font-weight: 700;
+}
+
+.content :deep(p) {
+  margin-bottom: 1.5rem;
 }
 
 .content :deep(h2) {
   color: #1e3a8a;
-  font-size: 1.5rem;
-  margin-top: 3rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1.25rem;
+}
+
+.content :deep(img) {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 1.5rem 0;
 }
 
 .tech-recommendations {
-  margin-top: 5rem;
-  padding: 2rem;
+  margin-top: 4rem;
+  padding: 1.5rem;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
 }
 
 .rec-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .rec-label {
-  font-size: 0.75rem;
-  font-weight: 900;
+  font-size: 0.625rem;
+  font-weight: 800;
   color: #3b82f6;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
 }
 
 .rec-line {
@@ -165,43 +177,48 @@ defineProps<Props>()
 .rec-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.5rem;
 }
 
 .rec-card {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.875rem;
   cursor: pointer;
-  background: #ffffff;
-  padding: 1.25rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
 }
 
 .rec-card:hover {
-  transform: translateY(-2px) translateX(4px);
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+  transform: translateX(4px);
+}
+
+.rec-card:hover p {
   color: #3b82f6;
 }
 
 .rec-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: #3b82f6;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .rec-card p {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  color: #475569;
+  transition: color 0.2s;
 }
 
 @media (max-width: 768px) {
-  .tech-header { flex-direction: column; gap: 1rem; }
-  .blue-accent-line { width: 100%; height: 6px; min-height: 6px; }
+  .tech-header { flex-direction: column; gap: 0.75rem; }
+  .blue-accent-line { width: 100%; height: 4px; min-height: 4px; }
   .title { font-size: 1.75rem; }
 }
 </style>

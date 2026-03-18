@@ -2,15 +2,10 @@
   <footer class="footer-04">
     <div class="footer-container">
       <div class="logo-group">
-        <span class="logo">b-2b.com</span>
+        <span class="logo">b-2b<span class="dot">.</span>com</span>
         <span class="sub" v-if="subdomain">{{ subdomain }}</span>
       </div>
       <p class="copyright">© 2026 b-2b.com</p>
-      <div class="links">
-        <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
-        <span class="sep">/</span>
-        <a href="/privacy">Privacy</a>
-      </div>
     </div>
   </footer>
 </template>
@@ -24,7 +19,7 @@ defineProps<{
 <style scoped>
 .footer-04 {
   background: transparent;
-  padding: 6rem 0;
+  padding: 3rem 0;
 }
 
 .footer-container {
@@ -39,41 +34,39 @@ defineProps<{
 .logo-group {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: 0.625rem;
 }
 
 .logo {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #0f172a;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+}
+
+.dot {
+  color: #0f172a;
 }
 
 .sub {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 400;
-  color: #64748b;
+  color: #94a3b8;
   text-transform: lowercase;
+  letter-spacing: 0.02em;
 }
 
 .copyright {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: 400;
 }
 
-.links a {
-  font-size: 0.8125rem;
-  color: #000000;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .footer-container {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.75rem;
     text-align: center;
   }
 }

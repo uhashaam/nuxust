@@ -15,7 +15,9 @@
     <div class="content" v-html="content"></div>
 
     <div v-if="relatedNews && relatedNews.length" class="business-rec">
-      <h3>Recommended Reports</h3>
+      <div class="rec-header">
+        <h3>Recommended Reading</h3>
+      </div>
       <div class="rec-grid">
         <div 
           v-for="item in relatedNews" 
@@ -25,7 +27,7 @@
         >
           <div class="rec-content">
             <h4>{{ item.title }}</h4>
-            <span>{{ item.publishedAt }}</span>
+            <span v-if="item.publishedAt">{{ item.publishedAt }}</span>
           </div>
           <el-icon class="rec-arrow"><Right /></el-icon>
         </div>
@@ -53,27 +55,28 @@ defineProps<Props>()
 
 <style scoped>
 .news-detail-04 {
-  max-width: 900px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 6rem 2rem;
+  padding: 5rem 2rem 6rem;
+  font-family: 'Inter', sans-serif;
   color: #1a1a1a;
   background: #ffffff;
 }
 
 .business-header {
-  margin-bottom: 5rem;
-  border-bottom: 4px solid #000000;
-  padding-bottom: 2rem;
+  margin-bottom: 4rem;
+  border-bottom: 3px solid #0f172a;
+  padding-bottom: 1.5rem;
 }
 
 .title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 3.5rem;
-  font-weight: 900;
-  color: #0f172a;
-  margin: 0 0 1rem 0;
-  line-height: 1.1;
-  text-align: left;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #000000; /* Bold black title as requested */
+  margin: 0 0 1.25rem 0;
+  line-height: 1.15;
+  text-align: left; /* Left-aligned as requested */
   letter-spacing: -0.02em;
 }
 
@@ -85,100 +88,120 @@ defineProps<Props>()
 
 .author {
   font-weight: 700;
-  font-size: 1rem;
-  color: #1a1a1a;
+  font-size: 0.9375rem;
+  color: #0f172a;
 }
 
 .pub-date {
   font-weight: 500;
-  font-size: 1rem;
-  color: #94a3b8; /* Gray as requested */
+  font-size: 0.875rem;
+  color: #64748b; /* Gray as requested */
 }
 
 .business-image {
-  margin-bottom: 5rem;
+  margin-bottom: 4rem;
 }
 
 .business-image img {
   width: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
+  display: block;
 }
 
 .content {
   font-size: 1.125rem;
-  line-height: 1.8; /* Premium legibility */
+  line-height: 1.6; /* ~1.6x line spacing as requested */
   color: #334155;
-  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
 }
 
 .content :deep(p) {
-  margin-bottom: 2.2rem; /* Moderate paragraph spacing as requested */
+  margin-bottom: 2rem; /* Moderate paragraph spacing as requested */
 }
 
 .content :deep(h2) {
-  font-size: 2rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.75rem;
   font-weight: 800;
-  margin: 4rem 0 2rem;
+  margin: 3.5rem 0 1.5rem;
   color: #000000;
 }
 
-.business-rec {
-  margin-top: 8rem;
-  background: #f8fafc;
-  padding: 4rem;
-  border-radius: 16px;
+.content :deep(img) {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 2rem 0;
 }
 
-.business-rec h3 {
-  font-size: 1.5rem;
-  font-weight: 900;
-  margin-bottom: 3rem;
+.business-rec {
+  margin-top: 5rem;
+  background: #f8fafc;
+  padding: 3rem;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.rec-header h3 {
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0 0 2rem 0;
   text-transform: uppercase;
+  color: #0f172a;
+  letter-spacing: 0.05em;
 }
 
 .rec-grid {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .rec-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
 }
 
 .rec-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateX(4px);
 }
 
 .rec-content h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.125rem;
-  font-weight: 700;
+  margin: 0 0 0.375rem 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .rec-content span {
-  font-size: 0.8125rem;
-  color: #94a3b8;
-  font-weight: 600;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .rec-arrow {
-  font-size: 1.5rem;
-  color: #cbd5e1;
+  font-size: 1.25rem;
+  color: #94a3b8;
+  transition: transform 0.2s;
+}
+
+.rec-item:hover .rec-arrow {
+  color: #0f172a;
+  transform: translateX(4px);
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 2.25rem; }
-  .business-rec { padding: 2rem; }
+  .title { font-size: 2rem; }
+  .business-rec { padding: 1.5rem; }
+  .header-meta { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 }
 </style>

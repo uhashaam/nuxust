@@ -4,7 +4,8 @@
       <h1 class="title">{{ title }}</h1>
       <div class="meta">
         <span class="pub-date">{{ publishedAt }}</span>
-        <span class="author">By {{ author }}</span>
+        <span class="separator">·</span>
+        <span class="author">{{ author }}</span>
       </div>
     </header>
 
@@ -15,7 +16,7 @@
     <div class="content" v-html="content"></div>
     
     <div v-if="relatedNews && relatedNews.length" class="recommendations">
-      <h3 class="rec-title">Related Recommendations</h3>
+      <h3 class="rec-title">Related Articles</h3>
       <div class="rec-grid">
         <div 
           v-for="item in relatedNews" 
@@ -23,8 +24,11 @@
           class="rec-item"
           @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
         >
-          <img :src="item.image" :alt="item.title" class="rec-img" />
-          <h4 class="rec-name">{{ item.title }}</h4>
+          <img v-if="item.image" :src="item.image" :alt="item.title" class="rec-img" />
+          <div class="rec-text">
+            <h4 class="rec-name">{{ item.title }}</h4>
+            <span class="rec-date" v-if="item.publishedAt">{{ item.publishedAt }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -49,40 +53,44 @@ defineProps<Props>()
 
 <style scoped>
 .news-detail-01 {
-  max-width: 850px;
+  max-width: 780px;
   margin: 0 auto;
-  padding: 5rem 2rem;
+  padding: 4rem 2rem 6rem;
   font-family: 'Inter', sans-serif;
 }
 
 .article-header {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .title {
-  text-align: center; /* Centered title as requested */
-  font-family: 'Outfit', sans-serif;
-  font-size: 3.5rem;
-  font-weight: 800; /* Bold as requested */
-  color: #0f172a; /* Rich slate */
-  margin: 0 0 1.5rem 0;
-  line-height: 1.1;
+  text-align: center;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0f0f0f;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.2;
   letter-spacing: -0.03em;
 }
 
 .meta {
   display: flex;
-  justify-content: flex-start; /* Left-aligned meta as requested */
-  gap: 2rem;
-  color: #64748b; /* Gray as requested */
-  font-size: 0.9375rem;
-  font-weight: 500;
-  margin-left: 0; /* Ensure it stays left */
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.separator {
+  color: #d1d5db;
 }
 
 .featured-image {
-  margin-bottom: 3rem;
-  border-radius: 12px;
+  margin-bottom: 2.5rem;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -93,72 +101,94 @@ defineProps<Props>()
 }
 
 .content {
-  font-size: 1.125rem;
-  line-height: 1.8; /* Supreme legibility */
+  font-size: 1.0625rem;
+  line-height: 1.5;
   color: #334155;
-  margin-bottom: 5rem;
   -webkit-font-smoothing: antialiased;
 }
 
 .content :deep(p) {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.375rem;
 }
 
 .content :deep(h2) {
-  font-size: 1.75rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin: 3rem 0 1.5rem;
+  color: #0f172a;
+  margin: 2.5rem 0 1.25rem;
+}
+
+.content :deep(img) {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 1.5rem 0;
 }
 
 .recommendations {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 3rem;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 2.5rem;
+  margin-top: 4rem;
 }
 
 .rec-title {
-  font-size: 1.25rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.8125rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
 }
 
 .rec-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .rec-item {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   cursor: pointer;
   padding: 1rem;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
 .rec-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  background: #f8fafc;
 }
 
 .rec-img {
-  width: 120px;
-  height: 80px;
+  width: 100px;
+  height: 68px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.rec-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
 }
 
 .rec-name {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   margin: 0;
   line-height: 1.4;
+  color: #1e293b;
+}
+
+.rec-date {
+  font-size: 0.6875rem;
+  color: #94a3b8;
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 2rem; }
+  .title { font-size: 1.75rem; }
   .rec-grid { grid-template-columns: 1fr; }
 }
 </style>

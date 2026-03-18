@@ -2,7 +2,7 @@
   <header class="header-05">
     <div class="header-container">
       <div class="brand-section">
-        <a href="/" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b<span class="dot">.</span>com</a>
         <div class="industry-box">
           <el-icon class="industry-icon"><component :is="getIndustryIcon(industryName)" /></el-icon>
           <span class="industry-name">{{ industryName }}</span>
@@ -11,9 +11,8 @@
       
       <nav class="nav-right">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
-        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
-        <a :href="`/i/${subdomain}/about`" class="nav-item">About</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
+        <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
         <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
 
         <div class="auth-pill">
@@ -34,8 +33,6 @@
 
       <div class="mobile-nav" :class="{ 'active': isOpen }">
         <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
-        <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
-        <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
         <a :href="`/i/${subdomain}/contact`" @click="isOpen = false">Contact</a>
@@ -54,7 +51,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Menu, Close, Setting, SwitchButton, Cpu, Operation, Sunny, Odometer, Connection, Lock } from '@element-plus/icons-vue'
+import { Menu, Close, SwitchButton } from '@element-plus/icons-vue'
 import { useAuth } from '~/composables/useAuth'
 import { getIndustryIcon } from '~/utils/icons'
 
@@ -69,22 +66,20 @@ const isOpen = ref(false)
 
 <style scoped>
 .header-05 {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  height: 85px;
+  background: #ffffff;
+  height: 72px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid #f1f5f9;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
 .header-container {
-  max-width: 1400px;
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 2.5rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -94,24 +89,20 @@ const isOpen = ref(false)
 .brand-section {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .domain-logo {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.35rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #0f172a;
   text-decoration: none;
-  background: #f8fafc;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  letter-spacing: -0.02em;
-  transition: all 0.3s ease;
+  letter-spacing: -0.03em;
 }
 
-.domain-logo:hover {
-  background: #f1f5f9;
+.dot {
+  color: #3b82f6;
 }
 
 .industry-box {
@@ -119,41 +110,46 @@ const isOpen = ref(false)
   align-items: center;
   gap: 0.5rem;
   color: #64748b;
+  background: #f8fafc;
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
 }
 
 .industry-icon {
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: #3b82f6;
 }
 
 .industry-name {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', 'Outfit', sans-serif;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  color: #64748b;
 }
 
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.25rem;
 }
 
 .nav-item {
   text-decoration: none;
-  color: #475569;
-  font-weight: 600;
+  color: #64748b;
+  font-weight: 500;
   font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.5rem 1rem;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.875rem;
   border-radius: 6px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s ease;
 }
 
 .nav-item:hover {
-  background: rgba(15, 23, 42, 0.04);
+  background: #f8fafc;
   color: #0f172a;
 }
 
@@ -161,18 +157,19 @@ const isOpen = ref(false)
   display: flex;
   align-items: center;
   background: #f1f5f9;
-  padding: 0.25rem 0.25rem 0.25rem 1rem;
+  padding: 0.25rem 0.3rem 0.25rem 0.875rem;
   border-radius: 99px;
-  gap: 1rem;
-  margin-left: 1rem;
+  gap: 0.75rem;
+  margin-left: 0.75rem;
 }
 
 .login-mini {
   text-decoration: none;
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .join-pill {
@@ -180,15 +177,23 @@ const isOpen = ref(false)
   color: white;
   text-decoration: none;
   font-size: 0.75rem;
-  font-weight: 800;
-  padding: 0.5rem 1.25rem;
+  font-weight: 700;
+  padding: 0.5rem 1.125rem;
   border-radius: 99px;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.25s ease;
+}
+
+.join-pill:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.35);
 }
 
 .user-name {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: #1e293b;
   text-decoration: none;
 }
@@ -196,7 +201,7 @@ const isOpen = ref(false)
 .logout-icon {
   cursor: pointer;
   color: #94a3b8;
-  padding: 0.5rem;
+  padding: 0.4rem;
   border-radius: 50%;
   background: white;
   transition: all 0.2s;
@@ -211,8 +216,15 @@ const isOpen = ref(false)
   display: none;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: #334155;
+}
+
+.mobile-btn:hover {
+  background: #f1f5f9;
 }
 
 .mobile-nav {
@@ -225,14 +237,16 @@ const isOpen = ref(false)
   }
   
   .mobile-btn {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-auth-tray {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .mobile-auth-tray a.highlight {
@@ -244,17 +258,18 @@ const isOpen = ref(false)
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 80px;
+    top: 72px;
     left: 0;
     right: 0;
     background: white;
-    padding: 2rem;
-    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    gap: 0.25rem;
     border-bottom: 1px solid #f1f5f9;
-    transform: translateY(-100%);
+    transform: translateY(-110%);
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
   }
 
   .mobile-nav.active {
@@ -265,10 +280,16 @@ const isOpen = ref(false)
   .mobile-nav a {
     text-decoration: none;
     color: #1e293b;
-    font-weight: 700;
-    padding: 1rem;
+    font-weight: 600;
+    padding: 0.875rem 1rem;
     border-radius: 8px;
     background: #f8fafc;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .mobile-nav a:hover {
+    background: #f1f5f9;
   }
 }
 </style>

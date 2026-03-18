@@ -8,9 +8,7 @@
       
       <nav class="core-nav">
         <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
-        <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
-        <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
+        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
         <div class="auth-minimal">
           <template v-if="user">
             <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
@@ -18,7 +16,7 @@
           </template>
           <template v-else>
             <a href="https://b-2b.com/login" class="nav-item">Login</a>
-            <a href="https://b-2b.com/register" class="nav-item bold">Join</a>
+            <a href="https://b-2b.com/register" class="nav-item accent">Join</a>
           </template>
         </div>
       </nav>
@@ -30,8 +28,6 @@
       <div class="mobile-overlay" :class="{ 'active': isOpen }">
         <div class="mobile-content">
           <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
-          <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
-          <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
           <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
           <a href="https://b-2b.com/login" v-if="!user" @click="isOpen = false">Login</a>
           <a href="https://b-2b.com/register" v-if="!user" @click="isOpen = false">Register</a>
@@ -78,26 +74,26 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  height: 100px;
+  height: 80px;
   background: transparent;
   display: flex;
   align-items: center;
   z-index: 1000;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #ffffff; /* Default to white for transparent state */
+  color: #ffffff;
 }
 
 .header-07.is-scrolled {
-  height: 70px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  color: #000000; /* Switch to dark when scrolled */
+  height: 64px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  color: #0f172a;
 }
 
 .header-container {
-  max-width: 1400px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 0 3rem;
   width: 100%;
@@ -109,89 +105,97 @@ onUnmounted(() => {
 .logo-section {
   display: flex;
   flex-direction: column;
+  gap: 0.125rem;
 }
 
 .domain-label {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.8125rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: inherit;
   text-decoration: none;
-  margin-bottom: 0.25rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0.7;
 }
 
 .is-scrolled .domain-label {
   text-shadow: none;
+  opacity: 0.5;
 }
 
 .industry-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.65rem;
-  font-weight: 400;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 300;
   color: inherit;
   letter-spacing: -0.01em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 }
 
 .is-scrolled .industry-name {
   text-shadow: none;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 1.125rem;
 }
 
 .core-nav {
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 2.5rem;
 }
 
 .nav-item {
   text-decoration: none;
   color: inherit;
-  font-weight: 500;
-  font-size: 0.875rem;
+  font-weight: 400;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   position: relative;
-  transition: all 0.3s ease;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: opacity 0.25s ease;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 0.25rem 0;
 }
 
 .is-scrolled .nav-item {
   text-shadow: none;
+  font-weight: 500;
 }
 
 .nav-item:hover {
-  opacity: 0.7;
-  transform: translateY(-1px);
+  opacity: 0.6;
+}
+
+.nav-item.accent {
+  font-weight: 700;
+  opacity: 1;
 }
 
 .auth-minimal {
   display: flex;
   align-items: center;
   gap: 2rem;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
   padding-left: 2rem;
   border-left: 1px solid currentColor;
+  opacity: 0.6;
 }
 
 .is-scrolled .auth-minimal {
   border-left-color: rgba(0, 0, 0, 0.1);
 }
 
-.nav-item.bold {
-  font-weight: 800;
-}
-
 .mobile-toggle {
   display: none;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   cursor: pointer;
   color: inherit;
+  padding: 0.5rem;
+  border-radius: 8px;
 }
 
 .mobile-overlay {
@@ -204,17 +208,21 @@ onUnmounted(() => {
   }
   
   .mobile-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-overlay {
     display: flex;
     position: fixed;
     inset: 0;
-    background: white;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 6rem 2rem;
     transform: translateX(100%);
-    transition: transform 0.5s ease;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 999;
   }
 
@@ -225,16 +233,21 @@ onUnmounted(() => {
   .mobile-content {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2.5rem;
   }
 
   .mobile-content a {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 300;
-    color: black;
+    color: #0f172a;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: -0.05em;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+  }
+
+  .mobile-content a:hover {
+    opacity: 0.5;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <header class="header-04">
     <div class="top-row">
       <div class="container">
-        <a href="/" class="domain-logo">b-2b.com</a>
+        <a href="/" class="domain-logo">b-2b<span class="dot">.</span>com</a>
         <div class="industry-name">{{ industryName }}</div>
       </div>
     </div>
@@ -10,22 +10,18 @@
       <div class="container">
         <nav class="nav-links">
           <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
-          <div class="dot"></div>
-          <a :href="`/i/${subdomain}/products`" class="nav-item">Technologies</a>
-          <div class="dot"></div>
-          <a href="https://b-2b.com/pricing" class="nav-item">Packages</a>
-          <div class="dot"></div>
-          <a :href="`/i/${subdomain}/news`" class="nav-item">News</a>
-          <div class="dot"></div>
-          <a :href="`/i/${subdomain}/about`" class="nav-item">About</a>
-          <div class="dot"></div>
+          <div class="nav-dot"></div>
+          <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
+          <div class="nav-dot"></div>
+          <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
+          <div class="nav-dot"></div>
           <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
         </nav>
       </div>
     </div>
 
     <div class="auth-row">
-      <div class="container justify-center">
+      <div class="container auth-center">
         <template v-if="user">
           <a href="https://b-2b.com/dashboard" class="auth-link">Personal Center</a>
           <span class="auth-divider">/</span>
@@ -41,7 +37,7 @@
 
     <!-- Mobile Navigation -->
     <div class="mobile-nav-bar">
-      <a href="/" class="mobile-logo">b-2b.com</a>
+      <a href="/" class="mobile-logo">b-2b<span class="dot">.</span>com</a>
       <button class="mobile-toggle" @click="isOpen = !isOpen">
         <el-icon><Menu v-if="!isOpen" /><Close v-else /></el-icon>
       </button>
@@ -49,8 +45,6 @@
     <div class="mobile-overlay" :class="{ 'active': isOpen }">
       <nav class="mobile-menu">
         <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
-        <a :href="`/i/${subdomain}/products`" @click="isOpen = false">Technologies</a>
-        <a href="https://b-2b.com/pricing" @click="isOpen = false">Packages</a>
         <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
         <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
         <a :href="`/i/${subdomain}/contact`" @click="isOpen = false">Contact</a>
@@ -87,7 +81,7 @@ const isOpen = ref(false)
 }
 
 .top-row {
-  border-bottom: 3px solid #000000;
+  border-bottom: 3px solid #0f172a;
   padding: 1.5rem 0;
 }
 
@@ -101,8 +95,8 @@ const isOpen = ref(false)
 }
 
 .domain-logo {
-  font-family: 'Outfit', sans-serif;
-  font-size: 2.25rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 2rem;
   font-weight: 800;
   color: #0f172a;
   text-decoration: none;
@@ -110,20 +104,24 @@ const isOpen = ref(false)
   letter-spacing: -0.04em;
 }
 
+.dot {
+  color: #22c55e;
+}
+
 .industry-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 800;
   color: #0f172a;
   text-transform: uppercase;
-  border: 2px solid #0f172a;
+  border: 2.5px solid #0f172a;
   padding: 0.5rem 1.5rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
 }
 
 .bottom-row {
-  border-bottom: 2px solid #000000;
-  padding: 1rem 0;
+  border-bottom: 2px solid #0f172a;
+  padding: 0.875rem 0;
 }
 
 .nav-links {
@@ -139,18 +137,18 @@ const isOpen = ref(false)
   text-decoration: none;
   color: #475569;
   font-weight: 700;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+  padding: 0.25rem 0;
 }
 
 .nav-item:hover {
-  color: #4ade80; /* Green for agriculture/food feel */
-  transform: translateY(-1px);
+  color: #22c55e;
 }
 
-.dot {
+.nav-dot {
   width: 4px;
   height: 4px;
   background: #cbd5e1;
@@ -158,49 +156,28 @@ const isOpen = ref(false)
   transition: all 0.3s ease;
 }
 
-.nav-item:hover + .dot,
-.dot:has(+ .nav-item:hover) {
-  background: #4ade80;
-  transform: scale(1.5);
-}
-
-/* Mobile Styles */
-.mobile-nav-bar {
-  display: none;
-  height: 70px;
-  background: white;
-  padding: 0 1.5rem;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 3px solid #000;
-}
-
-.mobile-logo {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: black;
-  text-decoration: none;
-}
-
-.mobile-toggle {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
 .auth-row {
-  border-bottom: 2px solid #000;
-  background: #f8fafc;
+  border-bottom: 2px solid #0f172a;
+  background: #fafaf9;
   padding: 0.5rem 0;
+}
+
+.auth-center {
+  justify-content: center !important;
 }
 
 .auth-link {
   text-decoration: none;
-  color: #000;
+  color: #0f172a;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: #22c55e;
 }
 
 .auth-divider {
@@ -208,8 +185,34 @@ const isOpen = ref(false)
   color: #cbd5e1;
 }
 
-.justify-center {
-  justify-content: center !important;
+/* Mobile Styles */
+.mobile-nav-bar {
+  display: none;
+  height: 64px;
+  background: white;
+  padding: 0 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #0f172a;
+}
+
+.mobile-logo {
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.mobile-toggle {
+  background: none;
+  border: 2px solid #0f172a;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.375rem 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .mobile-overlay {
@@ -230,33 +233,37 @@ const isOpen = ref(false)
 .mobile-menu {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   text-align: center;
 }
 
 .mobile-menu a {
-  font-size: 2rem;
-  font-weight: 900;
-  color: black;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
   text-decoration: none;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem;
+  border-bottom: 2px solid #f1f5f9;
 }
 
 .mobile-auth-grid {
   display: flex;
   justify-content: center;
   gap: 2rem;
-  border-top: 3px solid #000;
-  padding-top: 2rem;
-  margin-top: 1rem;
+  border-top: 3px solid #0f172a;
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
 }
 
 .mobile-auth-grid a {
-  font-size: 1.25rem;
+  font-size: 1rem;
+  border-bottom: none;
 }
 
 @media (max-width: 768px) {
-  .top-row, .bottom-row {
+  .top-row, .bottom-row, .auth-row {
     display: none;
   }
   

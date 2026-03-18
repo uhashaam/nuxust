@@ -3,19 +3,17 @@
     <div class="footer-container">
       <div class="main-content">
         <div class="brand">
-          <span class="logo">b-2b.com</span>
+          <span class="logo">b-2b<span class="dot">.</span>com</span>
           <span class="sub" v-if="subdomain">| {{ subdomain }}</span>
         </div>
         <p class="copyright">© 2026 b-2b.com. All rights reserved.</p>
         <div class="base-links">
-          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">Technologies</a>
-          <span class="dot">•</span>
-          <a :href="subdomain ? `/i/${subdomain}/privacy` : '/privacy'">Privacy Policy</a>
-          <span class="dot">•</span>
+          <a href="/privacy">Privacy Policy</a>
+          <span class="sep">·</span>
           <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact Us</a>
         </div>
         <div class="feedback-row">
-          <a href="/feedback" class="feedback-link">Feedback Entry</a>
+          <a href="/feedback" class="feedback-link">Feedback Entry →</a>
         </div>
       </div>
     </div>
@@ -30,9 +28,9 @@ defineProps<{
 
 <style scoped>
 .footer-07 {
-  background: #ffffff;
-  padding: 7rem 0;
-  border-top: 1px solid rgba(15, 23, 42, 0.04);
+  background: #fafbfc;
+  padding: 3.5rem 0;
+  border-top: 1px solid #f1f5f9;
 }
 
 .footer-container {
@@ -46,55 +44,65 @@ defineProps<{
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: 0.625rem;
 }
 
 .brand {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .logo {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: #0f172a;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+}
+
+.dot {
+  color: #22c55e;
 }
 
 .sub {
   font-weight: 500;
   color: #94a3b8;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 .copyright {
-  color: #64748b;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
+  color: #94a3b8;
+  font-size: 0.8125rem;
 }
 
 .base-links {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 3rem;
+  gap: 0.625rem;
 }
 
 .base-links a {
   color: #64748b;
   text-decoration: none;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-.dot {
+.base-links a:hover {
+  color: #0f172a;
+}
+
+.sep {
   color: #cbd5e1;
+  font-size: 0.75rem;
 }
 
 .feedback-row {
-  opacity: 0.5;
+  margin-top: 1.5rem;
+  opacity: 0.4;
   transition: opacity 0.3s;
 }
 
@@ -105,9 +113,14 @@ defineProps<{
 .feedback-link {
   color: #94a3b8;
   text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.6875rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+
+.feedback-link:hover {
+  color: #22c55e;
 }
 </style>

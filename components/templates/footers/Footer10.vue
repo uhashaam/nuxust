@@ -3,14 +3,12 @@
     <div class="footer-container">
       <div class="content">
         <div class="logo">b-2b.com</div>
-        <div class="sub-label" v-if="subdomain">〔 {{ subdomain }} 〕</div>
-        <p class="copyright">© 2026 b-2b.com 著作権所有</p>
+        <div class="sub-label" v-if="subdomain">— {{ subdomain }} —</div>
+        <p class="copyright">© 2026 b-2b.com — All Rights Reserved</p>
         <div class="bottom-links">
-          <a :href="subdomain ? `/i/${subdomain}/products` : '/products'">工业技术</a>
-          <span class="sep">｜</span>
-          <a :href="subdomain ? `/i/${subdomain}/privacy` : '/privacy'">隐私政策</a>
-          <span class="sep">｜</span>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">联系我们</a>
+          <a href="/privacy">Privacy Policy</a>
+          <span class="sep">|</span>
+          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact</a>
         </div>
       </div>
     </div>
@@ -24,14 +22,14 @@ defineProps<{
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 .footer-10 {
-  background: #fdfaf5;
-  color: #2c2c2c;
-  padding: 8rem 0;
-  font-family: 'Noto Serif SC', serif;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: #faf8f3;
+  color: #3d3629;
+  padding: 4rem 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .footer-container {
@@ -45,45 +43,55 @@ defineProps<{
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 2rem;
+  gap: 0.75rem;
 }
 
 .logo {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #000;
+  color: #2c2417;
   letter-spacing: -0.02em;
+  font-style: italic;
 }
 
 .sub-label {
-  font-size: 0.8125rem;
-  color: #8c8c8c;
+  font-size: 0.75rem;
+  color: #a89e8e;
+  letter-spacing: 0.15em;
+  font-style: normal;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  text-transform: uppercase;
 }
 
 .copyright {
-  font-size: 0.9375rem;
-  color: #595959;
+  font-size: 0.875rem;
+  color: #7a7060;
+  font-style: italic;
 }
 
 .bottom-links {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: #8c8c8c;
+  gap: 0.625rem;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 0.6875rem;
+  color: #a89e8e;
+  margin-top: 0.25rem;
 }
 
 .bottom-links a {
-  color: inherit;
+  color: #7a7060;
   text-decoration: none;
   transition: color 0.3s;
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
 
 .bottom-links a:hover {
-  color: #000;
+  color: #2c2417;
 }
 
 .sep {
-  color: #e5e0d8;
+  color: #d6cfc3;
 }
 </style>

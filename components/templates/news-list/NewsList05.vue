@@ -1,22 +1,29 @@
 <template>
   <div class="news-list-05">
-    <div v-for="item in newsItems" :key="item.id" class="tech-row" @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)">
-      <div class="icon-col">
-        <div class="tech-icon">
-          <el-icon><Cpu /></el-icon>
-        </div>
+    <div 
+      v-for="item in newsItems" 
+      :key="item.id" 
+      class="tech-list-row" 
+      @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
+    >
+      <div class="icon-indicator">
+        <!-- Tech blue icon requested -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
-      <div class="content-col">
-        <div class="title-meta">
-          <h3 class="news-title">{{ item.title }}</h3>
-          <span class="pub-date">{{ item.publishedAt }}</span>
+      <div class="content-block">
+        <div class="meta-row">
+          <h3 class="title">{{ item.title }}</h3>
+          <!-- Gray italicized date requested -->
+          <span class="date">{{ item.publishedAt }}</span>
         </div>
-        <div class="summary-wrapper" :class="{ 'expanded': hoverId === item.id }" @mouseenter="hoverId = item.id" @mouseleave="hoverId = null">
+        <!-- Summary with ellipsis, expands on hover -->
+        <div class="summary-container">
           <p class="excerpt">{{ item.excerpt }}</p>
         </div>
-      </div>
-      <div class="action-col">
-        <el-icon class="pulse-icon"><Connection /></el-icon>
       </div>
     </div>
     
@@ -34,9 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { navigateTo } from 'nuxt/app'
-import { Cpu, Connection } from '@element-plus/icons-vue'
 
 interface Props {
   newsItems: any[]
@@ -47,154 +52,130 @@ interface Props {
 
 defineProps<Props>()
 defineEmits(['page-change'])
-
-const hoverId = ref<string | null>(null)
 </script>
 
 <style scoped>
 .news-list-05 {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
-.tech-row {
+.tech-list-row {
   display: flex;
   gap: 1.5rem;
-  padding: 1.5rem;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.04);
-  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.02);
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1.5rem 1rem;
+  background: transparent;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.15); /* Tech blue subtle border */
   cursor: pointer;
+  transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
 }
 
-.tech-row::before {
+.tech-list-row::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 3px;
   background: #3b82f6;
   transform: scaleY(0);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
-.tech-row:hover {
+.tech-list-row:hover {
   background: #f8fafc;
-  border-color: #3b82f6;
-  transform: translateX(8px);
-  box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.08); /* Soft blue glow */
+  padding-left: 2rem;
+  box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.05);
 }
 
-.tech-row:hover::before {
+.tech-list-row:hover::before {
   transform: scaleY(1);
 }
 
-.icon-col {
+.icon-indicator {
   flex-shrink: 0;
+  margin-top: 0.25rem;
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
 
-.tech-icon {
-  width: 40px;
-  height: 40px;
-  background: #eff6ff;
-  color: #3b82f6; /* Blue icons as requested */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  font-size: 1.25rem;
+.tech-list-row:hover .icon-indicator {
+  opacity: 1;
 }
 
-.content-col {
+.content-block {
   flex: 1;
   min-width: 0;
 }
 
-.title-meta {
+.meta-row {
   display: flex;
+  justify-content: space-between;
   align-items: baseline;
-  gap: 1.5rem;
+  gap: 2rem;
   margin-bottom: 0.5rem;
 }
 
-.news-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 800;
+.title {
+  font-family: 'Inter', 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: #0f172a;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: 1;
   letter-spacing: -0.01em;
+  transition: color 0.2s;
 }
 
-.pub-date {
+.tech-list-row:hover .title {
+  color: #3b82f6;
+}
+
+.date {
   font-size: 0.8125rem;
-  color: #94a3b8;
-  font-style: italic; /* Gray italicized dates as requested */
+  color: #94a3b8; /* Gray date requested */
+  font-style: italic; /* Italicized date requested */
   white-space: nowrap;
 }
 
-.summary-wrapper {
-  position: relative;
+.summary-container {
+  overflow: hidden;
 }
 
 .excerpt {
-  font-size: 0.875rem;
-  color: #475569;
+  font-size: 0.9375rem;
+  color: #64748b;
   line-height: 1.6;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* Ellipsis as requested */
+  -webkit-line-clamp: 1; /* Ellipsis for summary requested */
   line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
-.summary-wrapper.expanded .excerpt {
+.tech-list-row:hover .excerpt {
   -webkit-line-clamp: unset;
-  line-clamp: unset; /* Reveal on hover as requested */
-}
-
-.action-col {
-  display: flex;
-  align-items: center;
-  color: #cbd5e1;
-}
-
-.pulse-icon {
-  font-size: 1.5rem;
-}
-
-.tech-row:hover .pulse-icon {
-  color: #3b82f6;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  line-clamp: unset; /* Reveal full text on hover requested */
+  color: #475569;
 }
 
 .pagination-wrapper {
-  margin-top: 3rem;
+  margin-top: 4rem;
   display: flex;
   justify-content: center;
 }
 
 @media (max-width: 640px) {
-  .title-meta {
+  .meta-row {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
+  }
+  .tech-list-row {
+    padding: 1.5rem 0;
   }
 }
 </style>
