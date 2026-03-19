@@ -95,14 +95,20 @@ useHead({
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 .about-page {
-  background: #f8fafc;
+  background-color: #f8fafc;
+  background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.04), transparent 50%),
+                    radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.04), transparent 50%);
+  color: #0f172a;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   min-height: 100vh;
 }
 
 .page-hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  padding: 8rem 0 6rem;
+  background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+  padding: 10rem 0 8rem;
   color: white;
   text-align: center;
   position: relative;
@@ -113,33 +119,55 @@ useHead({
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
   transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .tag {
   color: #818cf8;
   text-transform: uppercase;
   font-weight: 800;
-  letter-spacing: 0.1em;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  display: block;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 99px;
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 0.8s ease-out;
 }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 .page-hero h1 {
-  font-size: 3.5rem;
+  font-size: clamp(3rem, 5vw, 4.5rem);
   font-weight: 900;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, #ffffff, #c7d2fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 1s ease-out;
 }
 
 .subtitle {
-  font-size: 1.25rem;
-  color: #94a3b8;
+  font-size: 1.35rem;
+  color: #cbd5e1;
   max-width: 800px;
   margin: 0 auto;
+  font-weight: 500;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 1.2s ease-out;
 }
 
 .container {
@@ -155,59 +183,71 @@ useHead({
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 5rem;
   align-items: center;
 }
 
 .text-content h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 2.75rem;
+  font-weight: 900;
   margin-bottom: 1.5rem;
-  color: #1e293b;
+  color: #020617;
+  letter-spacing: -0.02em;
 }
 
 .text-content p {
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   line-height: 1.8;
   color: #475569;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .stats-row {
   display: flex;
-  gap: 3rem;
-  margin-top: 3rem;
+  gap: 3.5rem;
+  margin-top: 3.5rem;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.stat-item:hover { transform: translateY(-3px) scale(1.05); }
 
 .stat-num {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #6366f1;
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.25rem;
 }
 
 .stat-label {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .rounded-img {
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
   width: 100%;
   height: auto;
+  transition: transform 0.5s ease;
 }
+.rounded-img:hover { transform: scale(1.02); }
 
 .values-section {
-  background: white;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
   padding: 8rem 0;
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
 }
 
 .section-header {
@@ -216,101 +256,125 @@ useHead({
 }
 
 .section-header h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 2.75rem;
+  font-weight: 900;
   margin-bottom: 1rem;
+  color: #020617;
+}
+.section-header p {
+  font-size: 1.15rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .values-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .value-card {
-  padding: 3rem;
-  background: #f8fafc;
+  padding: 3.5rem 2.5rem;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
-  transition: transform 0.3s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .value-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
 }
 
 .value-icon {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   margin-bottom: 1.5rem;
+  display: inline-block;
+  padding: 1rem;
+  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
 }
 
 .value-card h3 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 1rem;
+  color: #0f172a;
 }
 
 .value-card p {
-  color: #64748b;
-  line-height: 1.6;
+  color: #475569;
+  line-height: 1.7;
+  font-size: 1.05rem;
 }
 
-.filing-section {
-  padding: 5rem 0 8rem;
-}
+.filing-section { padding: 8rem 0 10rem; }
 
 .filing-box {
-  background: #0f172a;
+  background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
   color: white;
-  padding: 4rem;
+  padding: 5rem;
   border-radius: 32px;
   text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+.filing-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(99, 102, 241, 0.5), transparent);
 }
 
 .filing-box h3 {
-  font-size: 1.875rem;
-  margin-bottom: 2rem;
+  font-size: 2.25rem;
+  font-weight: 900;
+  margin-bottom: 2.5rem;
+  background: linear-gradient(to right, #ffffff, #c7d2fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .filing-details {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 3rem;
+  gap: 3.5rem;
 }
 
 .filing-details p {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   color: #94a3b8;
+  font-weight: 500;
 }
 
-.filing-details strong {
-  color: white;
-}
+.filing-details strong { color: white;     font-weight: 700; margin-right: 0.5rem;}
 
 @media (max-width: 992px) {
-  .content-grid { grid-template-columns: 1fr; }
-  .values-grid { grid-template-columns: 1fr; }
+  .content-grid { grid-template-columns: 1fr; gap: 4rem; }
+  .values-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .filing-box { padding: 3rem 2rem; }
 }
 
 @media (max-width: 768px) {
-  .page-hero { padding: 4rem 0; }
+  .page-hero { padding: 8rem 0 6rem; }
   .page-hero h1 { font-size: 2.5rem; }
-  .subtitle { font-size: 1.125rem; }
+  .subtitle { font-size: 1.15rem; }
   
   .container { padding: 0 1.5rem; }
   .mission-section, .values-section, .filing-section { padding: 4rem 0; }
   
-  .content-grid { gap: 3rem; }
-  
   .text-content h2 { 
-    font-size: 2rem;
+    font-size: 2.25rem;
     text-align: center;
   }
-  
   .text-content p {
-    font-size: 1.125rem;
-    line-height: 1.8;
     text-align: center;
     margin-bottom: 2rem;
   }
@@ -318,10 +382,9 @@ useHead({
   .stats-row {
     justify-content: center;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 2.5rem;
   }
   
-  .filing-box { padding: 2rem; }
-  .filing-details { gap: 1.5rem; }
+  .filing-details { gap: 1.5rem; flex-direction: column;}
 }
 </style>

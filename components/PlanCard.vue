@@ -59,51 +59,59 @@ defineEmits(['select'])
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 .plan-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 24px;
+  padding: 3.5rem 2.5rem;
   position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', -apple-system, sans-serif;
 }
 
 .plan-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  border-color: #3b82f6;
+  transform: translateY(-10px);
+  box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.15);
+  border-color: #cbd5e1;
 }
 
 .is-featured {
-  border: 2px solid #3b82f6;
+  border: 2px solid #4f46e5;
   scale: 1.05;
-  z-index: 1;
+  z-index: 2;
+  box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.25);
 }
 
 .featured-badge {
   position: absolute;
-  top: -12px;
+  top: -14px;
   left: 50%;
   transform: translateX(-50%);
-  background: #3b82f6;
+  background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
   color: white;
-  padding: 0.25rem 1rem;
+  padding: 0.35rem 1.25rem;
   border-radius: 99px;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
 }
 
 .plan-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .plan-name {
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #0f172a;
   margin-bottom: 1rem;
 }
@@ -117,44 +125,84 @@ defineEmits(['select'])
 
 .currency {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #64748b;
 }
 
 .amount {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: 3.5rem;
+  font-weight: 900;
   color: #0f172a;
+  line-height: 1;
 }
 
 .period {
   color: #64748b;
   font-size: 1rem;
+  font-weight: 500;
 }
 
 .plan-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 2.5rem 0;
+  margin: 0 0 3rem 0;
   flex: 1;
 }
 
 .plan-features li {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
   color: #475569;
+  font-weight: 500;
+  font-size: 1.05rem;
 }
 
 .check-icon {
-  color: #10b981;
+  color: #4f46e5;
   font-size: 1.25rem;
+  background: rgba(79, 70, 229, 0.1);
+  padding: 0.25rem;
+  border-radius: 50%;
 }
 
-.select-btn {
+:deep(.select-btn) {
   width: 100%;
-  border-radius: 12px;
-  font-weight: 700;
+  height: 56px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.is-featured :deep(.select-btn) {
+  background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+  color: white !important;
+}
+
+.is-featured :deep(.select-btn:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.6);
+  filter: brightness(1.1);
+}
+
+.plan-card:not(.is-featured) :deep(.select-btn) {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+}
+
+.plan-card:not(.is-featured) :deep(.select-btn:hover) {
+  background: white;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .is-featured { scale: 1; z-index: 1; }
+  .plan-card { padding: 2.5rem 2rem; }
 }
 </style>
