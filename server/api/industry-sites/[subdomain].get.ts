@@ -1,61 +1,51 @@
-import { fetchAllRecords } from '../../utils/lark/base'
+import { prisma } from '../../utils/prisma'
 
 /**
  * Get a specific industry site by subdomain
  */
 export default defineCachedEventHandler(async (event) => {
     try {
-        const subdomain = getRouterParam(event, 'subdomain')
+        const subdomainParam = getRouterParam(event, 'subdomain')
 
-        if (!subdomain) {
+        if (!subdomainParam) {
             throw createError({
                 statusCode: 400,
                 message: 'Subdomain parameter is required'
             })
         }
 
-        const config = useRuntimeConfig()
-        const appToken = config.larkBaseAppToken
-        const tableId = config.larkTableIndustrySites
-
-        if (!appToken || !tableId) {
-            throw createError({
-                statusCode: 500,
-                message: 'Lark Base configuration missing'
-            })
-        }
-
-        // Fetch all records and filter by subdomain
-        // Note: Lark Base API filter syntax might differ, this is a simple approach
-        const records = await fetchAllRecords(appToken, tableId)
-        const record = records.find(r =>
-            r.fields.subdomain &&
-            String(r.fields.subdomain).trim().toLowerCase() === subdomain.trim().toLowerCase()
-        )
+        const record = await prisma.industrySite.findFirst({
+            where: {
+                OR: [
+                    { sub_domain: subdomainParam },
+                    { subdomain: subdomainParam }
+                ]
+            }
+        })
 
         if (!record) {
             throw createError({
                 statusCode: 404,
-                message: `Industry site with subdomain "${subdomain}" not found`
+                message: `Industry site with subdomain "${subdomainParam}" not found`
             })
         }
 
         return {
             success: true,
             site: {
-                id: record.record_id,
-                industryName: record.fields.industry_name,
-                subdomain: record.fields.subdomain,
-                sslStatus: record.fields.ssl_status,
-                headerStyleId: record.fields.header_style_id,
-                footerStyleId: record.fields.footer_style_id,
-                bannerStyleId: record.fields.banner_style_id,
-                newsDetailStyleId: record.fields.news_detail_style_id,
-                newsListStyleId: record.fields.news_list_style_id,
-                siteStatus: record.fields.site_status,
-                boundUserId: record.fields.bound_user_id,
-                aiNewsToggle: record.fields.ai_news_toggle,
-                aboutText: record.fields.about_text
+                id: record.id,
+                industryName: record.industry_name,
+                subdomain: record.subdomain || record.sub_domain,
+                sslStatus: record.ssl_status,
+                headerStyleId: record.header_style_id,
+                footerStyleId: record.footer_style_id,
+                bannerStyleId: record.banner_style_id,
+                newsDetailStyleId: record.news_detail_style_id,
+                newsListStyleId: record.news_list_style_id,
+                siteStatus: record.site_status,
+                boundUserId: record.bound_user_id,
+                aiNewsToggle: record.ai_news_toggle,
+                aboutText: record.about_text
             }
         }
     } catch (error: any) {

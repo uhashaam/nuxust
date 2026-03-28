@@ -1,4 +1,5 @@
-import { fetchAllRecords } from '../../utils/lark/base'
+import { newsRepository } from '../../utils/newsRepository'
+import { prisma } from '../../utils/prisma'
 
 // Curated high-quality Unsplash images keyed by topic
 const IMAGE_MAP: Record<string, string[]> = {
@@ -8,7 +9,7 @@ const IMAGE_MAP: Record<string, string[]> = {
         'https://images.unsplash.com/photo-1565449446-ece1b2368ae2?w=800&q=80', // precision tools
     ],
     lasercutter: [
-        'https://images.unsplash.com/photo-1565349978634-c9e57b5a8a68?w=800&q=80', // laser sparks
+        'https://images.unsplash.com/photo-1563349978634-c9e57b5a8a68?w=800&q=80', // laser sparks (corrected typo in unsplash ID)
         'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80', // metal cutting
         'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&q=80', // factory line
     ],
@@ -47,93 +48,66 @@ function pickNewsImage(title: string = '', category: string = ''): string {
 
 export default defineEventHandler(async (event) => {
     try {
-        const config = useRuntimeConfig()
-        const appToken = config.larkBaseAppToken
-        const newsTableId = config.larkTableNewsContent
-
-        if (!appToken || !newsTableId) {
-            throw createError({ statusCode: 500, message: 'Lark configuration missing' })
-        }
-
-        const [news, sites] = await Promise.all([
-            fetchAllRecords(appToken, newsTableId),
-            fetchAllRecords(appToken, config.larkTableIndustrySites)
+        // Fetch from MySQL via newsRepository
+        const [newsList, sites] = await Promise.all([
+            prisma.newsContent.findMany({
+                where: { status: { in: ['Published', 'Trending'] } },
+                orderBy: { publication_time: 'desc' }
+            }),
+            prisma.industrySite.findMany()
         ])
 
-        const siteMap = new Map(sites.map(s => [s.record_id, { name: s.fields.industry_name, subdomain: s.fields.subdomain }]))
-
-
-        const filtered = news.filter(n => {
-            const hasTitle = !!n.fields.news_title
-            const hasContent = !!n.fields.news_content
-            const isPublished = n.fields.release_status === 'Published' || n.fields.release_status === 'Trending'
-
-            if (!isPublished) {
-
-            }
-
-            return hasTitle && hasContent && isPublished
-        })
-
+        const siteMap = new Map(sites.map(s => [s.id, { name: s.industry_name, subdomain: s.subdomain || s.sub_domain }]))
 
         return {
             success: true,
-            news: filtered
-                .map(n => {
-                    const releaseTime = n.fields.release_time
-                    let dateStr = ''
-                    if (releaseTime) {
-                        const ts = Number(releaseTime)
-                        const date = new Date(ts > 10000000000 ? ts : ts * 1000)
-                        dateStr = date.toISOString().split('T')[0] as string
-                    }
+            news: newsList.map(n => {
+                const releaseTime = n.publication_time
+                let dateStr = ''
+                if (releaseTime) {
+                    const ts = Number(releaseTime)
+                    const date = new Date(ts > 10000000000 ? ts : ts * 1000)
+                    dateStr = date.toISOString().split('T')[0] as string
+                }
 
-                    const siteIdsField = n.fields.site_id || []
-                    let category = 'Industry'
-                    let subdomain = ''
-                    for (const sf of siteIdsField) {
-                        const rid = typeof sf === 'string' ? sf : (sf.record_id || sf.record_ids?.[0])
-                        if (rid && siteMap.has(rid)) {
-                            const site = siteMap.get(rid)
-                            category = site.name as string
-                            subdomain = site.subdomain as string
-                            break
-                        }
-                    }
+                // Map site/category
+                let category = 'Industry'
+                let subdomain = ''
+                if (n.industry && siteMap.has(n.industry)) {
+                    const site = siteMap.get(n.industry)
+                    category = site.name as string
+                    subdomain = site.subdomain as string
+                }
 
-                    // Resolve image: Use Lark attachment if exists, otherwise fallback to placeholder
-                    const featuredImgField = n.fields.featured_image
-                    let imageUrl = pickNewsImage(n.fields.news_title, category)
+                // Resolve image: Use local field if exists, otherwise fallback to placeholder
+                let imageUrl = pickNewsImage(n.title, category)
+                if (n.thumbnail) {
+                   const thumbRaw = Array.isArray(n.thumbnail) ? n.thumbnail : [n.thumbnail];
+                   if (thumbRaw.length > 0) {
+                      const img = thumbRaw[0];
+                      if (img.url) imageUrl = img.url;
+                      else if (img.file_token) imageUrl = `/api/images/${img.file_token}`;
+                   }
+                }
 
-                    if (typeof featuredImgField === 'string' && featuredImgField.trim() !== '') {
-                        imageUrl = featuredImgField
-                    } else if (featuredImgField && Array.isArray(featuredImgField) && featuredImgField.length > 0) {
-                        const img = featuredImgField[0]
-                        if (img.file_token) {
-                            imageUrl = `/api/images/${img.file_token}`
-                        } else {
-                            imageUrl = img.tmp_url || img.url || imageUrl
-                        }
-                    }
-
-                    return {
-                        id: n.record_id || '',
-                        title: n.fields.news_title,
-                        content: n.fields.news_content,
-                        publishedAt: dateStr,
-                        status: n.fields.release_status,
-                        category: category as string,
-                        subdomain: subdomain,
-                        excerpt: n.fields.news_content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
-                        image: imageUrl,
-                        author: 'Staff Writer',
-                        trending: n.fields.release_status === 'Trending',
-                        featured: true,
-                        slug: n.fields.slug || `news-${n.record_id}`,
-                        siteId: siteIdsField[0]?.record_ids?.[0] || siteIdsField[0]?.record_id || (typeof siteIdsField[0] === 'string' ? siteIdsField[0] : ''),
-                        tags: []
-                    }
-                })
+                return {
+                    id: n.id,
+                    title: n.title,
+                    content: n.content,
+                    publishedAt: dateStr,
+                    status: n.status,
+                    category: category,
+                    subdomain: subdomain,
+                    excerpt: n.content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
+                    image: imageUrl,
+                    author: n.author || 'Staff Writer',
+                    trending: n.status === 'Trending',
+                    featured: true,
+                    slug: n.slug,
+                    siteId: n.industry,
+                    tags: []
+                }
+            })
         }
     } catch (error: any) {
         throw createError({

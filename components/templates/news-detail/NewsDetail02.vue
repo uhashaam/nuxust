@@ -12,7 +12,7 @@
     </div>
 
     <div v-if="image" class="tech-image">
-      <img :src="image" :alt="title" />
+      <img :src="image" :alt="title" fetchpriority="high" />
       <div class="image-tint"></div>
     </div>
     

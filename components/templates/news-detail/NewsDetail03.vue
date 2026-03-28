@@ -16,7 +16,7 @@
       </header>
 
       <div v-if="image" class="featured-image">
-        <img :src="image" :alt="title" />
+        <img :src="image" :alt="title" fetchpriority="high" />
       </div>
       
       <div class="content" v-html="content"></div>
@@ -30,7 +30,7 @@
             class="related-card"
             @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
           >
-            <img v-if="item.image" :src="item.image" :alt="item.title" />
+            <img v-if="item.image" :src="item.image" :alt="item.title" loading="lazy" />
             <div class="card-text">
               <h4>{{ item.title }}</h4>
               <span v-if="item.publishedAt">{{ item.publishedAt }}</span>

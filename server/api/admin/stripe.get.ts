@@ -1,39 +1,30 @@
-import { fetchRecords } from '../../utils/lark/base';
+import { prisma } from '../../utils/prisma';
 
 export default defineEventHandler(async (event) => {
-    // 1. Validate Admin Auth
-    const user = event.context.user; // Assuming there is an auth middleware populating this
-
-    const config = useRuntimeConfig();
-    const appToken = config.larkBaseAppToken;
-    const adminSettingsTableId = config.larkTableAdminSettings;
-
-    if (!appToken || !adminSettingsTableId) {
-        throw createError({ statusCode: 500, message: 'Lark Base configuration missing for Admin Settings' });
-    }
-
+    // 1. Validate Admin Auth (Add checks if necessary)
+    
     try {
-        // Fetch Stripe config from Lark
-        const { records } = await fetchRecords(appToken, adminSettingsTableId);
+        // Fetch values from MySQL via Prisma
+        const settings = await prisma.adminSetting.findMany({
+            where: {
+                key: {
+                    in: ['stripe_secret_key', 'stripe_webhook_secret', 'stripe_publishable_key']
+                }
+            }
+        });
 
         const stripeConfig: Record<string, string> = {
             stripe_secret_key: '',
             stripe_webhook_secret: '',
-            stripe_publishable_key: '' // Optional for possible future frontend needs
+            stripe_publishable_key: ''
         };
 
-        // Find matching records and populate
-        records.forEach(r => {
-            const key = r.fields['Key'] || r.fields['Setting Name'];
-            const val = r.fields['Value'];
-
-            if (key && Object.keys(stripeConfig).includes(key as string)) {
-                // Mask sensitive active keys
-                if ((key === 'stripe_secret_key' || key === 'stripe_webhook_secret') && val) {
-                    stripeConfig[key] = '********'; // Masked for security
-                } else {
-                    stripeConfig[key] = val as string || '';
-                }
+        // Populate and mask sensitive keys
+        settings.forEach(s => {
+            if (s.key === 'stripe_secret_key' || s.key === 'stripe_webhook_secret') {
+                stripeConfig[s.key] = s.value ? '********' : '';
+            } else if (s.key === 'stripe_publishable_key') {
+                stripeConfig[s.key] = s.value || '';
             }
         });
 
@@ -42,7 +33,6 @@ export default defineEventHandler(async (event) => {
             config: stripeConfig
         };
     } catch (error: any) {
-        
         throw createError({ statusCode: 500, message: 'Failed to fetch Stripe Configuration' });
     }
 });

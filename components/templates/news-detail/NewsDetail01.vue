@@ -10,7 +10,7 @@
     </header>
 
     <div v-if="image" class="featured-image">
-      <img :src="image" :alt="title" />
+      <img :src="image" :alt="title" fetchpriority="high" />
     </div>
     
     <div class="content" v-html="content"></div>
@@ -24,7 +24,7 @@
           class="rec-item"
           @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
         >
-          <img v-if="item.image" :src="item.image" :alt="item.title" class="rec-img" />
+          <img v-if="item.image" :src="item.image" :alt="item.title" class="rec-img" loading="lazy" />
           <div class="rec-text">
             <h4 class="rec-name">{{ item.title }}</h4>
             <span class="rec-date" v-if="item.publishedAt">{{ item.publishedAt }}</span>

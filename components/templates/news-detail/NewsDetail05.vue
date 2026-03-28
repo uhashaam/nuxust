@@ -10,7 +10,7 @@
     </header>
 
     <div v-if="image" class="fresh-image">
-      <img :src="image" :alt="title" />
+      <img :src="image" :alt="title" fetchpriority="high" />
     </div>
     
     <div class="content" v-html="content"></div>
@@ -29,7 +29,7 @@
           @click="navigateTo(subdomain ? `/i/${subdomain}/news/${item.slug}` : `/news/${item.slug}`)"
         >
           <div class="image-wrapper" v-if="item.image">
-            <img :src="item.image" :alt="item.title" />
+            <img :src="item.image" :alt="item.title" loading="lazy" />
           </div>
           <h5>{{ item.title }}</h5>
         </div>

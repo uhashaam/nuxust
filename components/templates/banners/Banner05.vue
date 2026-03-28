@@ -20,6 +20,10 @@ interface Props {
 
 const props = defineProps<Props>()
 const bgImage = props.backgroundImage || 'https://images.unsplash.com/photo-1517581177682-a022bb7ca511?auto=format&fit=crop&q=80&w=1920&h=500'
+
+useHead({
+  link: [{ rel: 'preload', as: 'image', href: bgImage }]
+})
 </script>
 
 <style scoped>

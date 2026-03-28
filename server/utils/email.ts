@@ -1,5 +1,5 @@
 // Email functionality uses Resend API exclusively for Cloudflare Edge compatibility.
-import { fetchRecords } from './lark/base';
+import { prisma } from './prisma';
 
 export interface EmailOptions {
     to: string;
@@ -10,10 +10,8 @@ export interface EmailOptions {
 
 export const sendEmail = async (options: EmailOptions) => {
     const config = useRuntimeConfig();
-    const appToken = config.larkBaseAppToken;
-    const adminSettingsTableId = config.larkTableAdminSettings;
 
-    // Priority 1: Check env var directly (fastest, no Lark lookup needed)
+    // Priority 1: Check env var directly (fastest, no DB lookup needed)
     const envResendApiKey = (config as any).resendApiKey || '';
 
     // If we have the Resend key directly from env, use it immediately
@@ -42,29 +40,19 @@ export const sendEmail = async (options: EmailOptions) => {
         return { success: true, message: `Email sent via Resend (env): ${data.id}` };
     }
 
-    if (!appToken || !adminSettingsTableId) {
-        throw new Error('Missing Lark Base configuration for Admin Settings.');
-    }
-
     try {
-        // Priority 2: Fetch config from Lark admin settings
-        let records: any[] = [];
-        try {
-            const result = await fetchRecords(appToken, adminSettingsTableId);
-            records = result.records || [];
-        } catch (e) {
-            console.warn('Could not fetch admin settings from Lark, using fallback defaults.');
-        }
+        // Priority 2: Fetch config from AdminSetting in Prisma
+        const settings = await prisma.adminSetting.findMany();
 
         const getSetting = (key: string, defaultVal: string) => {
-            const record = records.find(r => r.fields['Key'] === key || r.fields['Setting Name'] === key);
-            return (record && record.fields['Value']) ? record.fields['Value'] : defaultVal;
+            const record = settings.find((r: any) => r.key === key);
+            return (record && record.value) ? record.value : defaultVal;
         };
 
         const host = getSetting('smtp_host', 'smtp.feishu.cn');
         const portStr = getSetting('smtp_port', '465');
         const user = getSetting('smtp_user', 'smtp@zjdu.com');
-        const pass = getSetting('smtp_password', 'Kengnu@1smtp');
+        const pass = getSetting('smtp_password', 'Kengnu@1smtp'); // Example info
 
         const fromEmail = getSetting('smtp_from_email', user);
         const fromName = getSetting('smtp_from_name', 'B2B Subdomain Platform');
@@ -98,7 +86,7 @@ export const sendEmail = async (options: EmailOptions) => {
         }
 
         // Fallback: No valid key found
-        console.warn('No Resend API key found in env or Lark Base. Email sending skipped.');
+        console.warn('No Resend API key found in env or Admin Settings. Email sending skipped.');
         throw new Error('Email service not configured. Please add Resend API Key.');
 
     } catch (error: any) {

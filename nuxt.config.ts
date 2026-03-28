@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare-pages',
-    compressPublicAssets: true,
+    compressPublicAssets: { gzip: true, brotli: true },
     experimental: {
       nodeCompat: true
     }
@@ -72,10 +72,15 @@ export default defineNuxtConfig({
       Inter: [400, 500, 600, 700],
       'Outfit': [400, 500, 600, 700]
     },
-    display: 'swap'
+    display: 'swap',
+    download: true,
+    preconnect: true,
+    prefetch: true
   },
 
   image: {
+    provider: 'ipx',
+    quality: 80,
     format: ['webp', 'jpg', 'png'],
     screens: {
       xs: 320,
@@ -102,6 +107,30 @@ export default defineNuxtConfig({
 
   sitemap: {
     strictNuxtContentPaths: true
+  },
+
+  experimental: {
+    payloadExtraction: true,
+    renderJsonPayloads: true,
+    headNext: true,
+    inlineRouteRules: true,
+    sharedPrerenderData: true,
+    componentIslands: true
+  },
+
+  vite: {
+    build: {
+      cssCodeSplit: true,
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      }
+    },
+    optimizeDeps: {
+      include: ['vue', 'vue-router']
+    }
   },
 
 

@@ -9,7 +9,7 @@
     </div>
 
     <div v-if="image" class="business-image">
-      <img :src="image" :alt="title" />
+      <img :src="image" :alt="title" fetchpriority="high" />
     </div>
     
     <div class="content" v-html="content"></div>

@@ -1,0 +1,124 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String   @id @default(uuid())
+  username            String   @unique
+  email               String?  @unique
+  password_hash       String
+  user_type           String   @default("user") // admin, user, vip1, vip2, vip3, vip4
+  registration_time   BigInt
+  remaining_posts     Int      @default(0)
+  user_status         String   @default("active") // active, inactive, suspended, pending_verification
+  plan_expires_at     BigInt?
+  renewal_notified_at BigInt?
+  password_reset_code String?
+  verification_code   String?
+  code_expires_at     BigInt?
+  bound_site_id       Json?    // Array of bound site IDs
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Product {
+  id                String   @id @default(uuid())
+  name              String   // Mapped from 'Text' in Lark
+  description       String   @db.Text
+  short_description String?  @db.Text
+  price             Float    @default(0)
+  category          String?
+  specifications    String?  @db.Text // JSON string
+  slug              String   @unique
+  featured_image    Json?    // Array of image objects or URLs
+  is_featured       Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model IndustrySite {
+  id                   String   @id @default(uuid())
+  site_name            String
+  site_title           String?  @db.Text
+  industry_name        String?
+  sub_domain           String   @unique
+  subdomain            String?  // Alias since API uses both
+  meta_description     String?  @db.Text
+  logo                 Json?    
+  favicon              Json?
+  contact_email        String?
+  contact_phone        String?
+  address              String?  @db.Text
+  social_links         String?  @db.Text 
+  
+  // Style and config fields from Lark Base
+  ssl_status           String?
+  header_style_id      String?
+  footer_style_id      String?
+  banner_style_id      String?
+  news_detail_style_id String?
+  news_list_style_id   String?
+  site_status          String?  @default("active")
+  bound_user_id        String?
+  ai_news_toggle       Boolean? @default(false)
+  about_text           String?  @db.Text
+
+  is_active        Boolean  @default(true)
+  custom_css       String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model NewsContent {
+  id               String   @id @default(uuid())
+  title            String
+  content          String   @db.LongText
+  industry         String?
+  publication_time BigInt?
+  summary          String?  @db.Text
+  thumbnail        Json?    // Array of image objects or URLs
+  author           String?
+  status           String   @default("Draft") // Published, Draft
+  source           String?
+  is_featured      Boolean  @default(false)
+  slug             String   @unique
+  original_url     String?  @db.Text
+  related_products Json?    // Array of related product IDs
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PlanCoupon {
+  id              String   @id @default(uuid())
+  type            String   // 'Plan' or 'Coupon'
+  name            String
+  code            String?  @unique
+  price           Float?
+  discount_amount Float?
+  billing_cycle   String?  // 'monthly', 'yearly', 'one-time'
+  duration_days   Int?
+  max_uses        Int?
+  current_uses    Int      @default(0)
+  is_active       Boolean  @default(true)
+  valid_until     BigInt?
+  features        String?  @db.Text // JSON string
+  limits          String?  @db.Text // JSON string
+  stripe_price_id String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AdminSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique // Mapped from 'Key' or 'Setting Name'
+  value       String   @db.Text
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

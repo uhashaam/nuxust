@@ -1,4 +1,4 @@
-import { fetchAllRecords } from '../../../utils/lark/base'
+import { prisma } from '../../../utils/prisma'
 
 // Curated high-quality Unsplash images keyed by subdomain/topic
 const IMAGE_MAP: Record<string, string[]> = {
@@ -39,88 +39,72 @@ function pickNewsImage(title: string = '', subdomain: string = ''): string {
 
 export default defineCachedEventHandler(async (event) => {
     try {
-        const subdomain = getRouterParam(event, 'subdomain')
-        if (!subdomain) {
+        const subdomainParam = getRouterParam(event, 'subdomain')
+        if (!subdomainParam) {
             throw createError({ statusCode: 400, message: 'Subdomain required' })
         }
 
-        const config = useRuntimeConfig()
-        const appToken = config.larkBaseAppToken
-        const siteTableId = config.larkTableIndustrySites
-        const newsTableId = config.larkTableNewsContent
+        // 1. Fetch the site and associated news from MySQL via Prisma
+        const site = await prisma.industrySite.findFirst({
+            where: {
+                OR: [
+                    { sub_domain: subdomainParam },
+                    { subdomain: subdomainParam }
+                ]
+            }
+        })
 
-        if (!appToken || !siteTableId || !newsTableId) {
-            throw createError({ statusCode: 500, message: 'Lark configuration missing' })
-        }
-
-        const [sites, news] = await Promise.all([
-            fetchAllRecords(appToken, siteTableId),
-            fetchAllRecords(appToken, newsTableId)
-        ])
-
-        const site = sites.find(s =>
-            s.fields.subdomain &&
-            String(s.fields.subdomain).trim().toLowerCase() === subdomain.trim().toLowerCase()
-        )
         if (!site) {
             throw createError({ statusCode: 404, message: 'Site not found' })
         }
 
-        // 3. Filter news by site record ID
-        const filteredNews = news.filter(n => {
-            const siteField = n.fields.site_id || []
-            // Link fields can be an array of objects like { record_ids: [...], ... }
-            return siteField.some((s: any) => {
-                if (typeof s === 'string') return s === site.record_id
-                if (s && s.record_id === site.record_id) return true
-                if (s && s.record_ids && Array.isArray(s.record_ids)) {
-                    return s.record_ids.includes(site.record_id)
-                }
-                return false
-            })
+        // 2. Fetch news matching the site record ID
+        const newsItems = await prisma.newsContent.findMany({
+            where: {
+                industry: site.id,
+                status: { in: ['Published', 'Trending'] }
+            },
+            orderBy: { publication_time: 'desc' }
         })
 
-        // 4. Map to frontend NewsItem format
+        // 3. Map to frontend NewsItem format
         return {
             success: true,
-            news: filteredNews
-                .filter(n => n.fields.news_title && n.fields.news_content)
-                .map(n => {
-                    const releaseTime = n.fields.release_time
-                    let dateStr = ''
-                    if (releaseTime) {
-                        const ts = Number(releaseTime)
-                        const date = new Date(ts > 10000000000 ? ts : ts * 1000)
-                        dateStr = date.toISOString().split('T')[0] as string
-                    }
+            news: newsItems.map(n => {
+                const releaseTime = n.publication_time
+                let dateStr = ''
+                if (releaseTime) {
+                    const ts = Number(releaseTime)
+                    const date = new Date(ts > 10000000000 ? ts : ts * 1000)
+                    dateStr = date.toISOString().split('T')[0] as string
+                }
 
-                    // Resolve image: Use Lark attachment if exists, otherwise fallback to placeholder
-                    const featuredImgField = n.fields.featured_image
-                    let imageUrl = pickNewsImage(n.fields.news_title, subdomain)
+                // Resolve image: Use local field if exists, otherwise fallback to placeholder
+                let imageUrl = pickNewsImage(n.title, subdomainParam)
+                if (n.thumbnail) {
+                   const thumbRaw = Array.isArray(n.thumbnail) ? n.thumbnail : [n.thumbnail]
+                   if (thumbRaw.length > 0) {
+                      const img = thumbRaw[0]
+                      imageUrl = img.url || img.tmp_url || imageUrl
+                   }
+                }
 
-                    if (typeof featuredImgField === 'string' && featuredImgField.trim() !== '') {
-                        imageUrl = featuredImgField
-                    } else if (featuredImgField && Array.isArray(featuredImgField) && featuredImgField.length > 0) {
-                        const img = featuredImgField[0]
-                        imageUrl = img.tmp_url || img.url || imageUrl
-                    }
-
-                    return {
-                        id: n.record_id || '',
-                        title: n.fields.news_title,
-                        content: n.fields.news_content,
-                        publishedAt: dateStr,
-                        status: n.fields.release_status,
-                        category: (site.fields.industry_name as string) || 'Industry',
-                        excerpt: n.fields.news_content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
-                        image: imageUrl,
-                        author: 'Staff Writer',
-                        trending: n.fields.release_status === 'Trending',
-                        featured: true,
-                        slug: n.fields.slug || `news-${n.record_id}`,
-                        tags: []
-                    }
-                })
+                return {
+                    id: n.id,
+                    title: n.title,
+                    content: n.content,
+                    publishedAt: dateStr,
+                    status: n.status,
+                    category: site.industry_name || 'Industry',
+                    excerpt: n.content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
+                    image: imageUrl,
+                    author: n.author || 'Staff Writer',
+                    trending: n.status === 'Trending',
+                    featured: true,
+                    slug: n.slug,
+                    tags: []
+                }
+            })
         }
     } catch (error: any) {
         throw createError({

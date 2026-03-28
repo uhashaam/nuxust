@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { fetchRecords } from '../../utils/lark/base';
+import { prisma } from '../../utils/prisma';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -14,31 +14,26 @@ export default defineEventHandler(async (event) => {
 
     const config = useRuntimeConfig();
 
-    // Fetch settings from Lark Base
-    const appToken = config.larkBaseAppToken;
-    const adminSettingsTableId = config.larkTableAdminSettings;
-
-    if (!appToken || !adminSettingsTableId) {
-        throw createError({ statusCode: 500, message: 'Lark Base configuration missing for Admin Settings' });
-    }
-
-    const { records } = await fetchRecords(appToken, adminSettingsTableId);
+    // Fetch stripe secret key from MySQL AdminSettings via Prisma
     let stripeSecretKey = config.stripeSecretKey; // Fallback to env
 
-    const secretRecord = records.find(r => r.fields['Key'] === 'stripe_secret_key' || r.fields['Setting Name'] === 'stripe_secret_key');
-    if (secretRecord && secretRecord.fields['Value']) {
-        stripeSecretKey = secretRecord.fields['Value'] as string;
-    }
-
-    if (!stripeSecretKey) {
-        throw createError({ statusCode: 500, statusMessage: 'Stripe Secret Key is missing from Admin Config' });
-    }
-
-    const stripe = new Stripe(stripeSecretKey, {
-        apiVersion: '2025-01-27.acacia'
-    });
-
     try {
+        const stripeSetting = await prisma.adminSetting.findUnique({
+            where: { key: 'stripe_secret_key' }
+        });
+
+        if (stripeSetting && stripeSetting.value) {
+            stripeSecretKey = stripeSetting.value;
+        }
+
+        if (!stripeSecretKey) {
+            throw createError({ statusCode: 500, statusMessage: 'Stripe Secret Key is missing from Database Config' });
+        }
+
+        const stripe = new Stripe(stripeSecretKey, {
+            apiVersion: '2025-01-27.acacia'
+        });
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [

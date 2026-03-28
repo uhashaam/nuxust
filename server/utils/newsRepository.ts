@@ -1,6 +1,9 @@
-import { fetchAllRecords, createRecord, updateRecord, deleteRecord, type LarkBaseRecord } from './lark/base';
+import { prisma } from './prisma';
+import fs from 'fs';
+import path from 'path';
 
-export interface News extends LarkBaseRecord {
+export interface News {
+    record_id: string;
     fields: {
         news_id?: string;
         site_id: any[]; // Link field
@@ -9,154 +12,125 @@ export interface News extends LarkBaseRecord {
         generation_method: 'Manual' | 'AI';
         release_time: number;
         release_status: 'Published' | 'Draft' | 'Trending';
-        featured_image?: string;
+        featured_image?: string | any[];
         author_email?: string;
     }
 }
 
+const mapNews = (pNews: any): News => {
+    return {
+        record_id: pNews.id,
+        fields: {
+            news_id: pNews.id,
+            news_title: pNews.title,
+            news_content: pNews.content,
+            generation_method: pNews.generation_method || 'Manual',
+            release_time: pNews.publication_time ? Number(pNews.publication_time) : Date.now(),
+            release_status: pNews.status as any,
+            author_email: pNews.author || undefined,
+            site_id: pNews.industry ? [{ record_id: pNews.industry }] : [],
+            featured_image: pNews.thumbnail
+        }
+    };
+};
+
 export const newsRepository = {
-    /**
-     * Fetch news for a specific site
-     */
     async getNewsBySite(siteRecordId: string): Promise<News[]> {
-        const config = useRuntimeConfig();
-        const appToken = config.larkBaseAppToken;
-        const tableId = config.larkTableNewsContent;
-
-        if (!appToken || !tableId) {
-            throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
-        }
-
-        const news = await fetchAllRecords(appToken, tableId);
-        return news.filter(n => {
-            const siteField = n.fields.site_id || [];
-            return siteField.some((s: any) => {
-                const rid = typeof s === 'string' ? s : (s.record_id || s.record_ids?.[0]);
-                return rid === siteRecordId;
-            });
-        }) as News[];
+        const news = await prisma.newsContent.findMany({
+            where: { industry: siteRecordId }
+        });
+        return news.map(mapNews);
     },
 
-    /**
-     * Fetch news by author email
-     */
     async getNewsByAuthor(email: string): Promise<News[]> {
-        const config = useRuntimeConfig();
-        const appToken = config.larkBaseAppToken;
-        const tableId = config.larkTableNewsContent;
-
-        if (!appToken || !tableId) {
-            throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
-        }
-
-        const news = await fetchAllRecords(appToken, tableId);
-
-        return news.filter(n => n.fields.author_email === email) as News[];
+        const news = await prisma.newsContent.findMany({
+            where: { author: email }
+        });
+        return news.map(mapNews);
     },
 
-    /**
-     * Fetch all news records (administrative)
-     */
     async getAllNews(): Promise<News[]> {
-        const config = useRuntimeConfig();
-        const appToken = config.larkBaseAppToken;
-        const tableId = config.larkTableNewsContent;
-
-        if (!appToken || !tableId) {
-            throw createError({ statusCode: 500, statusMessage: 'Lark Base configuration missing' });
-        }
-
-        const news = await fetchAllRecords(appToken, tableId);
-        return news as News[];
+        const news = await prisma.newsContent.findMany();
+        return news.map(mapNews);
     },
 
-    /**
-     * Create a new news record
-     */
     async createNews(newsData: any): Promise<News> {
-        const config = useRuntimeConfig();
-        const appToken = config.larkBaseAppToken;
-        const tableId = config.larkTableNewsContent;
+        let featured_image: any = null;
 
-        // Strictly pick only fields that exist in Lark to avoid FieldNameNotFound (like 'slug')
-        const fields: Record<string, any> = {
-            news_title: newsData.news_title,
-            news_content: newsData.news_content,
-            generation_method: newsData.generation_method || 'Manual',
-            release_time: Date.now(),
-            release_status: newsData.release_status || 'Published',
-            author_email: newsData.author_email,
-            news_style_id: newsData.news_style_id,
-            news_list_style_id: newsData.news_list_style_id
-        }
-
-        // Handle site_id (Link field)
-        if (newsData.site_id && Array.isArray(newsData.site_id) && newsData.site_id.length > 0) {
-            fields.site_id = newsData.site_id
-        }
-
-        // Handle featured_image (Transitioning from Text to Attachment)
         if (newsData.featured_image) {
             const img = newsData.featured_image;
-            
-            // If it's a base64 string, upload as attachment
-            if (typeof img === 'string' && (img.startsWith('data:image') || img.length > 500)) {
+            if (typeof img === 'string' && img.startsWith('data:image')) {
+                // Save base64 image locally
                 try {
-                    // Extract base64 data and metadata
                     const match = img.match(/^data:([^;]+);base64,(.+)$/);
-                    if (match) {
-                        const contentType = match[1];
-                        const base64Data = match[2];
+                    if (match && match.length === 3 && match[1] && match[2]) {
+                        const contentType = match[1] as string;
+                        const base64Data = match[2] as string;
                         const buffer = Buffer.from(base64Data, 'base64');
                         const ext = contentType.split('/')[1] || 'jpg';
+                        const fileName = `news_image_${Date.now()}.${ext}`;
                         
-                        const fileToken = await uploadAttachment(appToken, tableId, {
-                            fileName: `news_image_${Date.now()}.${ext}`,
-                            contentType: contentType,
-                            buffer: buffer
-                        });
+                        // Ensure uploads folder exists
+                        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+                        if (!fs.existsSync(uploadDir)) {
+                            fs.mkdirSync(uploadDir, { recursive: true });
+                        }
                         
-                        fields.featured_image = [{ file_token: fileToken }];
-                    } else {
-                        // Not a formal base64 data URL but potentially just base64 data
-                        // Skip if it looks like garbage to avoid Lark errors
+                        fs.writeFileSync(path.join(uploadDir, fileName), buffer);
+                        featured_image = [{ url: `/uploads/${fileName}` }];
                     }
-                } catch (err) {
-                    console.error('Failed to upload base64 image to Lark:', err);
+                } catch (e) {
+                    console.error('Failed saving local image in prisma:', e);
                 }
-            } else if (typeof img === 'string' && !img.startsWith('http') && img.length < 200) {
-                // If it's a token (doesn't start with http and is short), treat as attachment
-                fields.featured_image = [{ file_token: img }]
+            } else if (typeof img === 'string') {
+                featured_image = [{ url: img }];
             } else {
-                // It's likely a URL or a pre-formatted array (for updates)
-                fields.featured_image = img
+                featured_image = img;
             }
         }
 
-        const record = await createRecord(appToken, tableId, fields);
-        return record as News;
+        const siteIdVal = Array.isArray(newsData.site_id) && newsData.site_id.length > 0
+            ? (newsData.site_id[0].record_id || newsData.site_id[0])
+            : null;
+
+        const pNews = await prisma.newsContent.create({
+            data: {
+                title: newsData.news_title,
+                content: newsData.news_content,
+                industry: siteIdVal,
+                publication_time: newsData.release_time || Date.now(),
+                status: newsData.release_status || 'Published',
+                author: newsData.author_email,
+                thumbnail: featured_image,
+                slug: newsData.news_title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now()
+            }
+        });
+
+        return mapNews(pNews);
     },
 
-    /**
-     * Update an existing news record
-     */
     async updateNews(recordId: string, updates: Partial<News['fields']>): Promise<News> {
-        const config = useRuntimeConfig();
-        const appToken = config.larkBaseAppToken;
-        const tableId = config.larkTableNewsContent;
-
-        const record = await updateRecord(appToken, tableId, recordId, updates);
-        return record as News;
+        const data: any = {};
+        if (updates.news_title) data.title = updates.news_title;
+        if (updates.news_content) data.content = updates.news_content;
+        if (updates.release_status) data.status = updates.release_status;
+        if (updates.release_time) data.publication_time = updates.release_time;
+        if (updates.author_email) data.author = updates.author_email;
+        if (updates.site_id && updates.site_id.length > 0) {
+            data.industry = updates.site_id[0].record_id || updates.site_id[0];
+        }
+        
+        const pNews = await prisma.newsContent.update({
+            where: { id: recordId },
+            data
+        });
+        return mapNews(pNews);
     },
 
-    /**
-     * Delete a news record
-     */
     async deleteNews(recordId: string): Promise<boolean> {
-        const config = useRuntimeConfig();
-        const appToken = config.larkBaseAppToken;
-        const tableId = config.larkTableNewsContent;
-
-        return await deleteRecord(appToken, tableId, recordId);
+        await prisma.newsContent.delete({
+            where: { id: recordId }
+        });
+        return true;
     }
 };

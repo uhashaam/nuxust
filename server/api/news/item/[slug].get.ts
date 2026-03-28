@@ -1,4 +1,4 @@
-import { fetchAllRecords } from '../../../utils/lark/base'
+import { prisma } from '../../../utils/prisma'
 
 export default defineEventHandler(async (event) => {
     try {
@@ -7,28 +7,26 @@ export default defineEventHandler(async (event) => {
             throw createError({ statusCode: 400, message: 'News identifier (slug or ID) is required' })
         }
 
-        const config = useRuntimeConfig()
-        const appToken = config.larkBaseAppToken
-        const newsTableId = config.larkTableNewsContent
-
-        if (!appToken || !newsTableId) {
-            throw createError({ statusCode: 500, message: 'Lark configuration missing' })
-        }
-
-        const [news, sites] = await Promise.all([
-            fetchAllRecords(appToken, newsTableId),
-            fetchAllRecords(appToken, config.larkTableIndustrySites)
+        // Fetch the article and all sites from MySQL via Prisma
+        const [record, sites] = await Promise.all([
+            prisma.newsContent.findFirst({
+                where: {
+                    OR: [
+                        { id: identifier },
+                        { slug: identifier }
+                    ]
+                }
+            }),
+            prisma.industrySite.findMany()
         ])
 
-        const record = news.find(n => n.record_id === identifier || n.fields.slug === identifier || `news-${n.record_id}` === identifier)
-
-        if (!record || !record.fields.news_title || !record.fields.news_content) {
+        if (!record || !record.title || !record.content) {
             throw createError({ statusCode: 404, message: 'Article not found or incomplete' })
         }
 
-        const siteMap = new Map(sites.map(s => [s.record_id, { name: s.fields.industry_name, subdomain: s.fields.subdomain }]))
+        const siteMap = new Map(sites.map(s => [s.id, { name: s.industry_name, subdomain: s.subdomain || s.sub_domain }]))
 
-        const releaseTime = record.fields.release_time
+        const releaseTime = record.publication_time
         let dateStr = ''
         if (releaseTime) {
             const ts = Number(releaseTime)
@@ -37,42 +35,39 @@ export default defineEventHandler(async (event) => {
         }
 
         // Resolve category and subdomain
-        const siteIdsField = record.fields.site_id || []
         let category = 'Industry'
         let subdomain = ''
-        for (const sf of siteIdsField) {
-            const rid = typeof sf === 'string' ? sf : (sf.record_id || sf.record_ids?.[0])
-            if (rid && siteMap.has(rid)) {
-                const site = siteMap.get(rid)
-                category = site.name as string
-                subdomain = site.subdomain as string
-                break
-            }
+        if (record.industry && siteMap.has(record.industry)) {
+            const site = siteMap.get(record.industry)
+            category = site.name as string
+            subdomain = site.subdomain as string
         }
 
-        // Resolve image: Use Lark attachment if exists, otherwise fallback to placeholder
-        const featuredImgField = record.fields.featured_image
+        // Resolve image: Use local field if exists, otherwise fallback to placeholder
         let imageUrl = 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80'
-
-        if (featuredImgField && Array.isArray(featuredImgField) && featuredImgField.length > 0) {
-            const img = featuredImgField[0]
-            imageUrl = img.tmp_url || img.url || imageUrl
+        
+        if (record.thumbnail) {
+            const thumbRaw = Array.isArray(record.thumbnail) ? record.thumbnail : [record.thumbnail]
+            if (thumbRaw.length > 0) {
+                const img = thumbRaw[0]
+                imageUrl = img.url || img.tmp_url || imageUrl
+            }
         }
 
         return {
             success: true,
             article: {
-                id: record.record_id,
-                title: record.fields.news_title,
-                content: record.fields.news_content,
+                id: record.id,
+                title: record.title,
+                content: record.content,
                 publishedAt: dateStr,
-                status: record.fields.release_status,
+                status: record.status,
                 category: category as string,
                 subdomain: subdomain,
-                excerpt: record.fields.news_content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
+                excerpt: record.content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
                 image: imageUrl,
-                author: 'Staff Writer',
-                slug: record.fields.slug || `news-${record.record_id}`,
+                author: record.author || 'Staff Writer',
+                slug: record.slug,
                 tags: []
             }
         }

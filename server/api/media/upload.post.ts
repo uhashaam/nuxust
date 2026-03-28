@@ -1,4 +1,5 @@
-import { uploadAttachment } from '../../utils/lark/base'
+import fs from 'fs'
+import path from 'path'
 import { userAuth } from '../../utils/userAuth'
 
 export default defineEventHandler(async (event) => {
@@ -21,33 +22,32 @@ export default defineEventHandler(async (event) => {
 
     const file = formData.find(f => f.name === 'file')
     if (!file || !file.data) {
-        throw createError({ statusCode: 400, message: 'File field is missing' })
+        throw createError({ statusCode: 400, message: 'File data is missing' })
     }
 
-    const config = useRuntimeConfig()
-    const appToken = config.larkBaseAppToken
-    const tableId = config.larkTableNewsContent
-
     try {
-        // 3. Upload to Lark
-        const fileToken = await uploadAttachment(appToken, tableId, {
-            fileName: file.filename || 'upload.png',
-            contentType: file.type || 'image/png',
-            buffer: file.data
-        })
+        // 3. Save file locally to public/uploads
+        const fileName = `${Date.now()}-${file.filename || 'upload.png'}`
+        const uploadDir = path.join(process.cwd(), 'public', 'uploads')
+        
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true })
+        }
+
+        const filePath = path.join(uploadDir, fileName)
+        fs.writeFileSync(filePath, file.data)
+
+        const publicUrl = `/uploads/${fileName}`
 
         return {
             success: true,
-            fileToken,
-            url: '' // Lark doesn't give a direct public URL for attachments easily, but we have the token
+            fileToken: fileName, // Use filename as token for now
+            url: publicUrl
         }
     } catch (error: any) {
-        // error logging removed for cloudflare compatibility
-
-
         throw createError({
             statusCode: error.statusCode || 500,
-            message: error.message || 'Failed to upload media to Lark'
+            message: error.message || 'Failed to save media locally'
         })
     }
 })
