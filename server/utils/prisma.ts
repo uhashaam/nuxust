@@ -1,31 +1,37 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaMysql } from '@prisma/adapter-mysql'
-import mysql from 'mysql2/promise'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 
 // Prevent multiple instances of Prisma Client in development
 declare global {
   var prisma: any
 }
 
-let prismaClient: PrismaClient
-
-// In Cloudflare Workers/Pages runtime, we must use the driver adapter
-// In local development or Node.js runtime, we can use the standard client or the adapter
-// We check for the database URL environment variable to determine if we can connect
-const databaseUrl = process.env.DATABASE_URL
-
-if (process.env.NITRO_PRESET === 'cloudflare-pages' || process.env.NODE_ENV === 'production' || !databaseUrl?.includes('localhost')) {
-  // Use Driver Adapter logic
-  const connectionString = databaseUrl || ''
-  const pool = mysql.createPool(connectionString)
-  const adapter = new PrismaMysql(pool)
-  prismaClient = new PrismaClient({ adapter })
-} else {
-  // Standard Client for local dev
-  prismaClient = new PrismaClient()
+function parseDatabaseUrl(url: string) {
+  // Parse mysql://user:password@host:port/database
+  const match = url.match(/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
+  if (!match) throw new Error('Invalid DATABASE_URL format')
+  return {
+    host: match[3],
+    user: decodeURIComponent(match[1]),
+    password: decodeURIComponent(match[2]),
+    port: parseInt(match[4]),
+    database: match[5]
+  }
 }
 
-export const prisma = global.prisma || prismaClient
+let prismaInstance: PrismaClient
+
+const databaseUrl = process.env.DATABASE_URL || ''
+
+if (databaseUrl) {
+  const config = parseDatabaseUrl(databaseUrl)
+  const adapter = new PrismaMariaDb(config)
+  prismaInstance = new PrismaClient({ adapter } as any)
+} else {
+  prismaInstance = new PrismaClient()
+}
+
+export const prisma = global.prisma || prismaInstance
 
 if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma
