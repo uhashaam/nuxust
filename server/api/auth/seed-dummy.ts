@@ -1,6 +1,6 @@
+import { prisma } from '../../utils/prisma';
+
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig();
-    // SECURITY: In a real app, this should be protected by a master key or deleted after use
     const usersToCreate = [
         { username: 'superadmin', email: 'admin@b-2b.com', user_type: 'admin', remaining_posts: 9999 },
         { username: 'hashaam_v1', email: 'vip1@b-2b.com', user_type: 'vip1', remaining_posts: 4 },
@@ -11,44 +11,38 @@ export default defineEventHandler(async (event) => {
     ];
 
     try {
-        // --- Clean Existing Users ---
-        const appToken = config.larkBaseAppToken;
-        const userTableId = config.larkTableUsers;
-        if (appToken && userTableId) {
-            try {
-                const { fetchAllRecords, batchDeleteRecords } = await import('../../utils/lark/base');
-                const allUsers = await fetchAllRecords(appToken, userTableId);
-                if (allUsers.length > 0) {
-                    await batchDeleteRecords(appToken, userTableId, allUsers.map(u => u.record_id!));
-                }
-            } catch (e) { }
-        }
-
-        const results = [];
         const password = 'Password786!';
+        const results = [];
 
         for (const u of usersToCreate) {
             try {
                 const passwordHash = await userAuth.hashPassword(password);
-                // The existing user check and update logic is removed because we are deleting all users first.
-                // This ensures a clean state and fresh user creation.
 
-                const newUser = await userRepository.createUser({
-                    username: u.username,
-                    email: u.email,
-                    password_hash: passwordHash,
-                    user_type: u.user_type as any,
-                    remaining_posts: u.remaining_posts,
-                    bound_site_id: []
+                const newUser = await prisma.user.upsert({
+                    where: { email: u.email },
+                    update: {
+                        username: u.username,
+                        password_hash: passwordHash,
+                        user_type: u.user_type as any,
+                        remaining_posts: u.remaining_posts,
+                    },
+                    create: {
+                        username: u.username,
+                        email: u.email,
+                        password_hash: passwordHash,
+                        user_type: u.user_type as any,
+                        remaining_posts: u.remaining_posts,
+                        registration_time: BigInt(Date.now()),
+                        bound_site_id: JSON.stringify([]),
+                    },
                 });
-                results.push({ username: u.username, status: 'created', id: newUser.record_id });
-            } catch (error: any) {
 
+                results.push({ username: u.username, status: 'created', id: newUser.id });
+            } catch (error: any) {
                 results.push({
                     username: u.username,
                     status: 'error',
                     message: error.message || 'Unknown error',
-                    details: error.data || error.response?.data || null
                 });
             }
         }
@@ -59,62 +53,47 @@ export default defineEventHandler(async (event) => {
                 title: 'Solar Energy Revolution: New Efficient Panels Released',
                 category: 'Solar Energy',
                 content: '<h2>Efficiency Breakthrough</h2><p>Researchers have achieved 30% efficiency in commercial silicon solar cells...</p>',
-                publishedAt: new Date().getTime(),
                 slug: 'solar-energy-revolution-2026'
             },
             {
                 title: 'Manufacturing Trends: Automation in the Laser Industry',
                 category: 'Manufacturing',
                 content: '<h2>Laser Focus</h2><p>Industrial lasers are seeing record adoption rates in 2026 for precision cutting...</p>',
-                publishedAt: new Date().getTime(),
                 slug: 'manufacturing-trends-laser-2026'
             },
             {
                 title: 'Global Trade Policy Update for 2026',
                 category: 'Industry',
                 content: '<h2>New Regulations</h2><p>A summary of the latest international trade agreements affecting electronics...</p>',
-                publishedAt: new Date().getTime(),
                 slug: 'global-trade-policy-2026'
             }
         ];
 
-        const newsTableId = config.larkTableNewsContent;
         const newsResults = [];
-
-        if (newsTableId) {
-            for (const n of newsToCreate) {
-                try {
-                    const record = await createRecord(config.larkBaseAppToken, newsTableId, {
-                        "news_title": n.title,
-                        "news_content": n.content,
-                        "generation_method": "Manual",
-                        "release_time": n.publishedAt,
-                        "release_status": "Published"
-                    });
-                    newsResults.push({ title: n.title, status: 'created', id: record.record_id });
-                } catch (error: any) {
-
-                    newsResults.push({
+        for (const n of newsToCreate) {
+            try {
+                const news = await prisma.news.upsert({
+                    where: { slug: n.slug },
+                    update: { title: n.title, content: n.content },
+                    create: {
                         title: n.title,
-                        status: 'error',
-                        message: error.message,
-                        details: error.data || error.response?.data || null
-                    });
-                }
+                        slug: n.slug,
+                        content: n.content,
+                        category: n.category,
+                        release_status: 'Published',
+                        generation_method: 'Manual',
+                        release_time: BigInt(Date.now()),
+                    },
+                });
+                newsResults.push({ title: n.title, status: 'created', id: news.id });
+            } catch (error: any) {
+                newsResults.push({ title: n.title, status: 'error', message: error.message });
             }
         }
 
-        return {
-            success: true,
-            userSummary: results,
-            newsSummary: newsResults
-        };
+        return { success: true, userSummary: results, newsSummary: newsResults };
 
     } catch (error: any) {
-        return {
-            success: false,
-            error: error.message,
-            stack: error.stack
-        };
+        return { success: false, error: error.message, stack: error.stack };
     }
 });

@@ -1,6 +1,6 @@
 // Bulk coupon distribution — sends coupon to all users of a specific user_type
 import { sendEmail } from '../../../utils/email';
-import { fetchAllRecords } from '../../../utils/lark/base';
+import { prisma } from '../../../utils/prisma';
 
 export default defineEventHandler(async (event) => {
     const token = getCookie(event, 'auth_token');
@@ -15,22 +15,21 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, message: 'userType and couponCode are required' });
     }
 
-    const config = useRuntimeConfig();
-    const records = await fetchAllRecords(config.larkBaseAppToken, config.larkTableUsers);
-
-    const targets = records.filter(r => {
-        const f = r.fields as any;
-        const type = (f.user_type || 'user').toLowerCase();
-        return f.email && (userType === 'all' ? true : type === userType.toLowerCase());
+    // Fetch users from MySQL via Prisma
+    const users = await prisma.user.findMany({
+        where: userType === 'all'
+            ? { email: { not: null } }
+            : { user_type: userType.toLowerCase(), email: { not: null } },
+        select: { email: true, username: true, user_type: true },
     });
 
     let sent = 0, errors = 0;
 
-    for (const record of targets) {
-        const f = record.fields as any;
+    for (const user of users) {
+        if (!user.email) continue;
         try {
             await sendEmail({
-                to: f.email,
+                to: user.email,
                 subject: `🎁 Exclusive Coupon: ${couponCode}`,
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 40px 30px; background: #f8fafc;">
@@ -59,5 +58,5 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-    return { success: true, targeted: targets.length, sent, errors };
+    return { success: true, targeted: users.length, sent, errors };
 });

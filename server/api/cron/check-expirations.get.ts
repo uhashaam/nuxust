@@ -1,72 +1,70 @@
-import { userRepository } from '../../utils/userRepository';
+import { prisma } from '../../utils/prisma';
 import { sendEmail } from '../../utils/email';
 
 export default defineEventHandler(async (event) => {
-    // Basic auth check for cron job security
     const query = getQuery(event);
     const config = useRuntimeConfig();
 
-    // In a prod environment, checking against a CRON_SECRET is recommended
-    // if (query.secret !== process.env.CRON_SECRET) {
-    //     throw createError({ statusCode: 401, message: 'Unauthorized execution' });
-    // }
+    // Secure with secret key
+    if (query.secret !== config.cronSecret) {
+        throw createError({ statusCode: 401, message: 'Unauthorized' });
+    }
 
     try {
-        // Here we would ideally fetch only Active/VIP users, but for lack of a direct 
-        // complex filter in the simplified repo logic, we can fetch all or a subset
-        // In this architecture, let's fetch users who have an active VIP membership
-
-        const appToken = config.larkBaseAppToken;
-        const usersTableId = config.larkTableUsers;
-
-        if (!appToken || !usersTableId) {
-            throw new Error('Lark configuration missing for Users table');
-        }
-
-        // Fetch using the raw base fetcher to get all users
-        const { fetchAllRecords } = await import('../../utils/lark/base');
-        const users = await fetchAllRecords(appToken, usersTableId);
-
         const now = Date.now();
-        const FIFTEEN_DAYS = 15 * 24 * 60 * 60 * 1000;
+        const FIFTEEN_DAYS_MS = 15 * 24 * 60 * 60 * 1000;
+        const nowBigInt = BigInt(now);
+        const fifteenDaysBigInt = BigInt(now + FIFTEEN_DAYS_MS);
+
+        // Find active VIP users with plans expiring within 15 days
+        const expiringUsers = await prisma.user.findMany({
+            where: {
+                user_status: 'active',
+                plan_expires_at: {
+                    gt: nowBigInt,
+                    lte: fifteenDaysBigInt,
+                },
+                renewal_notified_at: null,
+            },
+        });
 
         let warningsSent = 0;
-        const notifiedUsers = [];
+        const notifiedUsers: string[] = [];
 
-        for (const userRecord of users) {
-            const fields = userRecord.fields;
-            const expDate = fields['plan_expiration_date'] || fields['Plan Expiration Date'];
-            const email = fields['email'] || fields['Email'];
+        for (const user of expiringUsers) {
+            if (!user.email) continue;
 
-            if (expDate && email) {
-                const expTimestamp = new Date(expDate).getTime();
-                const timeToExpire = expTimestamp - now;
+            try {
+                const expDate = user.plan_expires_at
+                    ? new Date(Number(user.plan_expires_at)).toLocaleDateString()
+                    : 'soon';
 
-                // If expiration is within 15 days and in the future
-                if (timeToExpire > 0 && timeToExpire <= FIFTEEN_DAYS) {
-                    // This is where you would hook into an email provider like Resend or SendGrid
-                    
+                await sendEmail({
+                    to: user.email,
+                    subject: 'Action Required: Your B2B Plan is Expiring Soon',
+                    text: `Your subscription is expiring on ${expDate}. Please log in to renew your plan.`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; padding: 20px;">
+                            <h2>Subscription Expiration Warning</h2>
+                            <p>Hello ${user.username},</p>
+                            <p>Your B2B Platform subscription is scheduled to expire on <strong>${expDate}</strong>.</p>
+                            <p>Please log in to your dashboard and renew your plan to ensure uninterrupted publishing access.</p>
+                            <br/>
+                            <p>Thank you for using our platform.</p>
+                        </div>
+                    `
+                });
 
-                    // Use the dynamic SMTP utility to send the warning email
-                    await sendEmail({
-                        to: email,
-                        subject: 'Action Required: Your B2B Plan is Expiring Soon',
-                        text: `Your subscription is expiring in less than 15 days. Please log in to renew your plan to avoid service interruption.`,
-                        html: `
-                            <div style="font-family: Arial, sans-serif; padding: 20px;">
-                                <h2>Subscription Expiration Warning</h2>
-                                <p>Hello,</p>
-                                <p>Your B2B Platform subscription is scheduled to expire in less than <strong>15 days</strong>.</p>
-                                <p>Please log in to your dashboard and renew your plan to ensure uninterrupted publishing access and API stability for your industry sites.</p>
-                                <br/>
-                                <p>Thank you for using our platform.</p>
-                            </div>
-                        `
-                    });
+                // Mark user as notified so we don't send duplicate emails
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { renewal_notified_at: BigInt(now) },
+                });
 
-                    warningsSent++;
-                    notifiedUsers.push(email);
-                }
+                warningsSent++;
+                notifiedUsers.push(user.email);
+            } catch (e) {
+                // continue with next user even if email fails
             }
         }
 
@@ -74,11 +72,10 @@ export default defineEventHandler(async (event) => {
             success: true,
             warningsSent,
             notifiedUsers,
-            message: `Processed ${users.length} users, sent ${warningsSent} warnings.`
+            message: `Processed ${expiringUsers.length} expiring users, sent ${warningsSent} warnings.`
         };
 
     } catch (error: any) {
-        
         throw createError({
             statusCode: 500,
             message: 'Failed to run expiration checks: ' + error.message
