@@ -21,7 +21,7 @@ function parseDatabaseUrl(url: string) {
 
 let prismaInstance: PrismaClient | null = null
 
-export const prisma = (() => {
+function getClient() {
   if (global.prisma) return global.prisma
   if (prismaInstance) return prismaInstance
 
@@ -46,4 +46,15 @@ export const prisma = (() => {
     global.prisma = prismaInstance
   }
   return prismaInstance
-})()
+}
+
+export const prisma = new Proxy({} as PrismaClient, {
+  get(target, prop) {
+    const client = getClient();
+    const value = (client as any)[prop];
+    if (typeof value === 'function') {
+      return value.bind(client);
+    }
+    return value;
+  }
+});
