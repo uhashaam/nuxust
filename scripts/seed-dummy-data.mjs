@@ -76,6 +76,29 @@ async function main() {
   }
   console.log(`Seeded ${productNames.length} products.`)
 
+  // 4. Create Dummy Users
+  const usersData = [
+    { username: 'admin', email: 'admin@example.com', role: 'admin' },
+    { username: 'user1', email: 'user1@example.com', role: 'user' }
+  ]
+
+  for (const userData of usersData) {
+    await prisma.user.upsert({
+      where: { username: userData.username },
+      update: {},
+      create: {
+        username: userData.username,
+        email: userData.email,
+        password_hash: 'dummy-hash', // In a real app, use bcrypt or similar
+        user_type: userData.role,
+        registration_time: BigInt(Date.now()),
+        remaining_posts: 100,
+        user_status: 'active'
+      }
+    }).catch(e => console.error(`Error seeding user ${userData.username}:`, e.message))
+  }
+  console.log(`Seeded ${usersData.length} users.`)
+
   console.log('Seeding completed!')
 }
 
