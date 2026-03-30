@@ -3,7 +3,7 @@ import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 
 // Prevent multiple instances of Prisma Client in development
 declare global {
-  var prisma: any
+  var __prisma: any
 }
 
 /**
@@ -28,15 +28,18 @@ function parseDatabaseUrl(urlStr: string) {
 let prismaInstance: PrismaClient | null = null
 
 function getClient() {
-  if (global.prisma) return global.prisma
+  if (globalThis.__prisma) return globalThis.__prisma
   if (prismaInstance) return prismaInstance
 
   const config = useRuntimeConfig()
   
-  // Try NUXT_DATABASE_URL (auto-mapped by Nuxt) or direct process.env fallbacks
+  // Try multiple naming patterns. 
+  // NUXT_DATABASE_URL -> config.databaseUrl
+  // DATABASE_URL -> process.env.DATABASE_URL
   const dbUrl = (config.databaseUrl as string) || 
                 process.env.NUXT_DATABASE_URL || 
                 process.env.DATABASE_URL || 
+                (globalThis as any).DATABASE_URL || // Cloudflare global binding
                 ''
 
   const isProduction = process.env.NODE_ENV === 'production'
@@ -54,11 +57,11 @@ function getClient() {
       const adapter = new PrismaMariaDb(dbConfig)
       prismaInstance = new PrismaClient({ 
         adapter,
-        log: !isProduction ? ['query', 'error', 'warn'] : ['error']
+        log: ['error', 'warn']
       } as any)
       
       console.log('[Prisma] Client initialized with MariaDB adapter.')
-    } catch (e) {
+    } catch (e: any) {
       console.error('[Prisma] Critical failure during client initialization:', e)
       
       if (!isProduction) {
@@ -66,7 +69,10 @@ function getClient() {
         prismaInstance = new PrismaClient()
       } else {
         // High-importance failure in production
-        throw e
+        // Wrap error to include more context
+        const error = new Error(`Prisma Initialization Failed: ${e.message}`)
+        ;(error as any).cause = e
+        throw error
       }
     }
   } else {
@@ -82,7 +88,7 @@ function getClient() {
 
   // Cache instance in development to prevent Exhausted Resource errors
   if (!isProduction) {
-    global.prisma = prismaInstance
+    globalThis.__prisma = prismaInstance
   }
   
   return prismaInstance
