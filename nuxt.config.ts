@@ -8,8 +8,33 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-pages',
     compressPublicAssets: { gzip: true, brotli: true },
-    experimental: {
-      nodeCompat: true
+    rollupConfig: {
+      plugins: [
+        {
+          // Stub Prisma's WASM query engine — not needed when using driver adapters.
+          // @prisma/adapter-mariadb handles all DB comms directly.
+          // We stub both the bare WASM path and the ?module suffix Rollup uses.
+          name: 'prisma-wasm-stub',
+          resolveId(id: string) {
+            // Catch bare wasm reference
+            if (id.includes('query_engine_bg.wasm')) {
+              return '\0prisma-wasm-stub'
+            }
+            // Catch the wasm-edge-light-loader (which imports the wasm)
+            if (id.includes('wasm-edge-light-loader')) {
+              return '\0prisma-wasm-loader-stub'
+            }
+          },
+          load(id: string) {
+            if (id === '\0prisma-wasm-stub') {
+              return 'export default null; export const SqlQueryResult = null;'
+            }
+            if (id === '\0prisma-wasm-loader-stub') {
+              return 'export default null;'
+            }
+          }
+        }
+      ]
     }
   },
 
