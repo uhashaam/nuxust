@@ -19,20 +19,31 @@ function parseDatabaseUrl(url: string) {
   }
 }
 
-let prismaInstance: PrismaClient
+let prismaInstance: PrismaClient | null = null
 
-const databaseUrl = process.env.DATABASE_URL || ''
+export const prisma = (() => {
+  if (global.prisma) return global.prisma
+  if (prismaInstance) return prismaInstance
 
-if (databaseUrl) {
-  const config = parseDatabaseUrl(databaseUrl)
-  const adapter = new PrismaMariaDb(config)
-  prismaInstance = new PrismaClient({ adapter } as any)
-} else {
-  prismaInstance = new PrismaClient()
-}
+  const config = useRuntimeConfig()
+  const dbUrl = (config.databaseUrl as string) || process.env.DATABASE_URL || ''
 
-export const prisma = global.prisma || prismaInstance
+  if (dbUrl) {
+    try {
+      const dbConfig = parseDatabaseUrl(dbUrl)
+      const adapter = new PrismaMariaDb(dbConfig)
+      prismaInstance = new PrismaClient({ adapter } as any)
+    } catch (e) {
+      console.error('Failed to parse database configuration:', e)
+      prismaInstance = new PrismaClient()
+    }
+  } else {
+    console.warn('DATABASE_URL is not set. Falling back to default Prisma client.')
+    prismaInstance = new PrismaClient()
+  }
 
-if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma
-}
+  if (process.env.NODE_ENV !== 'production') {
+    global.prisma = prismaInstance
+  }
+  return prismaInstance
+})()
