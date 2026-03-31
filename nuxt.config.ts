@@ -139,7 +139,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Server-only secrets
     // These auto-map from NUXT_{KEY_SCREAMING_SNAKE_CASE} env vars
-    databaseUrl: '',
+    databaseUrl: process.env.NUXT_DATABASE_URL || process.env.DATABASE_URL || '',
     larkAppId: '',
     larkAppSecret: '',
     larkBaseAppToken: '',
