@@ -32,6 +32,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
+      mariadb:
+        specifier: ^3.3.0
+        version: 3.4.5
       marked:
         specifier: ^17.0.1
         version: 17.0.1

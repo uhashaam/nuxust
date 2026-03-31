@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaMysql2 } from '@prisma/adapter-mysql2'
-import mysql from 'mysql2/promise'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 
 // Prevent multiple instances of Prisma Client in development
 declare global {
@@ -55,24 +54,13 @@ function getClient() {
       
       // In production (Cloudflare), we MUST use the driver adapter. 
       // Standard Prisma engine binaries do not run on Cloudflare Workers/Pages.
-      const pool = mysql.createPool({
-          host: dbConfig.host,
-          port: dbConfig.port,
-          user: dbConfig.user,
-          password: dbConfig.password,
-          database: dbConfig.database,
-          waitForConnections: true,
-          connectionLimit: 10,
-          queueLimit: 0
-      })
-
-      const adapter = new PrismaMysql2(pool)
+      const adapter = new PrismaMariaDb(dbConfig)
       prismaInstance = new PrismaClient({ 
         adapter,
         log: ['error', 'warn']
       } as any)
       
-      console.log('[Prisma] Client initialized with MySQL2 adapter.')
+      console.log('[Prisma] Client initialized with MariaDB adapter.')
     } catch (e: any) {
       console.error('[Prisma] Critical failure during client initialization:', e)
       
