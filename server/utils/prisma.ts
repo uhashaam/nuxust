@@ -1,6 +1,15 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaMysql2 } from '@prisma/adapter-mysql2'
-import mysql from 'mysql2/promise'
+
+// POLYFILL: Fix for Cloudflare Edge crash in MariaDB driver (b.hasOwnProperty is not a function)
+if (typeof Object.prototype.hasOwnProperty === 'function' && typeof (globalThis as any).hasOwnProperty !== 'function') {
+  try {
+    (globalThis as any).hasOwnProperty = function(prop: string) {
+      return Object.prototype.hasOwnProperty.call(this, prop)
+    }
+  } catch (e) {}
+}
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import mariadb from 'mariadb'
 
 /**
  * Robust URL parsing.
@@ -49,9 +58,9 @@ function getClient(): PrismaClient {
   const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
 
   if (isProduction) {
-    // Production (Cloudflare Edge) initialization with mysql2 driver adapter
+    // Production (Cloudflare Edge) initialization with MariaDB driver adapter
     const dbConfig = parseDatabaseUrl(cleanDbUrl)
-    const connection = mysql.createPool({
+    const pool = mariadb.createPool({
       host: dbConfig.host,
       port: dbConfig.port,
       user: dbConfig.user,
@@ -63,7 +72,7 @@ function getClient(): PrismaClient {
       noDelay: true
     })
 
-    const adapter = new PrismaMysql2(connection)
+    const adapter = new PrismaMariaDb(pool)
     const client = new PrismaClient({ 
       adapter,
       log: ['error', 'warn']

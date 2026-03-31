@@ -13,7 +13,7 @@ export default defineNuxtConfig({
       wasm: true
     },
     externals: {
-      inline: ['mysql2', '@prisma/adapter-mysql2']
+      inline: ['mariadb', '@prisma/adapter-mariadb']
     }
   },
 

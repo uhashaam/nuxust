@@ -2,18 +2,17 @@
   "name": "nuxt-ssg-project",
   "type": "module",
   "private": true,
-  "scripts": {
+    "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "prisma generate && nuxt prepare && node scripts/patch-unenv.mjs"
+    "postinstall": "node scripts/patch-mariadb.mjs && prisma generate && nuxt prepare && node scripts/patch-unenv.mjs"
   },
   "dependencies": {
     "@nuxt/image": "^2.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@prisma/adapter-mariadb": "^6.7.0",
-    "@prisma/adapter-mysql2": "^6.7.0",
     "@prisma/client": "^6.7.0",
     "mariadb": "^3.3.0",
     "mysql2": "^3.11.0",
