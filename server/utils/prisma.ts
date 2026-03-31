@@ -34,13 +34,12 @@ function getClient() {
 
   const config = useRuntimeConfig()
   
-  // Try multiple naming patterns. 
-  // NUXT_DATABASE_URL -> config.databaseUrl
-  // DATABASE_URL -> process.env.DATABASE_URL
+  // In Nuxt 3, runtimeConfig is the most reliable way to get env vars in production (Cloudflare)
+  // NUXT_DATABASE_URL auto-maps to config.databaseUrl
   const dbUrl = (config.databaseUrl as string) || 
                 process.env.NUXT_DATABASE_URL || 
                 process.env.DATABASE_URL || 
-                (globalThis as any).DATABASE_URL || // Cloudflare global binding
+                (globalThis as any).DATABASE_URL || // Cloudflare global binding fallback
                 ''
 
   const isProduction = process.env.NODE_ENV === 'production'
@@ -49,26 +48,34 @@ function getClient() {
     try {
       // Always log (masked) in production to help diagnose connectivity issues
       const maskedUrl = dbUrl.replace(/:[^:@]+@/, ':***@')
-      console.log(`[Prisma] Initializing with: ${maskedUrl}`)
+      console.log(`[Prisma] Attempting initialization in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} mode.`)
+      console.log(`[Prisma] URL: ${maskedUrl}`)
 
       const dbConfig = parseDatabaseUrl(dbUrl)
       
       // In production (Cloudflare), we MUST use the driver adapter. 
       // Standard Prisma engine binaries do not run on Cloudflare Workers/Pages.
+      // We also use it in development if we want to ensure consistency.
+      
+      console.log(`[Prisma] Creating MariaDB pool for host: ${dbConfig.host}:${dbConfig.port}`)
+      
       const pool = mariadb.createPool({
           host: dbConfig.host,
           port: dbConfig.port,
           user: dbConfig.user,
           password: dbConfig.password,
           database: dbConfig.database,
-          connectionLimit: 10,
-          connectTimeout: 10000 // 10 seconds timeout for serverless environments
+          connectionLimit: isProduction ? 10 : 2, // Keep limits low for serverless
+          connectTimeout: 10000, // 10 seconds timeout
+          // Essential for Cloudflare/Edge compatibility:
+          idleTimeout: 30000,
+          noDelay: true
       })
 
       const adapter = new PrismaMariaDb(pool)
       prismaInstance = new PrismaClient({ 
         adapter,
-        log: ['error', 'warn']
+        log: isProduction ? ['error', 'warn'] : ['query', 'error', 'warn']
       } as any)
       
       console.log('[Prisma] Client initialized with MariaDB pool adapter.')
@@ -80,20 +87,22 @@ function getClient() {
         prismaInstance = new PrismaClient()
       } else {
         // High-importance failure in production
-        // Wrap error to include more context
         const error = new Error(`Prisma Initialization Failed: ${e.message}`)
         ;(error as any).cause = e
         throw error
       }
     }
   } else {
-    const msg = '[Prisma] DATABASE_URL is not set. Check your environment variables.'
+    const msg = '[Prisma] DATABASE_URL is not set. Check your NUXT_DATABASE_URL environment variable in Cloudflare.'
     console.error(msg)
     
     if (!isProduction) {
       prismaInstance = new PrismaClient()
     } else {
-      throw new Error(msg)
+      throw createError({
+        statusCode: 500,
+        message: msg
+      })
     }
   }
 
