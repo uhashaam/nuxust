@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import mariadb from 'mariadb'
 
 // Prevent multiple instances of Prisma Client in development
 declare global {
@@ -54,13 +55,23 @@ function getClient() {
       
       // In production (Cloudflare), we MUST use the driver adapter. 
       // Standard Prisma engine binaries do not run on Cloudflare Workers/Pages.
-      const adapter = new PrismaMariaDb(dbConfig)
+      const pool = mariadb.createPool({
+          host: dbConfig.host,
+          port: dbConfig.port,
+          user: dbConfig.user,
+          password: dbConfig.password,
+          database: dbConfig.database,
+          connectionLimit: 10,
+          connectTimeout: 10000 // 10 seconds timeout for serverless environments
+      })
+
+      const adapter = new PrismaMariaDb(pool)
       prismaInstance = new PrismaClient({ 
         adapter,
         log: ['error', 'warn']
       } as any)
       
-      console.log('[Prisma] Client initialized with MariaDB adapter.')
+      console.log('[Prisma] Client initialized with MariaDB pool adapter.')
     } catch (e: any) {
       console.error('[Prisma] Critical failure during client initialization:', e)
       
