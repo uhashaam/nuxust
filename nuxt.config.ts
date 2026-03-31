@@ -8,20 +8,9 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-pages',
     compressPublicAssets: { gzip: true, brotli: true },
-    rollupConfig: {
-      plugins: [
-        {
-          name: 'prisma-wasm-fix',
-          resolveId(id: string) {
-            if (id.includes('query_engine_bg.wasm?module')) {
-              return {
-                id: id.split('?')[0],
-                external: false
-              }
-            }
-          }
-        }
-      ]
+    // Enable built-in WASM support for Cloudflare Pages and Prisma
+    experimental: {
+      wasm: true
     }
   },
 
