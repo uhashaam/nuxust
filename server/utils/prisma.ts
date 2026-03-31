@@ -58,16 +58,21 @@ async function getActiveClient(): Promise<PrismaClient> {
         console.log('[Prisma] Dynamic edge initialization starting...')
         const dbConfig = parseDatabaseUrl(cleanDbUrl)
 
-        // Dynamic imports to prevent top-level crashes in V8
-        const [mariadbModule, adapterModule] = await Promise.all([
-          import('mariadb'),
-          import('@prisma/adapter-mariadb')
-        ])
+        // DYNAMIC IMPORTS: To prevent 500 error during startup in V8 isolates
+        console.log('[Prisma] Loading mysql2 driver dynamically...')
+        
+        const [mysqlModule, adapterModule] = await Promise.all([
+          import('mysql2/promise'),
+          import('@prisma/adapter-mysql2')
+        ]).catch(e => {
+          console.error('[Prisma] Failed to load mysql2 modules:', e.message)
+          throw new Error(`Driver load failed: ${e.message}`)
+        })
 
-        const mariadb = (mariadbModule as any).default || mariadbModule
-        const { PrismaMariaDb } = adapterModule as any
+        const mysql = (mysqlModule as any).default || mysqlModule
+        const { PrismaMysql2 } = adapterModule as any
 
-        const pool = mariadb.createPool({
+        const connection = await mysql.createPool({
           host: dbConfig.host,
           port: dbConfig.port,
           user: dbConfig.user,
@@ -77,10 +82,10 @@ async function getActiveClient(): Promise<PrismaClient> {
           connectTimeout: 10000
         })
 
-        const adapter = new PrismaMariaDb(pool)
+        const adapter = new PrismaMysql2(connection)
         prismaInstance = new PrismaClient({ adapter } as any)
         globalThis.__prisma = prismaInstance
-        console.log('[Prisma] Edge client initialized.')
+        console.log('[Prisma] Edge client initialized with mysql2.')
         return prismaInstance
       } catch (e: any) {
         console.error('[Prisma] Edge init failed:', e.message)
@@ -104,9 +109,19 @@ async function getActiveClient(): Promise<PrismaClient> {
  */
 export const prisma = new Proxy({} as PrismaClient, {
   get(target, prop: string | symbol) {
-    // Standard Prisma attributes that aren't models/methods
     if (prop === 'then' || prop === 'constructor') return undefined
 
+    // For methods like prisma.$queryRaw, we return an async function
+    if (typeof prop === 'string' && prop.startsWith('$')) {
+      return async (...args: any[]) => {
+        const client = await getActiveClient()
+        const fn = (client as any)[prop]
+        if (typeof fn === 'function') return fn.apply(client, args)
+        throw new Error(`Prisma client method "${prop}" not found.`)
+      }
+    }
+
+    // For models like prisma.user, we return a sub-proxy for its methods
     return new Proxy({}, {
       get(_, method: string | symbol) {
         return async (...args: any[]) => {
@@ -115,22 +130,9 @@ export const prisma = new Proxy({} as PrismaClient, {
           if (!model) throw new Error(`Prisma model "${String(prop)}" not found.`)
           
           const fn = model[method]
-          if (typeof fn === 'function') {
-            return fn.apply(model, args)
-          }
-          return fn
+          if (typeof fn === 'function') return fn.apply(model, args)
+          throw new Error(`Prisma model method "${String(prop)}.${String(method)}" not found.`)
         }
-      },
-      // Support direct method calls on client like prisma.$queryRaw
-      apply(_, __, args) {
-        return (async () => {
-          const client = await getActiveClient()
-          const fn = (client as any)[prop]
-          if (typeof fn === 'function') {
-            return fn.apply(client, args)
-          }
-          throw new Error(`Prisma method "${String(prop)}" not found.`)
-        })()
       }
     })
   }

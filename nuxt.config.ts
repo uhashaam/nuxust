@@ -11,6 +11,9 @@ export default defineNuxtConfig({
     // Enable built-in WASM support for Cloudflare Pages and Prisma
     experimental: {
       wasm: true
+    },
+    externals: {
+      inline: ['mysql2', '@prisma/adapter-mysql2']
     }
   },
 
