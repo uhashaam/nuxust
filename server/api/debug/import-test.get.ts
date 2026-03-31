@@ -22,6 +22,12 @@ export default defineEventHandler(async (event) => {
         })
         results.prisma_client_load = (client as any).error ? `failed: ${ (client as any).error}` : 'success'
 
+        results.mysql2_load = 'attempting'
+        const mysql2 = await import('mysql2/promise').catch(e => {
+            return { error: e.message }
+        })
+        results.mysql2_load = (mysql2 as any).error ? `failed: ${ (mysql2 as any).error}` : 'success'
+
         return results
     } catch (e: any) {
         return {
