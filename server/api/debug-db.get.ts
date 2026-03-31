@@ -2,38 +2,39 @@ import { prisma } from '../utils/prisma'
 
 export default defineEventHandler(async (event) => {
     try {
-        const config = useRuntimeConfig()
-        const dbUrlRaw = (config.databaseUrl as string) || 
-                       process.env.NUXT_DATABASE_URL || 
-                       process.env.DATABASE_URL || 
-                       'UNDEFINED'
+        // Test connectivity
+        const start = Date.now()
         
-        // Try a simple ping and check for data
-        const [newsCount, productsCount, sitesCount] = await Promise.all([
-            prisma.newsContent.count(),
-            prisma.product.count(),
-            prisma.industrySite.count()
-        ])
+        // Use a direct query to check if Prisma is working at all
+        const rawResult = await (prisma as any).$queryRaw`SELECT 1 as connected`.catch((e: any) => {
+            return { error: e.message, stack: e.stack }
+        })
+        
+        debugInfo.raw_test = rawResult
+        debugInfo.query_time_ms = Date.now() - start
 
-        const sampleNews = await prisma.newsContent.findMany({ take: 3 })
+        // Try counts
+        const counts: any = {}
+        try {
+            counts.news = await prisma.newsContent.count()
+            counts.products = await prisma.product.count()
+            counts.sites = await prisma.industrySite.count()
+        } catch (e: any) {
+            counts.error = e.message
+        }
+        
+        debugInfo.counts = counts
 
         return {
-            success: true,
-            dbUrlMasked: dbUrlRaw.replace(/:[^:@]+@/, ':***@'),
-            counts: {
-                news: newsCount,
-                products: productsCount,
-                sites: sitesCount
-            },
-            sampleNews: sampleNews.map(n => ({ id: n.id, title: n.title, status: n.status })),
-            envKeys: Object.keys(process.env).filter(k => k.includes('DATABASE')),
-            runtimeConfigKeys: Object.keys(config).filter(k => k.toLowerCase().includes('database')),
+            status: 'ok',
+            ...debugInfo
         }
     } catch (error: any) {
         return {
-            success: false,
-            error: error.message,
-            stack: error.stack
+            status: 'error',
+            message: error.message,
+            stack: error.stack,
+            ...debugInfo
         }
     }
 })
