@@ -1,18 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-
-// POLYFILL: Fix for Cloudflare Edge crash in MariaDB driver (b.hasOwnProperty is not a function)
-if (typeof Object.prototype.hasOwnProperty === 'function' && typeof (globalThis as any).hasOwnProperty !== 'function') {
-  try {
-    (globalThis as any).hasOwnProperty = function(prop: string) {
-      return Object.prototype.hasOwnProperty.call(this, prop)
-    }
-  } catch (e) {}
-}
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import mariadb from 'mariadb'
 
+// Global instance to prevent exhaustion in development
+declare global {
+  var __prisma: PrismaClient | undefined
+}
+
 /**
- * Robust URL parsing.
+ * Robust URL parsing for standard connections.
  */
 function parseDatabaseUrl(urlStr: string) {
   try {
@@ -30,12 +26,7 @@ function parseDatabaseUrl(urlStr: string) {
   }
 }
 
-// Global instance to prevent exhaustion in development
-declare global {
-  var __prisma: PrismaClient | undefined
-}
-
-function getClient(): PrismaClient {
+function getClient(env?: any): PrismaClient {
   const isProduction = process.env.NODE_ENV === 'production'
   
   if (!isProduction && globalThis.__prisma) {
@@ -43,13 +34,20 @@ function getClient(): PrismaClient {
   }
 
   const config = useRuntimeConfig()
-  const dbUrl = (config.databaseUrl as string) || 
+  
+  // 1. Priority: Hyperdrive connection string (from Cloudflare binding)
+  // 2. Fallback: Standard DATABASE_URL env var
+  const dbUrl = env?.HYPERDRIVE?.connectionString || 
+               (config.databaseUrl as string) || 
                process.env.NUXT_DATABASE_URL || 
                process.env.DATABASE_URL || 
                ''
 
   if (!dbUrl) {
-    if (isProduction) throw new Error('[Prisma] DATABASE_URL is not set.')
+    if (isProduction) {
+        console.warn('[Prisma] DATABASE_URL is not set, creating empty client.')
+        return new PrismaClient()
+    }
     const devClient = new PrismaClient()
     globalThis.__prisma = devClient
     return devClient
@@ -58,27 +56,29 @@ function getClient(): PrismaClient {
   const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
 
   if (isProduction) {
-    // Production (Cloudflare Edge) initialization with MariaDB driver adapter
-    const dbConfig = parseDatabaseUrl(cleanDbUrl)
-    const pool = mariadb.createPool({
-      host: dbConfig.host,
-      port: dbConfig.port,
-      user: dbConfig.user,
-      password: dbConfig.password,
-      database: dbConfig.database,
-      connectionLimit: 10,
-      connectTimeout: 10000,
-      idleTimeout: 30000,
-      noDelay: true
-    })
+    // Production (Cloudflare Edge) initialization with Hyperdrive
+    try {
+      console.log('[Prisma] Initializing with Hyperdrive/Driver Adapter...')
+      
+      const pool = mariadb.createPool({ 
+        connectionString: cleanDbUrl,
+        connectionLimit: 10
+      })
 
-    const adapter = new PrismaMariaDb(pool)
-    const client = new PrismaClient({ 
-      adapter,
-      log: ['error', 'warn']
-    } as any)
-    
-    return client
+      const adapter = new PrismaMariaDb(pool)
+      const client = new PrismaClient({ 
+        adapter,
+        log: ['error', 'warn']
+      })
+      
+      return client
+    } catch (err: any) {
+      console.error('[Prisma Internal] Adapter initialization failed:', err.message)
+      // Fallback to standard WASM client
+      return new PrismaClient({
+        datasources: { db: { url: cleanDbUrl } }
+      })
+    }
   } else {
     // Development initialization with standard binaries
     const client = new PrismaClient({
@@ -90,6 +90,13 @@ function getClient(): PrismaClient {
   }
 }
 
-// Export the singleton instance
-// For Cloudflare, it will be initialized once when the module is loaded
+// Export the singleton (will be initialized on first import)
+// Note: In Cloudflare, we might re-initialize it with the env object if needed
 export const prisma = getClient()
+
+// Helper to re-initialize with Cloudflare environment if necessary
+export function updatePrismaWithEnv(env: any) {
+    if (process.env.NODE_ENV === 'production') {
+        (globalThis as any).__prisma = getClient(env)
+    }
+}
