@@ -1,3 +1,17 @@
+// POLYFILL: Robust fix for Cloudflare Edge and Vite dev crashes (hasOwnProperty and EventEmitter issues)
+(function polyfill() {
+  if (typeof globalThis !== 'undefined') {
+    // 1. Ensure hasOwnProperty is reliable on globalThis
+    if (typeof (globalThis as any).hasOwnProperty !== 'function') {
+      try {
+        (globalThis as any).hasOwnProperty = function(prop: string) {
+          return Object.prototype.hasOwnProperty.call(this, prop)
+        }
+      } catch (e) {}
+    }
+  }
+})();
+
 import { PrismaClient } from '@prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import mariadb from 'mariadb'
