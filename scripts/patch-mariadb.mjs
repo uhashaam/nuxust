@@ -15,8 +15,11 @@ function patchFile(filePath) {
     // 1. Fix .hasOwnProperty(...) errors
     // Specifically target the pattern: obj.hasOwnProperty(prop)
     // and replace it with: Object.prototype.hasOwnProperty.call(obj, prop)
+    // This is needed because Rollup's CJS-to-ESM interop creates module namespace
+    // objects (e.g., for 'vm', 'buffer') that don't inherit from Object.prototype,
+    // so calling .hasOwnProperty() on them throws "is not a function" in Cloudflare workers.
     if (content.includes('.hasOwnProperty(')) {
-      content = content.replace(/([a-zA-Z0-9_$]+)\.hasOwnProperty\(/g, 'Object.prototype.hasOwnProperty.call($1, ')
+      content = content.replace(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\.hasOwnProperty\(/g, 'Object.prototype.hasOwnProperty.call($1, ')
       modified = true
     }
 
@@ -54,12 +57,14 @@ function walkDir(dir) {
 console.log('[Patch] Starting MariaDB & Dependencies Edge/Vite compatibility patch...')
 
 // Targets: mariadb and potential dependencies that might use restricted APIs
+// iconv-lite and safer-buffer are inlined into the Nitro bundle, so must be patched here.
 const targetDirs = [
   'node_modules/mariadb',
   'node_modules/mysql2',
   'node_modules/denque',
   'node_modules/sqlstring',
-  'node_modules/safer-buffer'
+  'node_modules/safer-buffer',
+  'node_modules/iconv-lite'
 ]
 
 targetDirs.forEach(dir => {

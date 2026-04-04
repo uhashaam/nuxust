@@ -13,7 +13,26 @@ export default defineNuxtConfig({
       wasm: true
     },
     externals: {
-      inline: ['mariadb', '@prisma/adapter-mariadb']
+      inline: ['mariadb', '@prisma/adapter-mariadb', 'iconv-lite', 'safer-buffer']
+    },
+    rollupConfig: {
+      plugins: [
+        {
+          name: 'patch-hasownproperty',
+          // Patch the final bundle to fix vm.hasOwnProperty and similar issues
+          // that arise from Rollup's CJS-to-ESM interop on module namespace objects
+          renderChunk(code) {
+            if (code.includes('.hasOwnProperty(')) {
+              const patched = code.replace(
+                /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\.hasOwnProperty\(/g,
+                'Object.prototype.hasOwnProperty.call($1, '
+              )
+              return { code: patched, map: null }
+            }
+            return null
+          }
+        }
+      ]
     }
   },
 
