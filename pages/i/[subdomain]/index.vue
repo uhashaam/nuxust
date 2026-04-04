@@ -176,6 +176,12 @@ const { data: newsData, pending: newsPending } = await useAsyncData(`news-${subd
 
 const remoteNews = computed(() => newsData.value?.news || [])
 const { productList } = useProducts()
+if (productList.value.length === 0) {
+  const { data: prodData } = await useAsyncData(`sub-products-${subdomain}`, () => $fetch('/api/products/all'))
+  if ((prodData.value as any)?.success) {
+    productList.value = (prodData.value as any).products
+  }
+}
 
 const displayNewsList = computed(() => remoteNews.value.slice(0, 5))
 const trendingNewsList = computed(() => remoteNews.value.filter(n => n.trending))

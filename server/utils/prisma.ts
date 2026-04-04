@@ -40,13 +40,10 @@ function parseDatabaseUrl(urlStr: string) {
   }
 }
 
+let cachedDbUrl = ''
+
 function getClient(env?: any): PrismaClient {
   const isProduction = process.env.NODE_ENV === 'production'
-  
-  if (!isProduction && globalThis.__prisma) {
-    return globalThis.__prisma
-  }
-
   const config = useRuntimeConfig()
   
   // 1. Priority: Hyperdrive connection string (from Cloudflare binding)
@@ -57,10 +54,19 @@ function getClient(env?: any): PrismaClient {
                process.env.DATABASE_URL || 
                ''
 
+  // Return cached client if it exists and the connection string hasn't changed
+  if (globalThis.__prisma && cachedDbUrl === dbUrl) {
+    return globalThis.__prisma
+  }
+  
+  cachedDbUrl = dbUrl
+
   if (!dbUrl) {
     if (isProduction) {
         console.warn('[Prisma] DATABASE_URL is not set, creating empty client.')
-        return new PrismaClient()
+        const emptyClient = new PrismaClient()
+        globalThis.__prisma = emptyClient
+        return emptyClient
     }
     const devClient = new PrismaClient()
     globalThis.__prisma = devClient
@@ -85,13 +91,16 @@ function getClient(env?: any): PrismaClient {
         log: ['error', 'warn']
       })
       
+      globalThis.__prisma = client
       return client
     } catch (err: any) {
       console.error('[Prisma Internal] Adapter initialization failed:', err.message)
       // Fallback to standard WASM client
-      return new PrismaClient({
+      const fallbackClient = new PrismaClient({
         datasources: { db: { url: cleanDbUrl } }
       })
+      globalThis.__prisma = fallbackClient
+      return fallbackClient
     }
   } else {
     // Development initialization with standard binaries
