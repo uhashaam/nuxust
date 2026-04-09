@@ -1,4 +1,4 @@
-name = "nuxt-ssg-project"
+name = "nuxust"
 pages_build_output_dir = "dist"
 compatibility_date = "2025-04-02"
 compatibility_flags = ["nodejs_compat"]

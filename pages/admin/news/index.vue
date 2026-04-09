@@ -100,7 +100,7 @@ const handleDelete = async (id: string) => {
       body: { id }
     })
     
-    await fetchNews() // Refresh from Lark
+    await fetchNews() // Refresh table data
     ElMessage.success('Deleted successfully')
   } catch (error: any) {
     if (error !== 'cancel') {

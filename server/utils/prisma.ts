@@ -13,41 +13,23 @@
 })();
 
 import { PrismaClient } from '@prisma/client'
-import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-import mariadb from 'mariadb'
 
 // Global instance to prevent exhaustion in development
 declare global {
   var __prisma: PrismaClient | undefined
 }
 
-/**
- * Robust URL parsing for standard connections.
- */
-function parseDatabaseUrl(urlStr: string) {
-  try {
-    const cleanUrl = urlStr.trim().replace(/^["'](.+)["']$/, '$1')
-    const url = new URL(cleanUrl)
-    return {
-      host: url.hostname,
-      user: decodeURIComponent(url.username),
-      password: decodeURIComponent(url.password),
-      port: parseInt(url.port) || 3306,
-      database: url.pathname.replace(/^\//, '')
-    }
-  } catch (e) {
-    throw new Error('Invalid DATABASE_URL format.')
-  }
-}
-
 let cachedDbUrl = ''
 
-function getClient(env?: any): PrismaClient {
+/**
+ * getClient - Dynamic initialization of Prisma client.
+ * In production (Cloudflare), we use the MariaDB driver adapter.
+ * In development, we use standard binaries.
+ */
+async function getClient(env?: any): Promise<PrismaClient> {
   const isProduction = process.env.NODE_ENV === 'production'
   const config = useRuntimeConfig()
   
-  // 1. Priority: Hyperdrive connection string (from Cloudflare binding)
-  // 2. Fallback: Standard DATABASE_URL env var
   const dbUrl = env?.HYPERDRIVE?.connectionString || 
                (config.databaseUrl as string) || 
                process.env.NUXT_DATABASE_URL || 
@@ -62,23 +44,24 @@ function getClient(env?: any): PrismaClient {
   cachedDbUrl = dbUrl
 
   if (!dbUrl) {
-    if (isProduction) {
-        console.warn('[Prisma] DATABASE_URL is not set, creating empty client.')
-        const emptyClient = new PrismaClient()
-        globalThis.__prisma = emptyClient
-        return emptyClient
-    }
-    const devClient = new PrismaClient()
-    globalThis.__prisma = devClient
-    return devClient
+    console.warn('[Prisma] DATABASE_URL is not set.')
+    const emptyClient = new PrismaClient()
+    globalThis.__prisma = emptyClient
+    return emptyClient
   }
 
   const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
 
   if (isProduction) {
-    // Production (Cloudflare Edge) initialization with Hyperdrive
     try {
-      console.log('[Prisma] Initializing with Hyperdrive/Driver Adapter...')
+      console.log('[Prisma] Initializing with Hyperdrive (Lazy Driver Loading)...')
+      
+      // LAZY/DYNAMIC IMPORTS: 
+      // Moving these inside prevents blocky/heavy startup on Cloudflare Edge.
+      const [{ PrismaMariaDb }, { default: mariadb }] = await Promise.all([
+        import('@prisma/adapter-mariadb'),
+        import('mariadb')
+      ])
       
       const pool = mariadb.createPool({ 
         connectionString: cleanDbUrl,
@@ -95,7 +78,6 @@ function getClient(env?: any): PrismaClient {
       return client
     } catch (err: any) {
       console.error('[Prisma Internal] Adapter initialization failed:', err.message)
-      // Fallback to standard WASM client
       const fallbackClient = new PrismaClient({
         datasources: { db: { url: cleanDbUrl } }
       })
@@ -103,7 +85,6 @@ function getClient(env?: any): PrismaClient {
       return fallbackClient
     }
   } else {
-    // Development initialization with standard binaries
     const client = new PrismaClient({
       datasources: { db: { url: cleanDbUrl } },
       log: ['query', 'error', 'warn']
@@ -113,13 +94,37 @@ function getClient(env?: any): PrismaClient {
   }
 }
 
-// Export the singleton (will be initialized on first import)
-// Note: In Cloudflare, we might re-initialize it with the env object if needed
-export const prisma = getClient()
-
-// Helper to re-initialize with Cloudflare environment if necessary
-export function updatePrismaWithEnv(env: any) {
-    if (process.env.NODE_ENV === 'production') {
-        (globalThis as any).__prisma = getClient(env)
+// We export a Proxy for 'prisma' to ensure it's always lazy-loaded and doesn't 
+// cause top-level 'await unsettled' errors in environments like Cloudflare Workers.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    // Return a function that handles the async client resolution for Prisma methods
+    if (typeof prop === 'string' && !prop.startsWith('$')) {
+       // This returns a proxy for the model (e.g., prisma.user)
+       return new Proxy({}, {
+         get(_, modelProp) {
+           return async (...args: any[]) => {
+             const client = (globalThis as any).__prisma || await getClient()
+             return (client as any)[prop][modelProp](...args)
+           }
+         }
+       })
     }
+    
+    // Handle $queryRaw, $connect, etc.
+    if (typeof prop === 'string' && prop.startsWith('$')) {
+      return async (...args: any[]) => {
+        const client = (globalThis as any).__prisma || await getClient()
+        return (client as any)[prop](...args)
+      }
+    }
+
+    return Reflect.get({} as any, prop, receiver)
+  }
+})
+
+export async function updatePrismaWithEnv(env: any) {
+  if (process.env.NODE_ENV === 'production' && env?.HYPERDRIVE) {
+    (globalThis as any).__prisma = await getClient(env)
+  }
 }

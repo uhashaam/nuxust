@@ -126,7 +126,7 @@
         
         <div class="platforms-grid">
           <div 
-            v-for="site in larkSites" 
+            v-for="site in industrySites" 
             :key="site.id" 
             class="platform-card"
             @click="navigateTo(`/i/${site.subdomain}`)"
@@ -139,7 +139,7 @@
             </div>
           </div>
 
-          <div v-if="!larkSites.length" class="platform-loading">
+          <div v-if="!industrySites.length" class="platform-loading">
             <el-skeleton :rows="2" animated />
           </div>
         </div>
@@ -172,9 +172,9 @@ const { config } = useCompanyConfig()
 const { productList } = useProducts()
 const { newsList, popularNews, categories } = useNews()
 
-// Fetch real subdomain sites from Lark with SSR support
+// Fetch real industry sites with SSR support
 const { data: sitesData } = await useAsyncData('home-sites', () => $fetch('/api/sites/all'))
-const larkSites = computed(() => (sitesData.value as any)?.sites || [])
+const industrySites = computed(() => (sitesData.value as any)?.sites || [])
 
 // Fetch news and products with SSR support to ensure hydration
 const { data: homeNewsData } = await useAsyncData('home-news', () => $fetch('/api/news/all'))

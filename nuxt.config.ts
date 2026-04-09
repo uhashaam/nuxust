@@ -162,33 +162,9 @@ export default defineNuxtConfig({
     // Server-only secrets
     // These auto-map from NUXT_{KEY_SCREAMING_SNAKE_CASE} env vars
     databaseUrl: process.env.NUXT_DATABASE_URL || process.env.DATABASE_URL || '',
-    larkAppId: '',
-    larkAppSecret: '',
-    larkBaseAppToken: '',
-    jwtSecret: '',
-    cronSecret: '',
-    resendApiKey: '',
-    cloudflareApiToken: '',
-    cloudflareAccountId: '',
-    cloudflareZoneId: '',
-    deepseekApiKey: '',
-    volcAccessKey: '',
-    volcSecretKey: '',
-    arkApiKey: '',
-    volcEndpointId: '',
     stripeSecretKey: '',
     stripeWebhookSecret: '',
     cloudflareProjectName: 'b-2b',
-
-    // Lark/Feishu Config (Server-only)
-    // These auto-map from NUXT_LARK_TABLE_{NAME} and NUXT_FEISHU_APP_ID
-    feishuAppId: '',
-    larkTableIndustrySites: '',
-    larkTableUsers: '',
-    larkTablePlansCoupons: '',
-    larkTableNewsContent: '',
-    larkTableAdminSettings: '',
-    larkTableProducts: '',
 
     public: {
       // Station code is used on frontend

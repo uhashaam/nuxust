@@ -23,7 +23,7 @@ async function probeUsers() {
     const { tenant_access_token } = await tenantTokenRes.json();
     console.log("Token:", !!tenant_access_token);
 
-    const appToken = process.env.NUXT_LARK_BASE_APP_TOKEN;
+
     const tableId = process.env.NUXT_LARK_TABLE_USERS;
 
     console.log("App:", appToken, "Table:", tableId);

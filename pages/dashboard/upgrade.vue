@@ -90,7 +90,7 @@ const handleSelectPlan = async (plan: any) => {
       }
     )
     
-    // Call the real API to update Lark Base
+    // Call the real API to update user plan
     await $fetch('/api/auth/update-plan', {
       method: 'POST',
       body: { planId: plan.id }
