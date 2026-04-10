@@ -173,6 +173,8 @@ export default defineNuxtConfig({
     smtpPass: process.env.NUXT_SMTP_PASS || '',
     smtpFrom: process.env.NUXT_SMTP_FROM || '',
     smtpAdminEmail: process.env.NUXT_SMTP_ADMIN_EMAIL || 'contact@b-2b.com',
+    jwtSecret: process.env.NUXT_JWT_SECRET || '',
+    deepseekApiKey: process.env.NUXT_DEEPSEEK_API_KEY || '',
 
     public: {
       // Station code is used on frontend
