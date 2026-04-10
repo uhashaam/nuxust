@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-18',
 
   nitro: {
-    preset: 'cloudflare-pages',
+    preset: process.env.NITRO_PRESET || 'node-server',
     compressPublicAssets: { gzip: true, brotli: true },
     // Enable built-in WASM support for Cloudflare Pages and Prisma
     experimental: {

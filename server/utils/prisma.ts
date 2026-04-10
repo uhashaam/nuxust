@@ -53,36 +53,52 @@ async function getClient(env?: any): Promise<PrismaClient> {
   const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
 
   if (isProduction) {
-    try {
-      console.log('[Prisma] Initializing with Hyperdrive (Lazy Driver Loading)...')
-      
-      // LAZY/DYNAMIC IMPORTS: 
-      // Moving these inside prevents blocky/heavy startup on Cloudflare Edge.
-      const [{ PrismaMariaDb }, { default: mariadb }] = await Promise.all([
-        import('@prisma/adapter-mariadb'),
-        import('mariadb')
-      ])
-      
-      const pool = mariadb.createPool({ 
-        connectionString: cleanDbUrl,
-        connectionLimit: 10
-      })
+    // Detect Cloudflare Environment
+    const isCloudflare = (globalThis as any).navigator?.userAgent?.includes('Cloudflare-Workers') ||
+                        (typeof (globalThis as any).caches !== 'undefined') ||
+                        !!env?.HYPERDRIVE
 
-      const adapter = new PrismaMariaDb(pool)
-      const client = new PrismaClient({ 
-        adapter,
+    if (isCloudflare) {
+      try {
+        console.log('[Prisma] Initializing for Cloudflare Edge (Lazy Driver Loading)...')
+        
+        // LAZY/DYNAMIC IMPORTS: 
+        // Moving these inside prevents blocky/heavy startup on Cloudflare Edge.
+        const [{ PrismaMariaDb }, { default: mariadb }] = await Promise.all([
+          import('@prisma/adapter-mariadb'),
+          import('mariadb')
+        ])
+        
+        const pool = mariadb.createPool({ 
+          connectionString: cleanDbUrl,
+          connectionLimit: 10
+        })
+
+        const adapter = new PrismaMariaDb(pool)
+        const client = new PrismaClient({ 
+          adapter,
+          log: ['error', 'warn']
+        })
+        
+        globalThis.__prisma = client
+        return client
+      } catch (err: any) {
+        console.error('[Prisma Cloudflare] Adapter initialization failed:', err.message)
+        const fallbackClient = new PrismaClient({
+          datasources: { db: { url: cleanDbUrl } }
+        })
+        globalThis.__prisma = fallbackClient
+        return fallbackClient
+      }
+    } else {
+      // Standard Node.js Production (Hostinger)
+      console.log('[Prisma] Initializing for Standard Node.js Production...')
+      const client = new PrismaClient({
+        datasources: { db: { url: cleanDbUrl } },
         log: ['error', 'warn']
       })
-      
       globalThis.__prisma = client
       return client
-    } catch (err: any) {
-      console.error('[Prisma Internal] Adapter initialization failed:', err.message)
-      const fallbackClient = new PrismaClient({
-        datasources: { db: { url: cleanDbUrl } }
-      })
-      globalThis.__prisma = fallbackClient
-      return fallbackClient
     }
   } else {
     const client = new PrismaClient({
