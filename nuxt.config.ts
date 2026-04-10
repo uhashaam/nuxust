@@ -165,6 +165,14 @@ export default defineNuxtConfig({
     stripeSecretKey: '',
     stripeWebhookSecret: '',
     cloudflareProjectName: 'b-2b',
+    
+    // SMTP Configuration
+    smtpHost: process.env.NUXT_SMTP_HOST || '',
+    smtpPort: process.env.NUXT_SMTP_PORT || '465',
+    smtpUser: process.env.NUXT_SMTP_USER || '',
+    smtpPass: process.env.NUXT_SMTP_PASS || '',
+    smtpFrom: process.env.NUXT_SMTP_FROM || '',
+    smtpAdminEmail: process.env.NUXT_SMTP_ADMIN_EMAIL || 'contact@b-2b.com',
 
     public: {
       // Station code is used on frontend

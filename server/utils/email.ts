@@ -11,11 +11,51 @@ export interface EmailOptions {
 export const sendEmail = async (options: EmailOptions) => {
     const config = useRuntimeConfig();
 
-    // Priority 1: Check env var directly (fastest, no DB lookup needed)
-    const envResendApiKey = (config as any).resendApiKey || '';
+    // 1. Check for SMTP configuration (Primarily for Node.js/Hostinger)
+    const smtpHost = (config as any).smtpHost || process.env.SMTP_HOST || '';
+    const smtpPort = parseInt((config as any).smtpPort || process.env.SMTP_PORT || '465');
+    const smtpUser = (config as any).smtpUser || process.env.SMTP_USER || '';
+    const smtpPass = (config as any).smtpPass || process.env.SMTP_PASS || '';
+    const smtpFrom = (config as any).smtpFrom || process.env.SMTP_FROM || smtpUser;
 
-    // If we have the Resend key directly from env, use it immediately
+    const isNode = typeof process !== 'undefined' && !!process.versions?.node;
+
+    if (isNode && smtpHost && smtpUser && smtpPass) {
+        try {
+            console.log(`[Email] Attempting SMTP send to ${options.to} via ${smtpHost}`);
+            const { default: nodemailer } = await import('nodemailer');
+            
+            const transporter = nodemailer.createTransport({
+                host: smtpHost,
+                port: smtpPort,
+                secure: smtpPort === 465, // true for 465, false for other ports
+                auth: {
+                    user: smtpUser,
+                    pass: smtpPass
+                }
+            });
+
+            const info = await transporter.sendMail({
+                from: `"B2B Platform" <${smtpFrom}>`,
+                to: options.to,
+                subject: options.subject,
+                text: options.text,
+                html: options.html || options.text
+            });
+
+            console.log('[Email] SMTP Success:', info.messageId);
+            return { success: true, message: `Email sent via SMTP: ${info.messageId}` };
+        } catch (error: any) {
+            console.error('[Email] SMTP Failed, falling back to Resend:', error.message);
+            // Don't throw yet, try falling back to Resend
+        }
+    }
+
+    // 2. Fallback: Resend API (Essential for Cloudflare Edge)
+    const envResendApiKey = (config as any).resendApiKey || process.env.NUXT_RESEND_API_KEY || '';
+
     if (envResendApiKey) {
+        console.log(`[Email] Attempting Resend API send to ${options.to}`);
         const res = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
@@ -31,65 +71,14 @@ export const sendEmail = async (options: EmailOptions) => {
             })
         });
 
-        if (!res.ok) {
-            const errorData = await res.json().catch(() => ({})) as any;
-            throw new Error(errorData.message || `Resend API Error: ${res.status} ${res.statusText}`);
+        if (res.ok) {
+            const data = await res.json() as any;
+            return { success: true, message: `Email sent via Resend: ${data.id}` };
         }
-
-        const data = await res.json() as any;
-        return { success: true, message: `Email sent via Resend (env): ${data.id}` };
+        
+        const errorData = await res.json().catch(() => ({}));
+        console.error('[Email] Resend API Failed:', errorData);
     }
 
-    try {
-        // Priority 2: Fetch config from AdminSetting in Prisma
-        const settings = await prisma.adminSetting.findMany();
-
-        const getSetting = (key: string, defaultVal: string) => {
-            const record = settings.find((r: any) => r.key === key);
-            return (record && record.value) ? record.value : defaultVal;
-        };
-
-        const host = getSetting('smtp_host', 'smtp.feishu.cn');
-        const portStr = getSetting('smtp_port', '465');
-        const user = getSetting('smtp_user', 'smtp@zjdu.com');
-        const pass = getSetting('smtp_password', 'Kengnu@1smtp'); // Example info
-
-        const fromEmail = getSetting('smtp_from_email', user);
-        const fromName = getSetting('smtp_from_name', 'B2B Subdomain Platform');
-
-        const resendApiKey = getSetting('resend_api_key', '');
-
-        // Use Resend HTTP API if configured (Cloudflare EDGE Compatible)
-        if (resendApiKey) {
-            const res = await fetch('https://api.resend.com/emails', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${resendApiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    from: `${fromName} <${fromEmail}>`,
-                    to: [options.to],
-                    subject: options.subject,
-                    text: options.text,
-                    html: options.html || options.text
-                })
-            });
-
-            if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.message || `Resend API Error: ${res.status} ${res.statusText}`);
-            }
-
-            const data = await res.json();
-            return { success: true, message: `Email sent via Resend HTTP API: ${data.id}` };
-        }
-
-        // Fallback: No valid key found
-        console.warn('No Resend API key found in env or Admin Settings. Email sending skipped.');
-        throw new Error('Email service not configured. Please add Resend API Key.');
-
-    } catch (error: any) {
-        throw new Error(error.message || 'Error occurred while sending email');
-    }
+    throw new Error('Email service not configured. Please add SMTP or Resend credentials.');
 };
