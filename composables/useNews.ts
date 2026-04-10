@@ -33,10 +33,11 @@ export const useNews = () => {
     const newsList = useState<NewsItem[]>('news', () => [])
     const isLoading = useState('news-loading', () => false)
 
-    const fetchNews = async () => {
+    const fetchNews = async (opts?: { admin?: boolean }) => {
         isLoading.value = true
         try {
-            const data = await $fetch('/api/news/all')
+            const url = opts?.admin ? '/api/admin/news/list' : '/api/news/all'
+            const data = await $fetch(url) as any
             if (data.success) {
                 newsList.value = data.news as any[]
             }
@@ -47,12 +48,7 @@ export const useNews = () => {
         }
     }
 
-    // Load initial data on server or client if empty
-    if (process.server || (process.client && newsList.value.length === 0)) {
-        if (!isLoading.value) {
-            fetchNews()
-        }
-    }
+    // Explicit fetch calling is now preferred for better control over admin/public states
 
     const categories = computed(() => {
         const cats = new Set(newsList.value.map(n => n.category))

@@ -12,11 +12,11 @@ export const sendEmail = async (options: EmailOptions) => {
     const config = useRuntimeConfig();
 
     // 1. Check for SMTP configuration (Primarily for Node.js/Hostinger)
-    const smtpHost = (config as any).smtpHost || process.env.SMTP_HOST || '';
-    const smtpPort = parseInt((config as any).smtpPort || process.env.SMTP_PORT || '465');
-    const smtpUser = (config as any).smtpUser || process.env.SMTP_USER || '';
-    const smtpPass = (config as any).smtpPass || process.env.SMTP_PASS || '';
-    const smtpFrom = (config as any).smtpFrom || process.env.SMTP_FROM || smtpUser;
+    const smtpHost = (config as any).smtpHost || process.env.NUXT_SMTP_HOST || process.env.SMTP_HOST || '';
+    const smtpPort = parseInt((config as any).smtpPort || process.env.NUXT_SMTP_PORT || process.env.SMTP_PORT || '465');
+    const smtpUser = (config as any).smtpUser || process.env.NUXT_SMTP_USER || process.env.SMTP_USER || '';
+    const smtpPass = (config as any).smtpPass || process.env.NUXT_SMTP_PASS || process.env.SMTP_PASS || '';
+    const smtpFrom = (config as any).smtpFrom || process.env.NUXT_SMTP_FROM || process.env.SMTP_FROM || smtpUser;
 
     const isNode = typeof process !== 'undefined' && !!process.versions?.node;
 

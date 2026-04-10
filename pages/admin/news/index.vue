@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useNews } from '~/composables/useNews'
 import { navigateTo } from 'nuxt/app'
 import { Picture } from '@element-plus/icons-vue'
@@ -73,6 +73,13 @@ definePageMeta({
 
 const { newsList, fetchNews } = useNews()
 const loading = ref(false)
+
+onMounted(async () => {
+  // Ensure we fetch the correct role-aware news list
+  loading.value = true
+  await fetchNews({ admin: true })
+  loading.value = false
+})
 
 const handleCreate = () => {
   navigateTo('/admin/news/new')
@@ -100,7 +107,7 @@ const handleDelete = async (id: string) => {
       body: { id }
     })
     
-    await fetchNews() // Refresh table data
+    await fetchNews({ admin: true }) // Refresh using admin logic
     ElMessage.success('Deleted successfully')
   } catch (error: any) {
     if (error !== 'cancel') {
