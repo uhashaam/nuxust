@@ -129,7 +129,7 @@
             v-for="site in industrySites" 
             :key="site.id" 
             class="platform-card"
-            @click="navigateTo(`/i/${site.subdomain}`)"
+            @click="openSubdomain(site.subdomain || (site as any).sub_domain)"
           >
             <div class="platform-icon">🏭</div>
             <div class="platform-info">
@@ -203,6 +203,12 @@ const latestNews = computed(() =>
 const featuredProducts = computed(() =>
   productList.value.slice(0, 3)
 )
+
+const openSubdomain = (subdomain: string) => {
+  if (!subdomain) return
+  // Navigate to external subdomain
+  window.location.href = `https://${subdomain}.b-2b.com`
+}
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return 'Recent'
