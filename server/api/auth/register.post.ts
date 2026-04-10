@@ -133,7 +133,8 @@ export default defineEventHandler(async (event) => {
             path: '/'
         });
 
-        // Send welcome email (non-blocking)
+        // 8. Send welcome email (non-blocking) - We do not await this
+        // This prevents the entire registration process from hanging if SMTP is slow.
         sendEmail({
             to: email,
             subject: 'Welcome to B2B Platform!',
@@ -146,7 +147,9 @@ export default defineEventHandler(async (event) => {
                     </div>
                 </div>
             `
-        }).catch(() => { });
+        }).catch(err => {
+            console.error('[Background Email Error]:', err.message);
+        });
 
         // Return success (excluding sensitive data)
         return {

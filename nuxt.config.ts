@@ -8,12 +8,13 @@ export default defineNuxtConfig({
   nitro: {
     preset: process.env.NITRO_PRESET || (process.env.CF_PAGES ? 'cloudflare-pages' : 'node-server'),
     compressPublicAssets: { gzip: true, brotli: true },
-    // Enable built-in WASM support for Cloudflare Pages and Prisma
     experimental: {
       wasm: true
     },
+    // Exclude Node-only libraries from Cloudflare build to avoid 1101 errors
     externals: {
-      inline: ['mariadb', '@prisma/adapter-mariadb', 'iconv-lite', 'safer-buffer']
+      inline: process.env.CF_PAGES ? [] : ['mariadb', '@prisma/adapter-mariadb', 'iconv-lite', 'safer-buffer'],
+      external: process.env.CF_PAGES ? ['nodemailer', 'mariadb'] : []
     },
     rollupConfig: {
       plugins: [

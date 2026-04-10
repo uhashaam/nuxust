@@ -18,7 +18,10 @@ export const sendEmail = async (options: EmailOptions) => {
     const smtpPass = (config as any).smtpPass || process.env.NUXT_SMTP_PASS || process.env.SMTP_PASS || '';
     const smtpFrom = (config as any).smtpFrom || process.env.NUXT_SMTP_FROM || process.env.SMTP_FROM || smtpUser;
 
-    const isNode = typeof process !== 'undefined' && !!process.versions?.node;
+    // Improved environment detection
+    const isNode = typeof process !== 'undefined' && 
+                   !!process.versions?.node && 
+                   !process.env.CF_PAGES; // Explicitly false if on Cloudflare build
 
     if (isNode && smtpHost && smtpUser && smtpPass) {
         try {
@@ -28,26 +31,32 @@ export const sendEmail = async (options: EmailOptions) => {
             const transporter = nodemailer.createTransport({
                 host: smtpHost,
                 port: smtpPort,
-                secure: smtpPort === 465, // true for 465, false for other ports
+                secure: smtpPort === 465,
+                connectionTimeout: 5000, // 5 seconds timeout
+                greetingTimeout: 5000,
                 auth: {
                     user: smtpUser,
                     pass: smtpPass
                 }
             });
 
-            const info = await transporter.sendMail({
-                from: `"B2B Platform" <${smtpFrom}>`,
-                to: options.to,
-                subject: options.subject,
-                text: options.text,
-                html: options.html || options.text
-            });
+            // Using Promise.race to ensure we never hang the main thread
+            const info = await Promise.race([
+                transporter.sendMail({
+                    from: `"B2B Platform" <${smtpFrom}>`,
+                    to: options.to,
+                    subject: options.subject,
+                    text: options.text,
+                    html: options.html || options.text
+                }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP Timeout')), 7000))
+            ]) as any;
 
             console.log('[Email] SMTP Success:', info.messageId);
             return { success: true, message: `Email sent via SMTP: ${info.messageId}` };
         } catch (error: any) {
-            console.error('[Email] SMTP Failed, falling back to Resend:', error.message);
-            // Don't throw yet, try falling back to Resend
+            console.error('[Email] SMTP Failed:', error.message);
+            // Fall back to Resend if available
         }
     }
 

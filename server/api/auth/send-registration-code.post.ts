@@ -36,7 +36,8 @@ export default defineEventHandler(async (event) => {
             sameSite: 'strict'
         });
 
-        await sendEmail({
+        // Send non-blocking email
+        sendEmail({
             to: email,
             subject: 'Your Registration Verification Code',
             html: `
@@ -51,6 +52,8 @@ export default defineEventHandler(async (event) => {
                     </div>
                 </div>
             `
+        }).catch(err => {
+            console.error('[Background Email Error]:', err.message);
         });
 
         return { success: true, message: 'Verification code sent to your email' };
