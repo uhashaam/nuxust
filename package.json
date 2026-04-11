@@ -7,18 +7,19 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "node scripts/patch-mariadb.mjs && prisma generate && nuxt prepare && node scripts/patch-unenv.mjs"
+    "postinstall": "prisma generate && nuxt prepare && node scripts/patch-unenv.mjs"
   },
   "dependencies": {
     "@nuxt/image": "^2.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "@prisma/adapter-mariadb": "^6.7.0",
+    "@prisma/adapter-d1": "^6.7.0",
+    "@prisma/adapter-mariadb": "^7.7.0",
     "@prisma/client": "^6.7.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.3",
     "jsonwebtoken": "^9.0.3",
-    "mariadb": "^3.3.0",
+    "mariadb": "^3.5.2",
     "marked": "^17.0.1",
     "mysql2": "^3.11.0",
     "nodemailer": "^8.0.1",

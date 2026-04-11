@@ -24,3 +24,6 @@ logs
 !.env.example
 
 /generated/prisma
+
+# Database Migrations (Contains sensitive data dumps)
+migrations/

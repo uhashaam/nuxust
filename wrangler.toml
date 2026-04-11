@@ -3,7 +3,8 @@ pages_build_output_dir = "dist"
 compatibility_date = "2025-04-02"
 compatibility_flags = ["nodejs_compat"]
 
-[[hyperdrive]]
-binding = "HYPERDRIVE"
-id = "0ca10b628ab044aab34dfbca835b3ed0"
+[[d1_databases]]
+binding = "DB"
+database_name = "nuxust_db"
+database_id = "62d8110c-ad41-4930-8b50-308d97bee5d4"
 

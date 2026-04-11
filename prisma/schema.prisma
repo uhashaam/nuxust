@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -31,11 +31,11 @@ model User {
 model Product {
   id                String   @id @default(uuid())
   name              String   // Mapped from 'Text' in Lark
-  description       String   @db.Text
-  short_description String?  @db.Text
+  description       String   
+  short_description String?  
   price             Float    @default(0)
   category          String?
-  specifications    String?  @db.Text // JSON string
+  specifications    String?  // JSON string
   slug              String   @unique
   featured_image    Json?    // Array of image objects or URLs
   is_featured       Boolean  @default(false)
@@ -46,17 +46,17 @@ model Product {
 model IndustrySite {
   id                   String   @id @default(uuid())
   site_name            String
-  site_title           String?  @db.Text
+  site_title           String?  
   industry_name        String?
   sub_domain           String   @unique
   subdomain            String?  // Alias since API uses both
-  meta_description     String?  @db.Text
+  meta_description     String?  
   logo                 Json?    
   favicon              Json?
   contact_email        String?
   contact_phone        String?
-  address              String?  @db.Text
-  social_links         String?  @db.Text 
+  address              String?  
+  social_links         String?  
   
   // Style and config fields from Lark Base
   ssl_status           String?
@@ -68,10 +68,10 @@ model IndustrySite {
   site_status          String?  @default("active")
   bound_user_id        String?
   ai_news_toggle       Boolean? @default(false)
-  about_text           String?  @db.Text
+  about_text           String?  
 
   is_active        Boolean  @default(true)
-  custom_css       String?  @db.Text
+  custom_css       String?  
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -79,17 +79,17 @@ model IndustrySite {
 model NewsContent {
   id               String   @id @default(uuid())
   title            String
-  content          String   @db.LongText
+  content          String   
   industry         String?
   publication_time BigInt?
-  summary          String?  @db.Text
+  summary          String?  
   thumbnail        Json?    // Array of image objects or URLs
   author           String?
   status           String   @default("Draft") // Published, Draft
   source           String?
   is_featured      Boolean  @default(false)
   slug             String   @unique
-  original_url     String?  @db.Text
+  original_url     String?  
   related_products Json?    // Array of related product IDs
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -108,8 +108,8 @@ model PlanCoupon {
   current_uses    Int      @default(0)
   is_active       Boolean  @default(true)
   valid_until     BigInt?
-  features        String?  @db.Text // JSON string
-  limits          String?  @db.Text // JSON string
+  features        String?  // JSON string
+  limits          String?  // JSON string
   stripe_price_id String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -118,8 +118,8 @@ model PlanCoupon {
 model AdminSetting {
   id          String   @id @default(uuid())
   key         String   @unique // Mapped from 'Key' or 'Setting Name'
-  value       String   @db.Text
-  description String?  @db.Text
+  value       String   
+  description String?  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
