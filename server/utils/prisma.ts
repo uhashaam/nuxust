@@ -56,8 +56,10 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   if (isCloudflare && d1Binding) {
       try {
         console.log('[Prisma] Initializing Cloudflare D1 Adapter...')
-        const { PrismaD1 } = await import('@prisma/adapter-d1')
+        const d1Mod = await import('@prisma/adapter-d1')
+        const PrismaD1 = d1Mod.PrismaD1 || (d1Mod as any).default?.PrismaD1
         
+        if (!PrismaD1) throw new Error('Could not find PrismaD1 in adapter-d1 module')
         if (typeof (d1Binding as any).prepare !== 'function') {
            throw new Error('D1 binding is present but invalid (missing .prepare())')
         }
@@ -72,7 +74,6 @@ export async function getClient(env?: any): Promise<PrismaClient> {
         return client
       } catch (err: any) {
         console.error('[Prisma Cloudflare D1] FAILED:', err.message)
-        // Do NOT fallback to MySQL on Cloudflare
         throw err
       }
   }
@@ -83,17 +84,23 @@ export async function getClient(env?: any): Promise<PrismaClient> {
                ''
 
   // 3. MySQL / MariaDB Strategy (Hostinger / Node.js)
-  // Even with provider="sqlite", we can connect to MySQL via Driver Adapters
   if (dbUrl && dbUrl.startsWith('mysql')) {
     try {
       console.log('[Prisma] Initializing MySQL/MariaDB Adapter for Main Site...')
       const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
       
-      const [{ PrismaMariaDb }, { default: mariadb }] = await Promise.all([
+      const [mariadbAdapterMod, mariadbDriverMod] = await Promise.all([
         import('@prisma/adapter-mariadb'),
         import('mariadb')
       ])
       
+      // Robust unwrapping for ESM/CJS compatibility
+      const PrismaMariaDb = mariadbAdapterMod.PrismaMariaDb || (mariadbAdapterMod as any).default?.PrismaMariaDb
+      const mariadb = mariadbDriverMod.default || mariadbDriverMod
+      
+      if (!PrismaMariaDb) throw new Error('Could not find PrismaMariaDb in adapter-mariadb module')
+      if (!mariadb?.createPool) throw new Error('Could not find createPool in mariadb module')
+
       const pool = mariadb.createPool({ 
         connectionString: cleanDbUrl,
         connectionLimit: 10

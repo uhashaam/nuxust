@@ -13,8 +13,8 @@ export default defineNuxtConfig({
     },
     // Exclude Node-only libraries from Cloudflare build to avoid 1101 errors
     externals: {
-      inline: process.env.CF_PAGES ? [] : ['mariadb', '@prisma/adapter-mariadb', 'iconv-lite', 'safer-buffer'],
-      external: process.env.CF_PAGES ? ['nodemailer', 'mariadb'] : []
+      inline: process.env.CF_PAGES ? [] : ['iconv-lite', 'safer-buffer'],
+      external: ['nodemailer', 'mariadb', '@prisma/adapter-mariadb', '@prisma/client', '.prisma/client']
     },
     rollupConfig: {
       plugins: [
