@@ -84,38 +84,22 @@ export async function getClient(env?: any): Promise<PrismaClient> {
                ''
 
   // 3. MySQL / MariaDB Strategy (Hostinger / Node.js)
+  // With provider="mysql" in schema.prisma, we can use a direct connection on Node.js
   if (dbUrl && dbUrl.startsWith('mysql')) {
     try {
-      console.log('[Prisma] Initializing MySQL/MariaDB Adapter for Main Site...')
+      console.log('[Prisma] Initializing Direct MySQL Connection for Main Site...')
       const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
       
-      const [mariadbAdapterMod, mariadbDriverMod] = await Promise.all([
-        import('@prisma/adapter-mariadb'),
-        import('mariadb')
-      ])
-      
-      // Robust unwrapping for ESM/CJS compatibility
-      const PrismaMariaDb = mariadbAdapterMod.PrismaMariaDb || (mariadbAdapterMod as any).default?.PrismaMariaDb
-      const mariadb = mariadbDriverMod.default || mariadbDriverMod
-      
-      if (!PrismaMariaDb) throw new Error('Could not find PrismaMariaDb in adapter-mariadb module')
-      if (!mariadb?.createPool) throw new Error('Could not find createPool in mariadb module')
-
-      const pool = mariadb.createPool({ 
-        connectionString: cleanDbUrl,
-        connectionLimit: 10
-      })
-
-      const adapter = new PrismaMariaDb(pool)
+      // Standard binary connection (No Adapter)
       const client = new PrismaClient({ 
-        adapter,
+        datasources: { db: { url: cleanDbUrl } },
         log: ['error', 'warn']
       })
       
       globalThis.__prisma = client
       return client
     } catch (err: any) {
-      console.error('[Prisma MariaDB] FAILED:', err.message)
+      console.error('[Prisma MySQL Direct] FAILED:', err.message)
       throw err
     }
   }
