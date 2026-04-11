@@ -68,17 +68,23 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   if (isCloudflare) {
       // If we are on Cloudflare, we MUST have a valid D1 binding for subdomains
       try {
-        console.log('[Prisma] Initializing Cloudflare D1 Adapter...')
+        console.log('[Prisma] Initializing Cloudflare D1 (Native D1 Client)...')
         
         // Strict Validation
         if (!d1Binding || typeof (d1Binding as any).prepare !== 'function') {
            throw new Error(`D1 binding is missing or invalid (prepare method not found). Mode: ${isCloudflare ? 'Edge' : 'Non-Edge'}`)
         }
 
-        const d1Mod = await import('@prisma/adapter-d1')
-        const PrismaD1 = d1Mod.PrismaD1 || (d1Mod as any).default?.PrismaD1
+        const [d1AdapterMod, d1ClientMod] = await Promise.all([
+            import('@prisma/adapter-d1'),
+            import('@prisma/client-d1')
+        ])
+        
+        const PrismaD1 = d1AdapterMod.PrismaD1 || (d1AdapterMod as any).default?.PrismaD1
+        const PrismaClientD1Class = d1ClientMod.PrismaClient || (d1ClientMod as any).default?.PrismaClient
         
         if (!PrismaD1) throw new Error('Could not find PrismaD1 class in adapter-d1 module')
+        if (!PrismaClientD1Class) throw new Error('Could not find PrismaClient class in @prisma/client-d1')
 
         // ISOLATION: Temporarily silence MySQL env vars during Edge initialization
         const originalUrl = (process.env as any).DATABASE_URL
@@ -91,7 +97,7 @@ export async function getClient(env?: any): Promise<PrismaClient> {
           console.log(`[Prisma] Isolated Edge Init. Env Keys Count: ${Object.keys(process.env).length}`)
           
           const adapter = new PrismaD1(d1Binding)
-          const client = new PrismaClient({ 
+          const client = new PrismaClientD1Class({ 
             adapter,
             log: ['error', 'warn']
           })
@@ -119,11 +125,13 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   // With provider="mysql" in schema.prisma, we can use a direct connection on Node.js
   if (dbUrl && dbUrl.startsWith('mysql')) {
     try {
-      console.log('[Prisma] Initializing Direct MySQL Connection for Main Site...')
+      console.log('[Prisma] Initializing Direct MySQL (Standard Client)...')
       const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
       
+      const { PrismaClient: PrismaClientStandard } = await import('@prisma/client')
+      
       // Standard binary connection (No Adapter)
-      const client = new PrismaClient({ 
+      const client = new PrismaClientStandard({ 
         datasources: { db: { url: cleanDbUrl } },
         log: ['error', 'warn']
       })
@@ -140,7 +148,8 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   console.log('[Prisma) Initializing Local SQLite Fallback...')
   const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
   
-  const client = new PrismaClient({
+  const { PrismaClient: PrismaClientFallback } = await import('@prisma/client')
+  const client = new PrismaClientFallback({
     datasources: { db: { url: (cleanDbUrl.startsWith('file')) ? cleanDbUrl : 'file:./dev.db' } },
     log: isProduction ? ['error', 'warn'] : ['query', 'error', 'warn']
   })
