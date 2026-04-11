@@ -41,7 +41,7 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   // Priority: context-passed env -> injected binding -> global bindings
   let d1Binding = env?.DB || _d1Binding || (globalThis as any).__cf_env?.DB || (globalThis as any).DB
   
-  // Double-nested env check (sometimes seen in Nitro/Pages)
+  // Extra deep check (some Cloudflare versions)
   if (!d1Binding && env?.env?.DB) {
     d1Binding = env.env.DB
   }
@@ -50,6 +50,12 @@ export async function getClient(env?: any): Promise<PrismaClient> {
                        (globalThis as any).process?.env?.CF_PAGES === 'true' ||
                        (typeof (globalThis as any).caches !== 'undefined') ||
                        !!(globalThis as any).__cf_env
+
+  if (isCloudflare) {
+     const bindingType = typeof d1Binding
+     const hasPrepare = d1Binding && typeof d1Binding.prepare === 'function'
+     console.log(`[Prisma] Edge Check: hasD1=${!!d1Binding}, type=${bindingType}, hasPrepare=${hasPrepare}`)
+  }
 
   console.log(`[Prisma] Init Check: isCloudflare=${isCloudflare}, hasD1=${!!d1Binding}`)
 
