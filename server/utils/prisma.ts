@@ -80,13 +80,15 @@ export async function getClient(env?: any): Promise<PrismaClient> {
         
         if (!PrismaD1) throw new Error('Could not find PrismaD1 class in adapter-d1 module')
 
-        // ISOLATION: Temporarily clear MySQL env vars so Prisma doesn't try to validate the provider against them
-        const originalUrl = process.env.DATABASE_URL
-        const originalNuxtUrl = process.env.NUXT_DATABASE_URL
+        // ISOLATION: Temporarily silence MySQL env vars during Edge initialization
+        const originalUrl = (process.env as any).DATABASE_URL
+        const originalNuxtUrl = (process.env as any).NUXT_DATABASE_URL
         
         try {
-          if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
-          if (process.env.NUXT_DATABASE_URL) delete process.env.NUXT_DATABASE_URL
+          if (originalUrl) (process.env as any).DATABASE_URL = ''
+          if (originalNuxtUrl) (process.env as any).NUXT_DATABASE_URL = ''
+          
+          console.log(`[Prisma] Isolated Edge Init. Env Keys Count: ${Object.keys(process.env).length}`)
           
           const adapter = new PrismaD1(d1Binding)
           const client = new PrismaClient({ 
@@ -97,9 +99,9 @@ export async function getClient(env?: any): Promise<PrismaClient> {
           globalThis.__prisma = client
           return client
         } finally {
-          // Restore env vars for other parts of the app if needed
-          if (originalUrl) process.env.DATABASE_URL = originalUrl
-          if (originalNuxtUrl) process.env.NUXT_DATABASE_URL = originalNuxtUrl
+          // RESTORE: Put vars back for other parts of the app
+          if (originalUrl) (process.env as any).DATABASE_URL = originalUrl
+          if (originalNuxtUrl) (process.env as any).NUXT_DATABASE_URL = originalNuxtUrl
         }
       } catch (err: any) {
         console.error('[Prisma Cloudflare D1] FAILED:', err.message)
