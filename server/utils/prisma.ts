@@ -25,7 +25,7 @@ declare global {
  * In production Hostinger (main site), we use the MariaDB driver adapter.
  * In development, we use standard SQLite binaries or local DB file.
  */
-async function getClient(env?: any): Promise<PrismaClient> {
+export async function getClient(env?: any): Promise<PrismaClient> {
   const isProduction = process.env.NODE_ENV === 'production'
   const config = useRuntimeConfig()
   
