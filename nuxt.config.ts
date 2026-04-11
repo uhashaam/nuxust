@@ -14,7 +14,8 @@ export default defineNuxtConfig({
     // Tree-shaking: Alias heavy database clients to empty modules on Cloudflare to save space
     alias: process.env.CF_PAGES ? {
       '@prisma/client': process.cwd() + '/server/utils/mock-prisma.ts',
-      '.prisma/client': process.cwd() + '/server/utils/mock-prisma.ts'
+      '.prisma/client': process.cwd() + '/server/utils/mock-prisma.ts',
+      '@prisma/client-d1': process.cwd() + '/node_modules/@prisma/client-d1'
     } : {},
     // Exclude Node-only libraries from Cloudflare build
     externals: {
