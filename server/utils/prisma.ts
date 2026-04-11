@@ -80,16 +80,27 @@ export async function getClient(env?: any): Promise<PrismaClient> {
         
         if (!PrismaD1) throw new Error('Could not find PrismaD1 class in adapter-d1 module')
 
-        const adapter = new PrismaD1(d1Binding)
-        const client = new PrismaClient({ 
-          adapter,
-          // FORCE dummy URL to satisfy Prisma's internal provider check (D1 is SQLite)
-          datasources: { db: { url: 'file:./d1-isolated.db' } },
-          log: ['error', 'warn']
-        })
+        // ISOLATION: Temporarily clear MySQL env vars so Prisma doesn't try to validate the provider against them
+        const originalUrl = process.env.DATABASE_URL
+        const originalNuxtUrl = process.env.NUXT_DATABASE_URL
         
-        globalThis.__prisma = client
-        return client
+        try {
+          if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
+          if (process.env.NUXT_DATABASE_URL) delete process.env.NUXT_DATABASE_URL
+          
+          const adapter = new PrismaD1(d1Binding)
+          const client = new PrismaClient({ 
+            adapter,
+            log: ['error', 'warn']
+          })
+          
+          globalThis.__prisma = client
+          return client
+        } finally {
+          // Restore env vars for other parts of the app if needed
+          if (originalUrl) process.env.DATABASE_URL = originalUrl
+          if (originalNuxtUrl) process.env.NUXT_DATABASE_URL = originalNuxtUrl
+        }
       } catch (err: any) {
         console.error('[Prisma Cloudflare D1] FAILED:', err.message)
         // Only if it's NOT Cloudflare do we allow falling through to MySQL
