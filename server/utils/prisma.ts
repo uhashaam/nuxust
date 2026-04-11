@@ -19,58 +19,76 @@ declare global {
   var __prisma: PrismaClient | undefined
 }
 
+let _d1Binding: any = null
+
 /**
- * getClient - Dynamic initialization of Prisma client.
- * In production Cloudflare (subdomains), we use the D1 driver adapter.
- * In production Hostinger (main site), we use the MariaDB driver adapter.
- * In development, we use standard SQLite binaries or local DB file.
+ * setD1Binding - Used by middleware/plugins to inject the D1 binding.
  */
+export function setD1Binding(binding: any) {
+  if (binding && (binding.prepare || binding.exec)) {
+    console.log('[Prisma] Valid D1 Binding detected and injected.')
+    _d1Binding = binding
+    // Reset client to force re-initialization with the new valid binding
+    globalThis.__prisma = undefined
+  }
+}
+
 export async function getClient(env?: any): Promise<PrismaClient> {
   const isProduction = process.env.NODE_ENV === 'production'
   const config = useRuntimeConfig()
   
-  // 1. Detect Environment
-  const d1Binding = env?.DB || (globalThis as any).__cf_env?.DB
+  // 1. Detect Environment Heuristics
+  const d1Binding = env?.DB || _d1Binding || (globalThis as any).__cf_env?.DB || (globalThis as any).DB
+  
   const isCloudflare = !!d1Binding || 
-                       (globalThis as any).navigator?.userAgent?.includes('Cloudflare-Workers') ||
-                       (typeof (globalThis as any).caches !== 'undefined')
+                       (globalThis as any).process?.env?.CF_PAGES === 'true' ||
+                       (typeof (globalThis as any).caches !== 'undefined') ||
+                       !!(globalThis as any).__cf_env
 
-  const dbUrl = (config.databaseUrl as string) || 
-               process.env.NUXT_DATABASE_URL || 
-               process.env.DATABASE_URL || 
-               ''
+  console.log(`[Prisma] Init Check: isCloudflare=${isCloudflare}, hasD1=${!!d1Binding}`)
 
   // Return cached client if it exists
   if (globalThis.__prisma) {
     return globalThis.__prisma
   }
 
-  // 2. Cloudflare Strategy (Subdomains)
+  // 2. Cloudflare Strategy (STRICT)
   if (isCloudflare && d1Binding) {
       try {
-        console.log('[Prisma] Initializing for Cloudflare D1 (Subdomain Mode)...')
+        console.log('[Prisma] Initializing Cloudflare D1 Adapter...')
         const { PrismaD1 } = await import('@prisma/adapter-d1')
+        
+        if (typeof (d1Binding as any).prepare !== 'function') {
+           throw new Error('D1 binding is present but invalid (missing .prepare())')
+        }
+
         const adapter = new PrismaD1(d1Binding)
         const client = new PrismaClient({ 
           adapter,
           log: ['error', 'warn']
         })
+        
         globalThis.__prisma = client
         return client
       } catch (err: any) {
-        console.error('[Prisma Cloudflare D1] Adapter initialization failed:', err.message)
+        console.error('[Prisma Cloudflare D1] FAILED:', err.message)
+        // Do NOT fallback to MySQL on Cloudflare
+        throw err
       }
   }
 
-  // 3. MariaDB / MySQL Strategy (Hostinger Main Site)
-  // We check for DATABASE_URL and ensure it's not a sqlite file url
+  const dbUrl = (config.databaseUrl as string) || 
+               process.env.NUXT_DATABASE_URL || 
+               process.env.DATABASE_URL || 
+               ''
+
+  // 3. MySQL / MariaDB Strategy (Hostinger / Node.js)
+  // Even with provider="sqlite", we can connect to MySQL via Driver Adapters
   if (dbUrl && dbUrl.startsWith('mysql')) {
     try {
-      console.log('[Prisma] Initializing for MySQL/MariaDB (Main Site Mode)...')
-      
+      console.log('[Prisma] Initializing MySQL/MariaDB Adapter for Main Site...')
       const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
       
-      // LAZY IMPORTS for MariaDB (Prevents crashes in non-MySQL environments)
       const [{ PrismaMariaDb }, { default: mariadb }] = await Promise.all([
         import('@prisma/adapter-mariadb'),
         import('mariadb')
@@ -90,16 +108,17 @@ export async function getClient(env?: any): Promise<PrismaClient> {
       globalThis.__prisma = client
       return client
     } catch (err: any) {
-      console.error('[Prisma MariaDB] Adapter initialization failed:', err.message)
+      console.error('[Prisma MariaDB] FAILED:', err.message)
+      throw err
     }
   }
 
-  // 4. Fallback / Node.js Dev (SQLite)
-  console.log('[Prisma] Initializing for Standard SQLite (Fallback/Dev Mode)...')
-  
+  // 4. Default / Fallback (SQLite)
+  console.log('[Prisma) Initializing Local SQLite Fallback...')
   const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
+  
   const client = new PrismaClient({
-    datasources: { db: { url: (cleanDbUrl && cleanDbUrl.startsWith('file')) ? cleanDbUrl : 'file:./dev.db' } },
+    datasources: { db: { url: (cleanDbUrl.startsWith('file')) ? cleanDbUrl : 'file:./dev.db' } },
     log: isProduction ? ['error', 'warn'] : ['query', 'error', 'warn']
   })
   
@@ -107,8 +126,7 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   return client
 }
 
-// We export a Proxy for 'prisma' to ensure it's always lazy-loaded and doesn't 
-// cause top-level 'await unsettled' errors in environments like Cloudflare Workers.
+// Lazy Proxy Export
 export const prisma = new Proxy({} as PrismaClient, {
   get(_target, prop, receiver) {
     if (typeof prop === 'string' && !prop.startsWith('$')) {
@@ -134,7 +152,7 @@ export const prisma = new Proxy({} as PrismaClient, {
 })
 
 export async function updatePrismaWithEnv(env: any) {
-  if (env?.DB || env?.HYPERDRIVE) {
-    (globalThis as any).__prisma = await getClient(env)
+  if (env?.DB) {
+     setD1Binding(env.DB)
   }
 }
