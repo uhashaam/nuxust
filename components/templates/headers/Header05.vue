@@ -10,10 +10,10 @@
       </div>
       
       <nav class="nav-right">
-        <a :href="getPath(\'\', subdomain)" class="nav-item">Home</a>
-        <a :href="getPath(\'/news\', subdomain)" class="nav-item">News Center</a>
-        <a :href="getPath(\'/about\', subdomain)" class="nav-item">About Us</a>
-        <a :href="getPath(\'/contact\', subdomain)" class="nav-item">Contact</a>
+        <a :href="getPath('/', subdomain)" class="nav-item">Home</a>
+        <a :href="getPath('/news', subdomain)" class="nav-item">News Center</a>
+        <a :href="getPath('/about', subdomain)" class="nav-item">About Us</a>
+        <a :href="getPath('/contact', subdomain)" class="nav-item">Contact</a>
 
         <div class="auth-pill">
           <template v-if="user">
@@ -32,10 +32,10 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'active': isOpen }">
-        <a :href="getPath(\'\', subdomain)" @click="isOpen = false">Home</a>
-        <a :href="getPath(\'/news\', subdomain)" @click="isOpen = false">News Center</a>
-        <a :href="getPath(\'/about\', subdomain)" @click="isOpen = false">About Us</a>
-        <a :href="getPath(\'/contact\', subdomain)" @click="isOpen = false">Contact</a>
+        <a :href="getPath('/', subdomain)" @click="isOpen = false">Home</a>
+        <a :href="getPath('/news', subdomain)" @click="isOpen = false">News Center</a>
+        <a :href="getPath('/about', subdomain)" @click="isOpen = false">About Us</a>
+        <a :href="getPath('/contact', subdomain)" @click="isOpen = false">Contact</a>
         <div class="mobile-auth-tray" v-if="!user">
           <a href="https://b-2b.com/login" @click="isOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="isOpen = false" class="highlight">Register</a>

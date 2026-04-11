@@ -7,10 +7,10 @@
       </div>
       
       <nav class="retro-nav">
-        <a :href="getPath(\'\', subdomain)" class="nav-item">Home</a>
-        <a :href="getPath(\'/news\', subdomain)" class="nav-item">News Center</a>
-        <a :href="getPath(\'/about\', subdomain)" class="nav-item">About Us</a>
-        <a :href="getPath(\'/contact\', subdomain)" class="nav-item">Contact</a>
+        <a :href="getPath('/', subdomain)" class="nav-item">Home</a>
+        <a :href="getPath('/news', subdomain)" class="nav-item">News Center</a>
+        <a :href="getPath('/about', subdomain)" class="nav-item">About Us</a>
+        <a :href="getPath('/contact', subdomain)" class="nav-item">Contact</a>
         <a v-if="!user" href="https://b-2b.com/login" class="nav-item">Login</a>
         <div class="user-retro" v-else>
           <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
@@ -24,10 +24,10 @@
 
       <div class="mobile-overlay" :class="{ 'visible': isOpen }">
         <nav class="mobile-links">
-          <a :href="getPath(\'\', subdomain)" @click="isOpen = false">HOME</a>
-          <a :href="getPath(\'/news\', subdomain)" @click="isOpen = false">NEWS CENTER</a>
-          <a :href="getPath(\'/about\', subdomain)" @click="isOpen = false">ABOUT US</a>
-          <a :href="getPath(\'/contact\', subdomain)" @click="isOpen = false">CONTACT</a>
+          <a :href="getPath('/', subdomain)" @click="isOpen = false">HOME</a>
+          <a :href="getPath('/news', subdomain)" @click="isOpen = false">NEWS CENTER</a>
+          <a :href="getPath('/about', subdomain)" @click="isOpen = false">ABOUT US</a>
+          <a :href="getPath('/contact', subdomain)" @click="isOpen = false">CONTACT</a>
           <template v-if="!user">
             <a href="https://b-2b.com/login" @click="isOpen = false">LOGIN</a>
             <a href="https://b-2b.com/register" @click="isOpen = false">REGISTER</a>

@@ -8,10 +8,10 @@
       
       <nav class="nav-horizontal">
         <div class="nav-wrapper">
-          <a :href="getPath(\'\', subdomain)" class="nav-item">Home</a>
+          <a :href="getPath('/', subdomain)" class="nav-item">Home</a>
           
           <div class="nav-item has-dropdown">
-            <a :href="getPath(\'/news\', subdomain)" class="drop-trigger">
+            <a :href="getPath('/news', subdomain)" class="drop-trigger">
               News Center
               <el-icon class="arrow"><ArrowDown /></el-icon>
             </a>
@@ -19,22 +19,22 @@
               <div class="dropdown-inner">
                 <div class="dropdown-column">
                   <h4>Industry News</h4>
-                  <a :href="getPath(\'/news\', subdomain)">Latest Updates</a>
-                  <a :href="getPath(\'/news\', subdomain)">Market Trends</a>
-                  <a :href="getPath(\'/news\', subdomain)">Technology</a>
+                  <a :href="getPath('/news', subdomain)">Latest Updates</a>
+                  <a :href="getPath('/news', subdomain)">Market Trends</a>
+                  <a :href="getPath('/news', subdomain)">Technology</a>
                 </div>
                 <div class="dropdown-column">
                   <h4>Insights</h4>
-                  <a :href="getPath(\'/news\', subdomain)">Reports</a>
-                  <a :href="getPath(\'/news\', subdomain)">Analysis</a>
-                  <a :href="getPath(\'/news\', subdomain)">Events</a>
+                  <a :href="getPath('/news', subdomain)">Reports</a>
+                  <a :href="getPath('/news', subdomain)">Analysis</a>
+                  <a :href="getPath('/news', subdomain)">Events</a>
                 </div>
               </div>
             </div>
           </div>
 
-          <a :href="getPath(\'/about\', subdomain)" class="nav-item">About Us</a>
-          <a :href="getPath(\'/contact\', subdomain)" class="nav-item">Contact</a>
+          <a :href="getPath('/about', subdomain)" class="nav-item">About Us</a>
+          <a :href="getPath('/contact', subdomain)" class="nav-item">Contact</a>
         </div>
       </nav>
 
@@ -54,10 +54,10 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'open': isMobileOpen }">
-        <a :href="getPath(\'\', subdomain)" @click="isMobileOpen = false">Home</a>
-        <a :href="getPath(\'/news\', subdomain)" @click="isMobileOpen = false">News Center</a>
-        <a :href="getPath(\'/about\', subdomain)" @click="isMobileOpen = false">About Us</a>
-        <a :href="getPath(\'/contact\', subdomain)" @click="isMobileOpen = false">Contact</a>
+        <a :href="getPath('/', subdomain)" @click="isMobileOpen = false">Home</a>
+        <a :href="getPath('/news', subdomain)" @click="isMobileOpen = false">News Center</a>
+        <a :href="getPath('/about', subdomain)" @click="isMobileOpen = false">About Us</a>
+        <a :href="getPath('/contact', subdomain)" @click="isMobileOpen = false">Contact</a>
         <div class="mobile-auth-stack" v-if="!user">
           <a href="https://b-2b.com/login" @click="isMobileOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="isMobileOpen = false" class="primary">Join Free</a>

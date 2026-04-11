@@ -15,7 +15,7 @@
           <nav class="inline-nav">
             <a href="/privacy">PRIVACY</a>
             <span class="sep">·</span>
-            <a :href="getPath(\'/contact\', subdomain)">CONTACT</a>
+            <a :href="getPath('/contact', subdomain)">CONTACT</a>
           </nav>
         </div>
       </div>

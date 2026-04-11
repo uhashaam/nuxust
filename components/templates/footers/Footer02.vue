@@ -17,7 +17,7 @@
         <div class="links-col">
           <h4>Legal</h4>
           <a href="/privacy">Privacy Policy</a>
-          <a :href="getPath(\'/contact\', subdomain)">Support</a>
+          <a :href="getPath('/contact', subdomain)">Support</a>
         </div>
       </div>
     </div>

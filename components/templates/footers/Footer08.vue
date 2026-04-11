@@ -12,7 +12,7 @@
           <h4>Contact & Support</h4>
           <nav class="links">
             <a href="mailto:support@b-2b.com">support@b-2b.com</a>
-            <a :href="getPath(\'/contact\', subdomain)">Support Center</a>
+            <a :href="getPath('/contact', subdomain)">Support Center</a>
             <a href="/privacy">Privacy Policy</a>
           </nav>
         </div>
@@ -25,10 +25,10 @@
         <div class="column">
           <h4>Navigation</h4>
           <nav class="links">
-            <a :href="getPath(\'/\', subdomain)">Home</a>
-            <a :href="getPath(\'/news\', subdomain)">News Center</a>
-            <a :href="getPath(\'/about\', subdomain)">About Us</a>
-            <a :href="getPath(\'/contact\', subdomain)">Contact</a>
+            <a :href="getPath('/', subdomain)">Home</a>
+            <a :href="getPath('/news', subdomain)">News Center</a>
+            <a :href="getPath('/about', subdomain)">About Us</a>
+            <a :href="getPath('/contact', subdomain)">Contact</a>
           </nav>
         </div>
       </div>

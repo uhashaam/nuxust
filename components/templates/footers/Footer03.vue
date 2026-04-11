@@ -22,10 +22,10 @@
         <div class="footer-column">
           <h4 class="column-title">Navigation</h4>
           <nav class="footer-nav">
-            <a :href="getPath(\'/\', subdomain)">Home</a>
-            <a :href="getPath(\'/news\', subdomain)">News Center</a>
-            <a :href="getPath(\'/about\', subdomain)">About Us</a>
-            <a :href="getPath(\'/contact\', subdomain)">Contact</a>
+            <a :href="getPath('/', subdomain)">Home</a>
+            <a :href="getPath('/news', subdomain)">News Center</a>
+            <a :href="getPath('/about', subdomain)">About Us</a>
+            <a :href="getPath('/contact', subdomain)">Contact</a>
             <a href="/privacy" class="privacy-link">Privacy Policy</a>
           </nav>
         </div>

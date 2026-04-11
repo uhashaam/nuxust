@@ -8,7 +8,7 @@
         <div class="bottom-links">
           <a href="/privacy">Privacy Policy</a>
           <span class="sep">|</span>
-          <a :href="getPath(\'/contact\', subdomain)">Contact</a>
+          <a :href="getPath('/contact', subdomain)">Contact</a>
         </div>
       </div>
     </div>

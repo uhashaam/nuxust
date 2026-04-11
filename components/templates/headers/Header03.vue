@@ -7,19 +7,19 @@
       </div>
       
       <nav class="nav-vertical">
-        <a :href="getPath(\'\', subdomain)" class="nav-item">
+        <a :href="getPath('/', subdomain)" class="nav-item">
           <span class="nav-indicator"></span>
           <span class="label">Home</span>
         </a>
-        <a :href="getPath(\'/news\', subdomain)" class="nav-item">
+        <a :href="getPath('/news', subdomain)" class="nav-item">
           <span class="nav-indicator"></span>
           <span class="label">News Center</span>
         </a>
-        <a :href="getPath(\'/about\', subdomain)" class="nav-item">
+        <a :href="getPath('/about', subdomain)" class="nav-item">
           <span class="nav-indicator"></span>
           <span class="label">About Us</span>
         </a>
-        <a :href="getPath(\'/contact\', subdomain)" class="nav-item">
+        <a :href="getPath('/contact', subdomain)" class="nav-item">
           <span class="nav-indicator"></span>
           <span class="label">Contact</span>
         </a>
@@ -62,10 +62,10 @@
       </div>
       <div class="mobile-drawer" :class="{ 'is-open': menuOpen }">
         <nav class="mobile-nav">
-          <a :href="getPath(\'\', subdomain)" @click="menuOpen = false">Home</a>
-          <a :href="getPath(\'/news\', subdomain)" @click="menuOpen = false">News Center</a>
-          <a :href="getPath(\'/about\', subdomain)" @click="menuOpen = false">About Us</a>
-          <a :href="getPath(\'/contact\', subdomain)" @click="menuOpen = false">Contact</a>
+          <a :href="getPath('/', subdomain)" @click="menuOpen = false">Home</a>
+          <a :href="getPath('/news', subdomain)" @click="menuOpen = false">News Center</a>
+          <a :href="getPath('/about', subdomain)" @click="menuOpen = false">About Us</a>
+          <a :href="getPath('/contact', subdomain)" @click="menuOpen = false">Contact</a>
           <div class="mobile-auth-section" v-if="!user">
             <a href="https://b-2b.com/login" @click="menuOpen = false">Login</a>
             <a href="https://b-2b.com/register" @click="menuOpen = false" class="cta">Register</a>
