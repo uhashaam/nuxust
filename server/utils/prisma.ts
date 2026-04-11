@@ -77,7 +77,7 @@ export async function getClient(env?: any): Promise<PrismaClient> {
 
         const [d1AdapterMod, d1ClientMod] = await Promise.all([
             import('@prisma/adapter-d1'),
-            import('../../node_modules/@prisma/client-d1/wasm.js' as any) // Direct physical resolution to bypass Cloudflare bundler packet failures
+            import('./d1-client/wasm.js' as any) // Direct local folder import to bypass unresolvable node_modules
         ])
         
         const PrismaD1 = d1AdapterMod.PrismaD1 || (d1AdapterMod as any).default?.PrismaD1

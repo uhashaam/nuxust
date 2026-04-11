@@ -2,7 +2,7 @@ generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
   engineType      = "wasm"
-  output          = "../node_modules/@prisma/client-d1"
+  output          = "../server/utils/d1-client"
 }
 
 datasource db {
