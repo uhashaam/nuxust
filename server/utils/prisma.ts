@@ -77,7 +77,7 @@ export async function getClient(env?: any): Promise<PrismaClient> {
 
         const [d1AdapterMod, d1ClientMod] = await Promise.all([
             import('@prisma/adapter-d1'),
-            import('@prisma/client-d1')
+            import('@prisma/client-d1' as any) // Cast as any to avoid TS errors when aliased
         ])
         
         const PrismaD1 = d1AdapterMod.PrismaD1 || (d1AdapterMod as any).default?.PrismaD1
@@ -116,41 +116,44 @@ export async function getClient(env?: any): Promise<PrismaClient> {
       }
   }
 
-  const dbUrl = (config.databaseUrl as string) || 
-               process.env.NUXT_DATABASE_URL || 
-               process.env.DATABASE_URL || 
-               ''
-
   // 3. MySQL / MariaDB Strategy (Hostinger / Node.js)
-  // With provider="mysql" in schema.prisma, we can use a direct connection on Node.js
-  if (dbUrl && dbUrl.startsWith('mysql')) {
-    try {
-      console.log('[Prisma] Initializing Direct MySQL (Standard Client)...')
-      const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
-      
-      const { PrismaClient: PrismaClientStandard } = await import('@prisma/client')
-      
-      // Standard binary connection (No Adapter)
-      const client = new PrismaClientStandard({ 
-        datasources: { db: { url: cleanDbUrl } },
-        log: ['error', 'warn']
-      })
-      
-      globalThis.__prisma = client
-      return client
-    } catch (err: any) {
-      console.error('[Prisma MySQL Direct] FAILED:', err.message)
-      throw err
-    }
+  // Skip this entirely on Cloudflare to minimize bundle size
+  if (!isCloudflare) {
+      const dbUrl = (config.databaseUrl as string) || 
+                   process.env.NUXT_DATABASE_URL || 
+                   process.env.DATABASE_URL || 
+                   ''
+
+      if (dbUrl && dbUrl.startsWith('mysql')) {
+        try {
+          console.log('[Prisma] Initializing Direct MySQL (Standard Client)...')
+          const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
+          
+          const { PrismaClient: PrismaClientStandard } = await import('@prisma/client')
+          
+          // Standard binary connection (No Adapter)
+          const client = new PrismaClientStandard({ 
+            datasources: { db: { url: cleanDbUrl } },
+            log: ['error', 'warn']
+          })
+          
+          globalThis.__prisma = client
+          return client
+        } catch (err: any) {
+          console.error('[Prisma MySQL Direct] FAILED:', err.message)
+          throw err
+        }
+      }
   }
 
   // 4. Default / Fallback (SQLite)
   console.log('[Prisma) Initializing Local SQLite Fallback...')
-  const cleanDbUrl = dbUrl.trim().replace(/^["'](.+)["']$/, '$1')
+  const dbUrlFallback = (config.databaseUrl as string) || process.env.DATABASE_URL || ''
+  const cleanDbUrlFallback = dbUrlFallback.trim().replace(/^["'](.+)["']$/, '$1')
   
   const { PrismaClient: PrismaClientFallback } = await import('@prisma/client')
   const client = new PrismaClientFallback({
-    datasources: { db: { url: (cleanDbUrl.startsWith('file')) ? cleanDbUrl : 'file:./dev.db' } },
+    datasources: { db: { url: (cleanDbUrlFallback.startsWith('file')) ? cleanDbUrlFallback : 'file:./dev.db' } },
     log: isProduction ? ['error', 'warn'] : ['query', 'error', 'warn']
   })
   

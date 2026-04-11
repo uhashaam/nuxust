@@ -5,15 +5,20 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-11-18',
 
-  nitro: {
+    nitro: {
     preset: process.env.NITRO_PRESET || (process.env.CF_PAGES ? 'cloudflare-pages' : 'node-server'),
     compressPublicAssets: { gzip: true, brotli: true },
     experimental: {
       wasm: true
     },
-    // Exclude Node-only libraries from Cloudflare build to avoid 1101 errors
+    // Tree-shaking: Alias heavy database clients to empty modules on Cloudflare to save space
+    alias: process.env.CF_PAGES ? {
+      '@prisma/client': 'unenv/runtime/mock/empty',
+      '.prisma/client': 'unenv/runtime/mock/empty'
+    } : {},
+    // Exclude Node-only libraries from Cloudflare build
     externals: {
-      inline: process.env.CF_PAGES ? [] : ['iconv-lite', 'safer-buffer'],
+      inline: process.env.CF_PAGES ? ['@prisma/client-d1', '@prisma/adapter-d1'] : ['iconv-lite', 'safer-buffer'],
       external: ['nodemailer', 'mariadb', '@prisma/adapter-mariadb', '@prisma/client', '.prisma/client']
     },
     rollupConfig: {
