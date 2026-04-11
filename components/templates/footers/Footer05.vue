@@ -27,6 +27,7 @@
 defineProps<{
   subdomain?: string
 }>()
+const { getPath } = useSubdomainNav()
 </script>
 
 <style scoped>

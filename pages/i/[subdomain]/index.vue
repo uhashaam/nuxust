@@ -55,7 +55,14 @@
                 </div>
                 
                 <!-- Dynamic News List Style -->
+                <div v-if="displayNewsList.length === 0" class="no-news-placeholder">
+                  <el-empty 
+                    description="Intelligence reports are currently being compiled for this sector. Please check back shortly for updates."
+                    :image-size="120"
+                  />
+                </div>
                 <component 
+                  v-else
                   :is="newsListComponent"
                   :news-items="displayNewsList"
                   :current-page="1"

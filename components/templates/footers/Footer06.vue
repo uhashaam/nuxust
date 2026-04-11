@@ -35,6 +35,7 @@ import { Message, Phone } from '@element-plus/icons-vue'
 defineProps<{
   subdomain?: string
 }>()
+const { getPath } = useSubdomainNav()
 </script>
 
 <style scoped>

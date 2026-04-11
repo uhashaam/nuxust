@@ -15,7 +15,7 @@
           <nav class="inline-nav">
             <a href="/privacy">PRIVACY</a>
             <span class="sep">·</span>
-            <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">CONTACT</a>
+            <a :href="getPath(\'/contact\', subdomain)">CONTACT</a>
           </nav>
         </div>
       </div>
@@ -27,6 +27,7 @@
 defineProps<{
   subdomain?: string
 }>()
+const { getPath } = useSubdomainNav()
 </script>
 
 <style scoped>

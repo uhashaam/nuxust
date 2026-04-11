@@ -8,10 +8,10 @@
       </div>
       
       <nav class="nav-links">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" class="nav-item">Home</a>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" class="nav-item">News Center</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" class="nav-item">About Us</a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" class="nav-item">Contact</a>
+        <a :href="getPath('/', subdomain)" class="nav-item">Home</a>
+        <a :href="getPath('/news', subdomain)" class="nav-item">News Center</a>
+        <a :href="getPath('/about', subdomain)" class="nav-item">About Us</a>
+        <a :href="getPath('/contact', subdomain)" class="nav-item">Contact</a>
       </nav>
 
       <div class="auth-group">
@@ -30,10 +30,10 @@
       </button>
 
       <div class="mobile-nav" :class="{ 'active': isMenuOpen }">
-        <a :href="subdomain ? `/i/${subdomain}` : '/'" @click="isMenuOpen = false">Home</a>
-        <a :href="subdomain ? `/i/${subdomain}/news` : '/news'" @click="isMenuOpen = false">News Center</a>
-        <a :href="subdomain ? `/i/${subdomain}/about` : '/about'" @click="isMenuOpen = false">About Us</a>
-        <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'" @click="isMenuOpen = false">Contact</a>
+        <a :href="getPath('/', subdomain)" @click="isMenuOpen = false">Home</a>
+        <a :href="getPath('/news', subdomain)" @click="isMenuOpen = false">News Center</a>
+        <a :href="getPath('/about', subdomain)" @click="isMenuOpen = false">About Us</a>
+        <a :href="getPath('/contact', subdomain)" @click="isMenuOpen = false">Contact</a>
         <div class="mobile-auth" v-if="!user">
           <a href="https://b-2b.com/login" @click="isMenuOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="isMenuOpen = false" class="mobile-join">Get Started</a>
@@ -58,6 +58,7 @@ defineProps<{
 }>()
 
 const { user, logout } = useAuth()
+const { getPath } = useSubdomainNav()
 const isScrolled = ref(false)
 const isMenuOpen = ref(false)
 

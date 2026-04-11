@@ -7,10 +7,10 @@
       </div>
       
       <nav class="nav-center">
-        <a :href="`/i/${subdomain}`" class="nav-item"><span>Home</span></a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item"><span>News Center</span></a>
-        <a :href="`/i/${subdomain}/about`" class="nav-item"><span>About Us</span></a>
-        <a :href="`/i/${subdomain}/contact`" class="nav-item"><span>Contact</span></a>
+        <a :href="getPath(\'\', subdomain)" class="nav-item"><span>Home</span></a>
+        <a :href="getPath(\'/news\', subdomain)" class="nav-item"><span>News Center</span></a>
+        <a :href="getPath(\'/about\', subdomain)" class="nav-item"><span>About Us</span></a>
+        <a :href="getPath(\'/contact\', subdomain)" class="nav-item"><span>Contact</span></a>
       </nav>
 
       <div class="right-panel">
@@ -30,10 +30,10 @@
       </div>
 
       <div class="mobile-menu" :class="{ 'is-open': mobileOpen }">
-        <a :href="`/i/${subdomain}`" @click="mobileOpen = false">Home</a>
-        <a :href="`/i/${subdomain}/news`" @click="mobileOpen = false">News Center</a>
-        <a :href="`/i/${subdomain}/about`" @click="mobileOpen = false">About Us</a>
-        <a :href="`/i/${subdomain}/contact`" @click="mobileOpen = false">Contact</a>
+        <a :href="getPath(\'\', subdomain)" @click="mobileOpen = false">Home</a>
+        <a :href="getPath(\'/news\', subdomain)" @click="mobileOpen = false">News Center</a>
+        <a :href="getPath(\'/about\', subdomain)" @click="mobileOpen = false">About Us</a>
+        <a :href="getPath(\'/contact\', subdomain)" @click="mobileOpen = false">Contact</a>
         <div class="mobile-auth-btn" v-if="!user">
           <a href="https://b-2b.com/login" @click="mobileOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="mobileOpen = false" class="highlight">Register</a>
@@ -58,6 +58,7 @@ defineProps<{
 }>()
 
 const { user, logout } = useAuth()
+const { getPath } = useSubdomainNav()
 const mobileOpen = ref(false)
 </script>
 

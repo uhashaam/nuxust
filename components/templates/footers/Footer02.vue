@@ -17,7 +17,7 @@
         <div class="links-col">
           <h4>Legal</h4>
           <a href="/privacy">Privacy Policy</a>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Support</a>
+          <a :href="getPath(\'/contact\', subdomain)">Support</a>
         </div>
       </div>
     </div>
@@ -28,6 +28,7 @@
 defineProps<{
   subdomain?: string
 }>()
+const { getPath } = useSubdomainNav()
 </script>
 
 <style scoped>

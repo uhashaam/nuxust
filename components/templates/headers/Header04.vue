@@ -9,13 +9,13 @@
     <div class="bottom-row">
       <div class="container">
         <nav class="nav-links">
-          <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
+          <a :href="getPath(\'\', subdomain)" class="nav-item">Home</a>
           <div class="nav-dot"></div>
-          <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
+          <a :href="getPath(\'/news\', subdomain)" class="nav-item">News Center</a>
           <div class="nav-dot"></div>
-          <a :href="`/i/${subdomain}/about`" class="nav-item">About Us</a>
+          <a :href="getPath(\'/about\', subdomain)" class="nav-item">About Us</a>
           <div class="nav-dot"></div>
-          <a :href="`/i/${subdomain}/contact`" class="nav-item">Contact</a>
+          <a :href="getPath(\'/contact\', subdomain)" class="nav-item">Contact</a>
         </nav>
       </div>
     </div>
@@ -44,10 +44,10 @@
     </div>
     <div class="mobile-overlay" :class="{ 'active': isOpen }">
       <nav class="mobile-menu">
-        <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
-        <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
-        <a :href="`/i/${subdomain}/about`" @click="isOpen = false">About Us</a>
-        <a :href="`/i/${subdomain}/contact`" @click="isOpen = false">Contact</a>
+        <a :href="getPath(\'\', subdomain)" @click="isOpen = false">Home</a>
+        <a :href="getPath(\'/news\', subdomain)" @click="isOpen = false">News Center</a>
+        <a :href="getPath(\'/about\', subdomain)" @click="isOpen = false">About Us</a>
+        <a :href="getPath(\'/contact\', subdomain)" @click="isOpen = false">Contact</a>
         <div class="mobile-auth-grid" v-if="!user">
           <a href="https://b-2b.com/login" @click="isOpen = false">Login</a>
           <a href="https://b-2b.com/register" @click="isOpen = false">Register</a>
@@ -72,6 +72,7 @@ defineProps<{
 }>()
 
 const { user, logout } = useAuth()
+const { getPath } = useSubdomainNav()
 const isOpen = ref(false)
 </script>
 

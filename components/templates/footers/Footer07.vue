@@ -10,7 +10,7 @@
         <div class="base-links">
           <a href="/privacy">Privacy Policy</a>
           <span class="sep">·</span>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact Us</a>
+          <a :href="getPath(\'/contact\', subdomain)">Contact Us</a>
         </div>
         <div class="feedback-row">
           <a href="/feedback" class="feedback-link">Feedback Entry →</a>
@@ -24,6 +24,7 @@
 defineProps<{
   subdomain?: string
 }>()
+const { getPath } = useSubdomainNav()
 </script>
 
 <style scoped>

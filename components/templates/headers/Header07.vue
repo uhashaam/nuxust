@@ -7,8 +7,8 @@
       </div>
       
       <nav class="core-nav">
-        <a :href="`/i/${subdomain}`" class="nav-item">Home</a>
-        <a :href="`/i/${subdomain}/news`" class="nav-item">News Center</a>
+        <a :href="getPath(\'\', subdomain)" class="nav-item">Home</a>
+        <a :href="getPath(\'/news\', subdomain)" class="nav-item">News Center</a>
         <div class="auth-minimal">
           <template v-if="user">
             <a href="https://b-2b.com/dashboard" class="nav-item">Dashboard</a>
@@ -27,8 +27,8 @@
 
       <div class="mobile-overlay" :class="{ 'active': isOpen }">
         <div class="mobile-content">
-          <a :href="`/i/${subdomain}`" @click="isOpen = false">Home</a>
-          <a :href="`/i/${subdomain}/news`" @click="isOpen = false">News Center</a>
+          <a :href="getPath(\'\', subdomain)" @click="isOpen = false">Home</a>
+          <a :href="getPath(\'/news\', subdomain)" @click="isOpen = false">News Center</a>
           <a href="https://b-2b.com/login" v-if="!user" @click="isOpen = false">Login</a>
           <a href="https://b-2b.com/register" v-if="!user" @click="isOpen = false">Register</a>
           <template v-else>
@@ -52,6 +52,7 @@ defineProps<{
 }>()
 
 const { user, logout } = useAuth()
+const { getPath } = useSubdomainNav()
 const isScrolled = ref(false)
 const isOpen = ref(false)
 

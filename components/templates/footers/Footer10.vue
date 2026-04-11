@@ -8,7 +8,7 @@
         <div class="bottom-links">
           <a href="/privacy">Privacy Policy</a>
           <span class="sep">|</span>
-          <a :href="subdomain ? `/i/${subdomain}/contact` : '/contact'">Contact</a>
+          <a :href="getPath(\'/contact\', subdomain)">Contact</a>
         </div>
       </div>
     </div>
@@ -19,6 +19,7 @@
 defineProps<{
   subdomain?: string
 }>()
+const { getPath } = useSubdomainNav()
 </script>
 
 <style scoped>
