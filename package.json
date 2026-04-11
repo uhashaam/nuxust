@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "if [ \"$CF_PAGES\" = \"1\" ]; then node scripts/fix-d1-schema.mjs; fi; prisma generate && nuxt prepare && node scripts/patch-unenv.mjs"
+    "postinstall": "node scripts/fix-d1-schema.mjs; prisma generate && nuxt prepare && node scripts/patch-unenv.mjs"
   },
   "dependencies": {
     "@nuxt/image": "^2.0.0",

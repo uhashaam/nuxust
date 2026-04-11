@@ -38,8 +38,14 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   const config = useRuntimeConfig()
   
   // 1. Detect Environment Heuristics
-  const d1Binding = env?.DB || _d1Binding || (globalThis as any).__cf_env?.DB || (globalThis as any).DB
+  // Priority: context-passed env -> injected binding -> global bindings
+  let d1Binding = env?.DB || _d1Binding || (globalThis as any).__cf_env?.DB || (globalThis as any).DB
   
+  // Double-nested env check (sometimes seen in Nitro/Pages)
+  if (!d1Binding && env?.env?.DB) {
+    d1Binding = env.env.DB
+  }
+
   const isCloudflare = !!d1Binding || 
                        (globalThis as any).process?.env?.CF_PAGES === 'true' ||
                        (typeof (globalThis as any).caches !== 'undefined') ||
@@ -53,16 +59,20 @@ export async function getClient(env?: any): Promise<PrismaClient> {
   }
 
   // 2. Cloudflare Strategy (STRICT)
-  if (isCloudflare && d1Binding) {
+  if (isCloudflare) {
+      // If we are on Cloudflare, we MUST have a valid D1 binding for subdomains
       try {
         console.log('[Prisma] Initializing Cloudflare D1 Adapter...')
+        
+        // Strict Validation
+        if (!d1Binding || typeof (d1Binding as any).prepare !== 'function') {
+           throw new Error(`D1 binding is missing or invalid (prepare method not found). Mode: ${isCloudflare ? 'Edge' : 'Non-Edge'}`)
+        }
+
         const d1Mod = await import('@prisma/adapter-d1')
         const PrismaD1 = d1Mod.PrismaD1 || (d1Mod as any).default?.PrismaD1
         
-        if (!PrismaD1) throw new Error('Could not find PrismaD1 in adapter-d1 module')
-        if (typeof (d1Binding as any).prepare !== 'function') {
-           throw new Error('D1 binding is present but invalid (missing .prepare())')
-        }
+        if (!PrismaD1) throw new Error('Could not find PrismaD1 class in adapter-d1 module')
 
         const adapter = new PrismaD1(d1Binding)
         const client = new PrismaClient({ 
@@ -74,7 +84,8 @@ export async function getClient(env?: any): Promise<PrismaClient> {
         return client
       } catch (err: any) {
         console.error('[Prisma Cloudflare D1] FAILED:', err.message)
-        throw err
+        // Only if it's NOT Cloudflare do we allow falling through to MySQL
+        if (isCloudflare) throw err
       }
   }
 

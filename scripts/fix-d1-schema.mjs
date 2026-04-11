@@ -10,18 +10,23 @@ import path from 'path'
 
 const schemaPath = path.resolve('prisma/schema.prisma')
 
-if (fs.existsSync(schemaPath)) {
-  let content = fs.readFileSync(schemaPath, 'utf8')
-  
-  if (content.includes('provider = "mysql"')) {
-    console.log('[Build] Swapping Prisma provider to sqlite for D1 compatibility...')
-    content = content.replace('provider = "mysql"', 'provider = "sqlite"')
-    fs.writeFileSync(schemaPath, content)
-    console.log('[Build] schema.prisma updated successfully.')
+// Only run the swap if we are on Cloudflare Pages
+if (process.env.CF_PAGES === '1' || process.env.CF_PAGES === 'true' || process.env.NITRO_PRESET === 'cloudflare-pages') {
+  if (fs.existsSync(schemaPath)) {
+    let content = fs.readFileSync(schemaPath, 'utf8')
+    
+    if (content.includes('provider = "mysql"')) {
+      console.log('[Build] detected Cloudflare environment. Swapping Prisma provider to sqlite...')
+      content = content.replace('provider = "mysql"', 'provider = "sqlite"')
+      fs.writeFileSync(schemaPath, content)
+      console.log('[Build] schema.prisma updated successfully for D1.')
+    } else {
+      console.log('[Build] schema.prisma is already configured for sqlite.')
+    }
   } else {
-    console.log('[Build] schema.prisma is already configured for sqlite or not mysql.')
+    console.error('[Build] schema.prisma not found!')
+    process.exit(1)
   }
 } else {
-  console.error('[Build] schema.prisma not found!')
-  process.exit(1)
+  console.log('[Build] Standard environment detected. Keeping schema as mysql.')
 }
