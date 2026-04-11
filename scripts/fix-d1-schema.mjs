@@ -9,24 +9,25 @@ import path from 'path'
  */
 
 const schemaPath = path.resolve('prisma/schema.prisma')
+const d1SchemaPath = path.resolve('prisma/schema.d1.prisma')
 
 // Only run the swap if we are on Cloudflare Pages
 if (process.env.CF_PAGES === '1' || process.env.CF_PAGES === 'true' || process.env.NITRO_PRESET === 'cloudflare-pages') {
-  if (fs.existsSync(schemaPath)) {
-    let content = fs.readFileSync(schemaPath, 'utf8')
-    
-    if (content.includes('provider = "mysql"')) {
-      console.log('[Build] detected Cloudflare environment. Swapping Prisma provider to sqlite...')
-      content = content.replace('provider = "mysql"', 'provider = "sqlite"')
-      fs.writeFileSync(schemaPath, content)
-      console.log('[Build] schema.prisma updated successfully for D1.')
-    } else {
-      console.log('[Build] schema.prisma is already configured for sqlite.')
-    }
+  if (fs.existsSync(d1SchemaPath)) {
+    console.log('[Build] Cloudflare environment detected. SWAPPING to D1 Native Schema...')
+    fs.copyFileSync(d1SchemaPath, schemaPath)
+    console.log('[Build] schema.prisma has been replaced with schema.d1.prisma.')
   } else {
-    console.error('[Build] schema.prisma not found!')
-    process.exit(1)
+    console.warn('[Build] schema.d1.prisma not found. Falling back to textual swap...')
+    if (fs.existsSync(schemaPath)) {
+        let content = fs.readFileSync(schemaPath, 'utf8')
+        if (content.includes('provider = "mysql"')) {
+            content = content.replace('provider = "mysql"', 'provider = "sqlite"')
+            fs.writeFileSync(schemaPath, content)
+            console.log('[Build] Textual swap performed on schema.prisma.')
+        }
+    }
   }
 } else {
-  console.log('[Build] Standard environment detected. Keeping schema as mysql.')
+  console.log('[Build] Standard environment detected. Keeping native MySQL schema.')
 }

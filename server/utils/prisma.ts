@@ -83,6 +83,8 @@ export async function getClient(env?: any): Promise<PrismaClient> {
         const adapter = new PrismaD1(d1Binding)
         const client = new PrismaClient({ 
           adapter,
+          // FORCE dummy URL to satisfy Prisma's internal provider check (D1 is SQLite)
+          datasources: { db: { url: 'file:./d1-isolated.db' } },
           log: ['error', 'warn']
         })
         
