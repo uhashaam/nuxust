@@ -14,6 +14,14 @@ export interface News {
         release_status: 'Published' | 'Draft' | 'Trending';
         featured_image?: string | any[];
         author_email?: string;
+        // SEO fields
+        seo_title?: string;
+        meta_description?: string;
+        focus_keyword?: string;
+        og_image_url?: string;
+        canonical_url?: string;
+        robots_meta?: string;
+        seo_score?: number;
     }
 }
 
@@ -29,7 +37,15 @@ const mapNews = (pNews: any): News => {
             release_status: pNews.status as any,
             author_email: pNews.author || undefined,
             site_id: pNews.industry ? [{ record_id: pNews.industry }] : [],
-            featured_image: pNews.thumbnail
+            featured_image: pNews.thumbnail,
+            // SEO mapping
+            seo_title: pNews.seo_title,
+            meta_description: pNews.meta_description,
+            focus_keyword: pNews.focus_keyword,
+            og_image_url: pNews.og_image_url,
+            canonical_url: pNews.canonical_url,
+            robots_meta: pNews.robots_meta,
+            seo_score: pNews.seo_score
         }
     };
 };
@@ -102,7 +118,15 @@ export const newsRepository = {
                 status: newsData.release_status || 'Published',
                 author: newsData.author_email,
                 thumbnail: featured_image,
-                slug: newsData.news_title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now()
+                slug: newsData.slug || (newsData.news_title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now()),
+                // SEO fields
+                seo_title: newsData.seo_title,
+                meta_description: newsData.meta_description,
+                focus_keyword: newsData.focus_keyword,
+                og_image_url: newsData.og_image_url,
+                canonical_url: newsData.canonical_url,
+                robots_meta: newsData.robots_meta,
+                seo_score: newsData.seo_score
             }
         });
 
@@ -119,6 +143,13 @@ export const newsRepository = {
         if (updates.site_id && updates.site_id.length > 0) {
             data.industry = updates.site_id[0].record_id || updates.site_id[0];
         }
+        if (updates.seo_title) data.seo_title = updates.seo_title;
+        if (updates.meta_description) data.meta_description = updates.meta_description;
+        if (updates.focus_keyword) data.focus_keyword = updates.focus_keyword;
+        if (updates.og_image_url) data.og_image_url = updates.og_image_url;
+        if (updates.canonical_url) data.canonical_url = updates.canonical_url;
+        if (updates.robots_meta) data.robots_meta = updates.robots_meta;
+        if (updates.seo_score !== undefined) data.seo_score = updates.seo_score;
         
         const pNews = await prisma.newsContent.update({
             where: { id: recordId },

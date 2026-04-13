@@ -33,14 +33,21 @@
 
                 <el-tab-pane label="SEO Optimization">
                   <div class="seo-fields">
-                    <el-form-item label="URL Slug (Optional)">
+                    <el-form-item label="Focus Keyword">
+                      <el-input v-model="form.focusKeyword" placeholder="Primary keyword for this article" />
+                      <p class="help-text">Used for live SEO analysis scoring.</p>
+                    </el-form-item>
+
+                    <el-form-item label="URL Slug">
                       <el-input v-model="form.slug" placeholder="e.g. title-of-article" />
-                      <p class="help-text">Leave blank to auto-generate from title. Use only lowercase, numbers, and hyphens.</p>
+                      <p class="help-text">Leave blank to auto-generate from title.</p>
                     </el-form-item>
 
                     <el-form-item label="Meta Title (SEO Title)">
-                      <el-input v-model="form.metaTitle" placeholder="Custom page title for search engines" />
-                      <p class="help-text">Recommended length: 50-60 characters.</p>
+                      <el-input v-model="form.seoTitle" placeholder="Custom page title for search engines" />
+                      <div class="char-count" :class="charClass(form.seoTitle, 50, 60)">
+                        {{ (form.seoTitle || '').length }}/60 chars
+                      </div>
                     </el-form-item>
 
                     <el-form-item label="Meta Description">
@@ -50,11 +57,17 @@
                         :rows="4" 
                         placeholder="Page description for search results"
                       />
-                      <p class="help-text">Recommended length: 150-160 characters.</p>
+                      <div class="char-count" :class="charClass(form.metaDescription, 150, 160)">
+                        {{ (form.metaDescription || '').length }}/160 chars
+                      </div>
                     </el-form-item>
 
-                    <el-form-item label="Meta Keywords">
-                      <el-input v-model="form.metaKeywords" placeholder="Keywords separated by commas" />
+                    <el-form-item label="Canonical URL">
+                      <el-input v-model="form.canonicalUrl" placeholder="https://..." />
+                    </el-form-item>
+
+                    <el-form-item label="OG Image URL">
+                      <el-input v-model="form.ogImageUrl" placeholder="https://..." />
                     </el-form-item>
                   </div>
                 </el-tab-pane>
@@ -62,6 +75,24 @@
             </div>
 
             <div class="form-sidebar">
+              <div class="seo-sidebar-card">
+                <div class="seo-score-header">
+                  <span class="seo-label">SEO Analysis</span>
+                  <div class="seo-score-badge" :class="scoreClass">
+                    {{ seoResult.percentage }}
+                  </div>
+                </div>
+                <div class="seo-progress-bg">
+                  <div class="seo-progress-fill" :style="{ width: seoResult.percentage + '%' }" :class="scoreClass"></div>
+                </div>
+                <div class="seo-checklist">
+                  <div v-for="check in seoResult.checks" :key="check.id" class="seo-check-item">
+                    <span class="check-icon">{{ check.status === 'pass' ? '✅' : check.status === 'warn' ? '⚠️' : '❌' }}</span>
+                    <span class="check-text">{{ check.label }}</span>
+                  </div>
+                </div>
+              </div>
+
               <el-form-item label="Featured Image">
                 <div 
                   class="news-uploader"
@@ -174,11 +205,71 @@ const form = ref<Omit<NewsItem, 'id'> & { siteId?: string }>({
   featured: false,
   trending: false,
   metaTitle: '',
+  seoTitle: '',
   metaDescription: '',
   metaKeywords: '',
   slug: '',
-  siteId: ''
+  siteId: '',
+  focusKeyword: '',
+  ogImageUrl: '',
+  canonicalUrl: '',
+  robotsMeta: 'index,follow',
+  seoScore: 0
 })
+
+// === SEO ANALYSIS LOGIC ===
+const seoResult = computed(() => {
+  const content = form.value.content || ''
+  const plainText = content.replace(/<[^>]*>/g, '').trim()
+  const wordCount = plainText ? plainText.split(/\s+/).length : 0
+  const title = form.value.title || ''
+  const seoTitle = form.value.seoTitle || title
+  const desc = form.value.metaDescription || ''
+  const keyword = (form.value.focusKeyword || '').toLowerCase().trim()
+
+  const checks = []
+  let points = 0
+
+  // Title 
+  const tLen = seoTitle.length
+  if (tLen >= 50 && tLen <= 60) { checks.push({ id: 1, label: 'Title length', status: 'pass' }); points += 20 }
+  else { checks.push({ id: 1, label: 'Title length', status: 'fail' }); points += 5 }
+
+  // Desc
+  const dLen = desc.length
+  if (dLen >= 150 && dLen <= 160) { checks.push({ id: 2, label: 'Desc length', status: 'pass' }); points += 20 }
+  else { checks.push({ id: 2, label: 'Desc length', status: 'fail' }); points += 5 }
+
+  // Keyword in Title
+  if (keyword && seoTitle.toLowerCase().includes(keyword)) { checks.push({ id: 3, label: 'Keyword in title', status: 'pass' }); points += 20 }
+  else { checks.push({ id: 3, label: 'Keyword in title', status: 'fail' }) }
+
+  // Keyword in Desc
+  if (keyword && desc.toLowerCase().includes(keyword)) { checks.push({ id: 4, label: 'Keyword in desc', status: 'pass' }); points += 15 }
+  else { checks.push({ id: 4, label: 'Keyword in desc', status: 'fail' }) }
+
+  // Content Word Count
+  if (wordCount >= 600) { checks.push({ id: 5, label: 'Content length (600+)', status: 'pass' }); points += 25 }
+  else if (wordCount >= 300) { checks.push({ id: 5, label: 'Content length', status: 'warn' }); points += 10 }
+  else { checks.push({ id: 5, label: 'Content too short', status: 'fail' }) }
+
+  const percentage = Math.min(points, 100)
+  return { percentage, checks }
+})
+
+const scoreClass = computed(() => {
+  const s = seoResult.value.percentage
+  if (s >= 80) return 'score-green'
+  if (s >= 50) return 'score-orange'
+  return 'score-red'
+})
+
+const charClass = (text: string | undefined | null, min: number, max: number) => {
+  const len = (text || '').length
+  if (len === 0) return ''
+  if (len >= min && len <= max) return 'text-success'
+  return 'text-warning'
+}
 
 const rules = {
   title: [{ required: true, message: 'Please enter title', trigger: 'blur' }],
@@ -229,11 +320,15 @@ onMounted(async () => {
             publishedAt: data.publishedAt || new Date().toISOString().split('T')[0],
             featured: data.featured || false,
             trending: data.trending || false,
-            metaTitle: data.metaTitle || '',
-            metaDescription: data.metaDescription || '',
             metaKeywords: data.metaKeywords || '',
             slug: data.slug || '',
-            siteId: data.siteId || ''
+            siteId: data.siteId || '',
+            seoTitle: data.seo_title || data.metaTitle || '',
+            focusKeyword: data.focus_keyword || '',
+            ogImageUrl: data.og_image_url || '',
+            canonicalUrl: data.canonical_url || '',
+            robotsMeta: data.robots_meta || 'index,follow',
+            seoScore: data.seo_score || 0
           }
           if (quill.value) {
             quill.value.root.innerHTML = form.value.content
@@ -280,7 +375,15 @@ const handleSave = async () => {
               featured: form.value.featured,
               trending: form.value.trending,
               author: form.value.author,
-              publishedAt: form.value.publishedAt
+              publishedAt: form.value.publishedAt,
+              // SEO fields
+              seoTitle: form.value.seoTitle,
+              metaDescription: form.value.metaDescription,
+              focusKeyword: form.value.focusKeyword,
+              ogImageUrl: form.value.ogImageUrl,
+              canonicalUrl: form.value.canonicalUrl,
+              robotsMeta: form.value.robotsMeta,
+              seoScore: seoResult.value.percentage
             }
           })
         } else {
@@ -295,7 +398,15 @@ const handleSave = async () => {
               release_status: (form.value as any).featured ? 'Trending' : 'Published',
               featured_image: (form.value as any).imageToken || form.value.image,
               author: form.value.author,
-              publishedAt: form.value.publishedAt
+              publishedAt: form.value.publishedAt,
+              // SEO fields
+              seoTitle: form.value.seoTitle,
+              metaDescription: form.value.metaDescription,
+              focusKeyword: form.value.focusKeyword,
+              ogImageUrl: form.value.ogImageUrl,
+              canonicalUrl: form.value.canonicalUrl,
+              robotsMeta: form.value.robotsMeta,
+              seoScore: seoResult.value.percentage
             }
           })
         }
@@ -425,6 +536,81 @@ const handleSave = async () => {
   padding-top: 1rem;
   border-top: 1px solid #f1f5f9;
 }
+
+/* SEO Sidebar Styling */
+.seo-sidebar-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.seo-score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.seo-label {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.seo-score-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: white;
+  font-size: 1rem;
+}
+
+.seo-progress-bg {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.seo-progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.score-green { background: #10b981; }
+.score-orange { background: #f59e0b; }
+.score-red { background: #ef4444; }
+
+.seo-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.seo-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.text-success { color: #10b981; }
+.text-warning { color: #f59e0b; }
 
 @media (max-width: 992px) {
   .form-grid {

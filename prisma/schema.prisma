@@ -71,6 +71,34 @@ model IndustrySite {
 
   is_active        Boolean  @default(true)
   custom_css       String?  
+
+  // === Per-site Cloudflare Credentials ===
+  cf_account_id    String?   // Account ID from new subdomain CF account
+  cf_api_token     String?   // API Token scoped to this CF account
+  cf_zone_id       String?   // Optional zone ID (usually main acct zone is reused)
+  cf_email         String?   // CF account email e.g. lasercleaner@c9.pub
+  cf_dns_created   Boolean?  @default(false)  // Whether CNAME was created in CF
+
+  // === Promotion & Business ===
+  promotion_url    String?   // e.g. https://laserchina.com, https://puzb.com
+
+  // === AI News Automation ===
+  ai_news_enabled  Boolean?  @default(false)  // Master AI toggle (replaces ai_news_toggle)
+  ai_news_count    Int?      @default(2)       // Articles per day (senior requires 2)
+  ai_focus_keyword String?                     // Main keyword for AI generation
+  ai_last_run      BigInt?                     // Timestamp of last AI news run
+
+  // === Full SEO Settings (RankMath-style) ===
+  seo_title        String?   // Custom <title> tag
+  seo_description  String?   // Meta description (150-160 chars recommended)
+  seo_keywords     String?   // Comma-separated focus keywords
+  og_title         String?   // Open Graph title
+  og_description   String?   // Open Graph description
+  og_image         String?   // OG image URL
+  canonical_url    String?   // Canonical URL
+  robots_meta      String?   @default("index,follow")
+  schema_type      String?   @default("NewsMediaOrganization")
+
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -90,6 +118,16 @@ model NewsContent {
   slug             String   @unique
   original_url     String?  
   related_products Json?    // Array of related product IDs
+
+  // === Per-article SEO (RankMath-style) ===
+  seo_title        String?   // Custom SEO title (overrides article title in <title>)
+  meta_description String?   // Meta description (150-160 chars recommended)
+  focus_keyword    String?   // Primary keyword for SEO score computation
+  og_image_url     String?   // OG image URL (overrides thumbnail)
+  canonical_url    String?   // Canonical URL for this article
+  robots_meta      String?   @default("index,follow")
+  seo_score        Int?      // Computed score 0-100
+
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

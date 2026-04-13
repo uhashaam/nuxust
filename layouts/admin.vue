@@ -15,6 +15,12 @@
         <el-menu-item index="/admin">
           <span>📊 Dashboard</span>
         </el-menu-item>
+        <el-menu-item index="/admin/sites">
+          <span>🌐 Site Manager</span>
+        </el-menu-item>
+        <el-menu-item index="/admin/sites/create">
+          <span>➕ Add New Site</span>
+        </el-menu-item>
         <el-menu-item index="/admin/news">
           <span>📰 News Management</span>
         </el-menu-item>

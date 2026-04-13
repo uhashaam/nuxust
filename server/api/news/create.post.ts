@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
     try {
 
         const body = await readBody(event)
-        const { title, content, image_url, siteId, featured, trending, author, publishedAt, slug } = body
+        const { 
+            title, content, image_url, siteId, featured, trending, author, publishedAt, slug,
+            seoTitle, metaDescription, focusKeyword, ogImageUrl, canonicalUrl, robotsMeta, seoScore
+        } = body
 
         if (!title || !content) {
             throw createError({ statusCode: 400, message: 'Title and content are required' })
@@ -55,7 +58,15 @@ export default defineEventHandler(async (event) => {
             author_email: author || larkUser.fields.email || larkUser.fields.username,
             release_status: (featured || trending) ? 'Trending' : 'Published',
             slug: slug,
-            release_time: publishedAt ? new Date(publishedAt).getTime() : Date.now()
+            release_time: publishedAt ? new Date(publishedAt).getTime() : Date.now(),
+            // SEO fields
+            seo_title: seoTitle,
+            meta_description: metaDescription,
+            focus_keyword: focusKeyword,
+            og_image_url: ogImageUrl,
+            canonical_url: canonicalUrl,
+            robots_meta: robotsMeta,
+            seo_score: seoScore
         })
 
 

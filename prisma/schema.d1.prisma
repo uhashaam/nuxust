@@ -71,6 +71,29 @@ model IndustrySite {
   ai_news_toggle       Boolean? @default(false)
   about_text           String?  
   
+  // New CF & Automation Fields
+  cf_account_id        String?
+  cf_api_token         String?
+  cf_zone_id           String?
+  cf_email             String?
+  cf_dns_created       Boolean? @default(false)
+  promotion_url        String?
+  ai_news_enabled      Boolean? @default(false)
+  ai_news_count        Int?     @default(2)
+  ai_focus_keyword     String?
+  ai_last_run          BigInt?
+  
+  // New SEO Fields
+  seo_title            String?
+  seo_description      String?
+  seo_keywords         String?
+  og_title             String?
+  og_description       String?
+  og_image             String?
+  canonical_url        String?
+  robots_meta          String?  @default("index,follow")
+  schema_type          String?  @default("NewsMediaOrganization")
+
   is_active        Boolean  @default(true)
   custom_css       String?  
   createdAt        DateTime @default(now())
@@ -92,6 +115,16 @@ model NewsContent {
   slug             String   @unique
   original_url     String?  
   related_products Json?    // Array of related product IDs
+  
+  // New SEO Fields
+  seo_title        String?
+  meta_description String?
+  focus_keyword    String?
+  og_image_url     String?
+  canonical_url    String?
+  robots_meta      String?  @default("index,follow")
+  seo_score        Int?      @default(0)
+
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
