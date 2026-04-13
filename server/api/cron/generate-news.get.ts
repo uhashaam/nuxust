@@ -1,7 +1,7 @@
 import { prisma } from '../../utils/prisma';
 import { generateIndustryNews } from '../../utils/ai';
 import { newsRepository } from '../../utils/newsRepository';
-import { computeSeoScore } from '../../../utils/seoScorer';
+import { computeSeoScore } from '../../utils/seoScorer';
 
 /**
  * GET /api/cron/generate-news — Automated AI news generation

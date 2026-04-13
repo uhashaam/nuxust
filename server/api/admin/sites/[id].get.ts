@@ -1,5 +1,5 @@
 import { prisma } from '../../../utils/prisma';
-import { computeSeoScore } from '../../../../utils/seoScorer';
+import { computeSeoScore } from '../../../utils/seoScorer';
 
 /**
  * GET /api/admin/sites/:id — Get full site details including SEO score

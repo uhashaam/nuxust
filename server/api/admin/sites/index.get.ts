@@ -1,4 +1,4 @@
-import { prisma } from '../../utils/prisma';
+import { prisma } from '../../../utils/prisma';
 
 /**
  * GET /api/admin/sites — List all industry sites for Site Manager
