@@ -76,7 +76,7 @@ export const useCloudflare = (siteCredentials?: {
 
     /**
      * Create a DNS CNAME record for a subdomain pointing to the main
-     * Cloudflare Pages deployment (b-2b.pages.dev).
+     * Hostinger Node.js deployment (b-2b.com).
      * Uses the MAIN site's zoneId (since b-2b.com lives in the main CF account).
      */
     const createSubdomain = async (subdomain: string, targetZoneId?: string) => {
@@ -90,7 +90,7 @@ export const useCloudflare = (siteCredentials?: {
                 body: JSON.stringify({
                     type: 'CNAME',
                     name: subdomain,
-                    content: 'b-2b.pages.dev',
+                    content: 'b-2b.com',
                     proxied: true,
                     comment: `B2B Platform — auto-created for ${subdomain}`
                 })
