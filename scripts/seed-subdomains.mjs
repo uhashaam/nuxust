@@ -18,19 +18,19 @@ const prisma = new PrismaClient({
 
 const urgentSubdomains = [
     // Laser group → laserchina.com
-    { subdomain: 'lasercleaner',  industry: 'Laser Cleaning',      promotion: 'https://laserchina.com', cfEmail: 'lasercleaner@c9.pub' },
-    { subdomain: 'laserwelder',   industry: 'Laser Welding',       promotion: 'https://laserchina.com', cfEmail: 'laserwelder@c9.pub' },
-    { subdomain: 'lasercutter',   industry: 'Laser Cutting',       promotion: 'https://laserchina.com', cfEmail: 'lasercutter@c9.pub' },
-    { subdomain: 'lasermarking',  industry: 'Laser Marking',       promotion: 'https://laserchina.com', cfEmail: 'lasermarking@c9.pub' },
-    { subdomain: 'lasermachine',  industry: 'Laser Machinery',     promotion: 'https://laserchina.com', cfEmail: 'lasermachine@c9.pub' },
-    // China Art group → puzb.com
-    { subdomain: 'chinaart',      industry: 'Chinese Art',         promotion: 'https://puzb.com', cfEmail: 'chinaart@c9.pub' },
-    { subdomain: 'chinaculture',  industry: 'Chinese Culture',     promotion: 'https://puzb.com', cfEmail: 'chinaculture@c9.pub' },
-    { subdomain: 'chinajewelly',  industry: 'Chinese Jewelry',     promotion: 'https://puzb.com', cfEmail: 'chinajewelly@c9.pub' },
-    { subdomain: 'chinajade',     industry: 'Chinese Jade',        promotion: 'https://puzb.com', cfEmail: 'chinajade@c9.pub' },
-    // Smartwatch group → joeme.fit
-    { subdomain: 'smartwatch',    industry: 'Smart Watches',       promotion: 'https://joeme.fit', cfEmail: 'smartwatch@c9.pub' },
-    { subdomain: 'ewatch',        industry: 'Electronic Watches',  promotion: 'https://joeme.fit', cfEmail: 'ewatch@c9.pub' },
+    { subdomain: 'lasercleaner',  industry: 'Laser Cleaning',      cfEmail: 'lasercleaner@c9.pub' },
+    { subdomain: 'laserwelder',   industry: 'Laser Welding',       cfEmail: 'laserwelder@c9.pub' },
+    { subdomain: 'lasercutter',   industry: 'Laser Cutting',       cfEmail: 'lasercutter@c9.pub' },
+    { subdomain: 'lasermarking',  industry: 'Laser Marking',       cfEmail: 'lasermarking@c9.pub' },
+    { subdomain: 'lasermachine',  industry: 'Laser Machinery',     cfEmail: 'lasermachine@c9.pub' },
+    // China Art group
+    { subdomain: 'chinaart',      industry: 'Chinese Art',         cfEmail: 'chinaart@c9.pub' },
+    { subdomain: 'chinaculture',  industry: 'Chinese Culture',     cfEmail: 'chinaculture@c9.pub' },
+    { subdomain: 'chinajewelly',  industry: 'Chinese Jewelry',     cfEmail: 'chinajewelly@c9.pub' },
+    { subdomain: 'chinajade',     industry: 'Chinese Jade',        cfEmail: 'chinajade@c9.pub' },
+    // Smartwatch group
+    { subdomain: 'smartwatch',    industry: 'Smart Watches',       cfEmail: 'smartwatch@c9.pub' },
+    { subdomain: 'ewatch',        industry: 'Electronic Watches',  cfEmail: 'ewatch@c9.pub' },
 ];
 
 async function seed() {
@@ -65,8 +65,6 @@ async function seed() {
                 // CF (credentials to be added later via admin)
                 cf_email: s.cfEmail,
                 cf_dns_created: false,
-                // Promotion
-                promotion_url: s.promotion,
                 // AI News — enabled with 2/day as per senior
                 ai_news_enabled: true,
                 ai_news_count: 2,
@@ -87,7 +85,7 @@ async function seed() {
             }
         });
 
-        console.log(`  ✅ ${s.subdomain}.b-2b.com — created (${s.industry}, promotes ${s.promotion})`);
+        console.log(`  ✅ ${s.subdomain}.b-2b.com — created (${s.industry})`);
         created++;
     }
 

@@ -6,7 +6,7 @@ import { prisma } from '../../../utils/prisma';
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
-    const { subdomain, industryName, siteName, promotionUrl, cfAccountId, cfApiToken, cfZoneId, cfEmail } = body;
+    const { subdomain, industryName, siteName, cfAccountId, cfApiToken, cfZoneId, cfEmail } = body;
 
     if (!subdomain) throw createError({ statusCode: 400, message: 'Subdomain is required' });
     if (!industryName) throw createError({ statusCode: 400, message: 'Industry name is required' });
@@ -40,8 +40,6 @@ export default defineEventHandler(async (event) => {
                 cf_zone_id: cfZoneId || null,
                 cf_email: cfEmail || `${subdomain}@c9.pub`,
                 cf_dns_created: false,
-                // Promotion
-                promotion_url: promotionUrl || null,
                 // AI defaults
                 ai_news_enabled: true,
                 ai_news_count: 2,

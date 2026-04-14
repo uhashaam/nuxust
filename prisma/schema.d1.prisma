@@ -77,7 +77,6 @@ model IndustrySite {
   cf_zone_id           String?
   cf_email             String?
   cf_dns_created       Boolean? @default(false)
-  promotion_url        String?
   ai_news_enabled      Boolean? @default(false)
   ai_news_count        Int?     @default(2)
   ai_focus_keyword     String?

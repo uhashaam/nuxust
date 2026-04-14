@@ -48,10 +48,6 @@
                 <input v-model="form.industryName" type="text" placeholder="e.g. Laser Cleaning" />
               </div>
               <div class="form-group">
-                <label>Promotion URL</label>
-                <input v-model="form.promotionUrl" type="url" placeholder="https://laserchina.com" />
-              </div>
-              <div class="form-group">
                 <label>Status</label>
                 <select v-model="form.siteStatus">
                   <option value="active">Active</option>
@@ -258,11 +254,6 @@
                 <input v-model="form.aiFocusKeyword" type="text" :placeholder="form.industryName || 'Industry keyword'" />
                 <small>Primary keyword for AI to focus on when generating articles</small>
               </div>
-              <div class="form-group">
-                <label>Promotion Website</label>
-                <input :value="form.promotionUrl" type="url" disabled class="input-disabled" />
-                <small>Change in Site Info tab</small>
-              </div>
             </div>
           </div>
 
@@ -414,7 +405,6 @@ const fetchSite = async () => {
       aboutText: s.about_text,
       siteStatus: s.site_status || 'active',
       isActive: s.is_active,
-      promotionUrl: s.promotion_url,
       // CF
       cfAccountId: s.cf_account_id || '',
       cfApiToken: s.cf_api_token || '',

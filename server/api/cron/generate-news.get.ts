@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
             const industryName = (site as any).industry_name;
             const siteId = site.id;
             const focusKeyword = (site as any).ai_focus_keyword || industryName;
-            const promotionUrl = (site as any).promotion_url || '';
             const articleCount = (site as any).ai_news_count || 2;
 
             if (!industryName) {

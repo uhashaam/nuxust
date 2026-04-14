@@ -79,8 +79,6 @@ model IndustrySite {
   cf_email         String?   // CF account email e.g. lasercleaner@c9.pub
   cf_dns_created   Boolean?  @default(false)  // Whether CNAME was created in CF
 
-  // === Promotion & Business ===
-  promotion_url    String?   // e.g. https://laserchina.com, https://puzb.com
 
   // === AI News Automation ===
   ai_news_enabled  Boolean?  @default(false)  // Master AI toggle (replaces ai_news_toggle)

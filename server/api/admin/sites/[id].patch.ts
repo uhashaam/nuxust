@@ -29,8 +29,6 @@ export default defineEventHandler(async (event) => {
         cfZoneId: 'cf_zone_id',
         cfEmail: 'cf_email',
         cfDnsCreated: 'cf_dns_created',
-        // Promotion
-        promotionUrl: 'promotion_url',
         // AI fields
         aiNewsEnabled: 'ai_news_enabled',
         aiNewsCount: 'ai_news_count',

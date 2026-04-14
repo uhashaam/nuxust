@@ -43,12 +43,6 @@
           </div>
 
           <div class="form-group">
-            <label>Promotion Website</label>
-            <input v-model="form.promotionUrl" type="url" placeholder="https://laserchina.com" />
-            <small>The main website this subdomain promotes</small>
-          </div>
-
-          <div class="form-group">
             <label>Site Name</label>
             <input v-model="form.siteName" type="text" :placeholder="`${form.industryName || 'Industry'} News`" />
           </div>
@@ -190,7 +184,6 @@ const form = ref({
   subdomain: '',
   industryName: '',
   siteName: '',
-  promotionUrl: '',
   cfAccountId: '',
   cfApiToken: '',
   cfZoneId: '',
@@ -285,7 +278,6 @@ const handleSubmit = async () => {
         subdomain: form.value.subdomain,
         industryName: form.value.industryName,
         siteName: form.value.siteName || `${form.value.industryName} News`,
-        promotionUrl: form.value.promotionUrl,
         cfAccountId: form.value.cfAccountId,
         cfApiToken: form.value.cfApiToken,
         cfZoneId: form.value.cfZoneId,

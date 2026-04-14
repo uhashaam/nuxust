@@ -29,8 +29,6 @@ export default defineEventHandler(async (event) => {
             seoTitle: s.seo_title,
             seoDescription: s.seo_description,
             seoKeywords: s.seo_keywords,
-            // Promotion
-            promotionUrl: s.promotion_url,
             createdAt: s.createdAt,
         }));
 

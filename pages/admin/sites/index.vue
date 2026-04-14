@@ -45,7 +45,6 @@
             <th>Industry</th>
             <th>CF Status</th>
             <th>AI News</th>
-            <th>Promotion</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -70,12 +69,6 @@
               <span class="status-badge" :class="site.aiNewsEnabled ? 'badge-success' : 'badge-muted'">
                 {{ site.aiNewsEnabled ? `🤖 ${site.aiNewsCount}/day` : '⏸ Off' }}
               </span>
-            </td>
-            <td>
-              <a v-if="site.promotionUrl" :href="site.promotionUrl" target="_blank" class="promo-link">
-                {{ site.promotionUrl.replace('https://', '') }}
-              </a>
-              <span v-else class="text-muted">—</span>
             </td>
             <td>
               <span class="status-badge" :class="site.isActive ? 'badge-success' : 'badge-muted'">
